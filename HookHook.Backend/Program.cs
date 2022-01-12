@@ -1,25 +1,26 @@
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+namespace HookHook.Backend
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    /// <summary>
+    /// Base class of the project
+    /// </summary>
+    public class Program
+    {
+        /// <summary>
+        /// Main function starting our program
+        /// </summary>
+        /// <param name="args">Program args</param>
+        public static void Main(string[] args) =>
+            CreateHostBuilder(args).Build().Run();
+
+        /// <summary>
+        /// Creating a web app
+        /// </summary>
+        /// <param name="args">Program args</param>
+        /// <returns>Program initialization abstraction</returns>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
