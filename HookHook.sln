@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HookHook.Backend", "HookHook.Backend\HookHook.Backend.csproj", "{87D6FD27-BEEE-45A9-B337-1349873C03A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{87D6FD27-BEEE-45A9-B337-1349873C03A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87D6FD27-BEEE-45A9-B337-1349873C03A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87D6FD27-BEEE-45A9-B337-1349873C03A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87D6FD27-BEEE-45A9-B337-1349873C03A0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A26B12DA-5608-4B60-840C-AD6A2DA30160}
+	EndGlobalSection
+EndGlobal
