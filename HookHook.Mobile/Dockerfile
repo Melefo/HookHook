@@ -21,7 +21,6 @@ ENV PATH "$PATH:/android/sdk/platform-tools"
 RUN git clone https://github.com/flutter/flutter.git -b stable
 ENV PATH="$PATH:/flutter/bin"
 
-RUN flutter precache
 RUN flutter doctor
 
 #Installing app
@@ -31,3 +30,6 @@ COPY ["HookHook.Mobile", "/app"]
 RUN flutter pub get
 RUN flutter analyze
 RUN flutter build apk
+
+WORKDIR /build
+RUN cp /app/build/app/outputs/flutter-apk/app-release.apk /build/client.apk
