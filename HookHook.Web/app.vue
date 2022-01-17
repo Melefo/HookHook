@@ -1,7 +1,9 @@
 <template>
     <Html v-bind:class="{dark: darkMode}">
-        <input type="checkbox" v-model="darkMode">
-        <NuxtPage/>
+        <div class="bg-white dark:bg-black">
+            <input type="checkbox" v-model="darkMode">
+            <NuxtPage/>
+        </div>
     </Html>
 </template>
 
