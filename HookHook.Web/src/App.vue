@@ -1,11 +1,23 @@
 <template>
-  <router-view v-bind="slotData" />
+    <div :class="{dark: darkMode}">
+        <router-view @myEvent="ToggleDarkMode"/>
+    </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+    import Vue from 'vue'
 
-export default {
-  name: 'App'
-}
+    export default {
+        name: 'App',
+        data() {
+            return ({
+                darkMode: false
+            })
+        },
+        methods: {
+            ToggleDarkMode() {
+                this.darkMode = !this.darkMode;
+            }
+        }
+    }
 </script>
