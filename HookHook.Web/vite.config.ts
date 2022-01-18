@@ -9,5 +9,16 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src')
     }
+  },
+  server: {
+    proxy: {
+      '^/api': {
+        target: process.env.BACKEND_URL ||"http://localhost:8080/",
+        ws: true,
+        rewrite: (path) => path.replace('^/api', '')
+      }
+    },
+    port: 80,
+    host: process.env.PUBLIC_URL
   }
 })
