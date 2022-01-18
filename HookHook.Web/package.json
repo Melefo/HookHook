@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@headlessui/vue": "^1.4.3",
-    "vite-tsconfig-paths": "^3.3.17",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12"
   },
