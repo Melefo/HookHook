@@ -5,6 +5,9 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
+    fontFamily: {
+      'sans': ['Comfortaa', 'cursive']
+    },
     extend: {},
   },
   plugins: [],

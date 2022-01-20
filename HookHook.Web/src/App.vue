@@ -1,12 +1,10 @@
 <template>
     <div :class="{dark: darkMode}">
-        <router-view @myEvent="ToggleDarkMode"/>
+        <router-view @ToggleDarkMode="ToggleDarkMode"/>
     </div>
 </template>
 
 <script lang="ts">
-    import Vue from 'vue'
-
     export default {
         name: 'App',
         data() {
