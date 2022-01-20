@@ -1,6 +1,6 @@
 
 <template>
-  <div class="transition-colors duration-200 bg-[#F9F9F9] dark:bg-[#181A1E] h-screen w-screen p-10">
+  <div class="transition-colors duration-200 bg-[#F9F9F9] dark:bg-[#181A1E] min-h-screen min-w-screen p-10">
     <header class="flex flex-col sm:flex-row justify-between">
       <RouterLink to="/">
         <HookHook class="text-5xl" />
@@ -44,7 +44,7 @@
         </form>
       </Bloc>
     </div>
-    <div class="flex flex-row justify-evenly mt-20">
+    <div class="flex flex-col sm:flex-row justify-evenly mt-20">
       <img class="object-contain w-52 h-52" src="@/assets/pinguin/breakdance.gif" />
       <img class="object-contain w-52 h-52" src="@/assets/pinguin/dance.gif" />
       <img class="object-contain w-52 h-52" src="@/assets/pinguin/clap.gif" />
