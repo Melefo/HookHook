@@ -33,6 +33,7 @@ namespace HookHook.Backend
             services.AddSingleton(new MongoService(Configuration));
 
             services.AddScoped<UserService>();
+            services.AddSingleton<GithubService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

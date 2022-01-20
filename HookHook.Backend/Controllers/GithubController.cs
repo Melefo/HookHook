@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using HookHook.Backend.Models;
 using HookHook.Backend.Models.Github;
+using HookHook.Backend.Services;
+using HookHook.Backend.Exceptions;
 
 namespace HookHook.Backend.Controllers
 {
@@ -8,20 +10,19 @@ namespace HookHook.Backend.Controllers
 	[ApiController]
 	public class GithubController : ControllerBase
 	{
-		private string _githubAPIKey;
 
-		public GithubController(IConfiguration configuration)
-		{
-			_githubAPIKey = configuration["Github:APIKey"];
-		}
+        private readonly GithubService _service;
 
-		// * create commit, needs oauth + authorization
+		public GithubController(GithubService service) =>
+            _service = service;
+
+		// * create issue, needs oauth + authorization
 		[HttpPost("CreateIssue")]
 		public IssueData CreateIssue(IssueModel issueModel)
 		{
 			// * call the service
 
-			return (new IssueData { Name = issueModel.Name });
+			return (new IssueData("New issue", "", ""));
 		}
 
 		// * create repo, needs oauth
@@ -35,10 +36,15 @@ namespace HookHook.Backend.Controllers
 
 		// * get latest issue, for private repos needs oauth
 		[HttpGet("GetLatestIssue")]
-		public IssueData GetLatestIssue([FromBody] RepositoryModel repoModel)
+		public async Task<ActionResult<IssueData>> GetLatestIssue()
 		{
-
-			return (new IssueData { Name = "New issue" });
+            try {
+                return (await _service.GetLatestIssue("1"));
+            } catch (MongoException ex) {
+                return BadRequest(new { error = ex.Message });
+            } catch (ApiException ex) {
+                return (StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message}));
+            }
 		}
 
 		// * get latest commit, for private repos needs oauth
