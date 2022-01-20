@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using HookHook.Backend.Models;
 
 namespace HookHook.Backend.Controllers
 {
