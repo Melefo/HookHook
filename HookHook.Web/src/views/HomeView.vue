@@ -14,11 +14,11 @@
   </div>
 </template>
 
-<script>
-import Switch from "@/components/Switch.vue";
-import Orange from "@/assets/img/orangeBeak.svg";
+<script lang="ts">
+import Switch from "@/components/SwitchComponent.vue";
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
   components: { Switch },
-};
+});
 </script>

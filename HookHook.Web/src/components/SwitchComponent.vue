@@ -18,17 +18,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref } from 'vue'
 import { Switch } from '@headlessui/vue'
 import { SunIcon, MoonIcon } from '@heroicons/vue/solid'
+import { defineComponent } from 'vue'
 
-export default {
+export default defineComponent({
     components: { Switch, SunIcon, MoonIcon },
     setup() {
         const enabled = ref(false)
 
         return { enabled }
     }
-}
+})
 </script>
