@@ -1,4 +1,4 @@
-namespace HookHook.Backend
+namespace HookHook.Backend.Models
 {
     public class WeatherForecast
     {
