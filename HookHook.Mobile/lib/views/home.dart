@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
-import 'package:hookhook/widgets/HList.dart';
+import 'package:hookhook/widgets/h_list.dart';
 
 //view
 class HomeView extends StatefulWidget {

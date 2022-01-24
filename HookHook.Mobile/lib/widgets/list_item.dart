@@ -10,13 +10,13 @@ class ListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(12),
-      width: 100, //prender en arg
-      height: 100, //prender en arg
+      width: 100, //prendre en arg
+      height: 100, //prendre en arg
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)), //prender en arg
-          color: Colors.orange //prender en arg
+          color: Colors.orange //prendre en arg
       ),
-      child: Text("Test"), //prender en arg
+      child: Text("Test"), //prendre en arg
     );
   }
 

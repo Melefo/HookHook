@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
-import 'ListItem.dart';
+import 'list_item.dart';
 
 class HList extends StatelessWidget {
 
