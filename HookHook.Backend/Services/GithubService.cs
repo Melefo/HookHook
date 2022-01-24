@@ -50,6 +50,11 @@ namespace HookHook.Backend.Services
         public GithubService(IConfiguration config, MongoService mongo)
         {
             _apiKey = config["Github:ApiKey"];
+            _client.DefaultRequestHeaders.Clear();
+
+            _client.DefaultRequestHeaders.Add("Authorization", $"token {_apiKey}");
+            _client.DefaultRequestHeaders.UserAgent.TryParseAdd("HookHook");
+            // _client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
         }
 
         // * createIssue (oauth)
@@ -59,22 +64,21 @@ namespace HookHook.Backend.Services
         public async Task<IssueData> GetLatestIssue(string areaID)
         {
             // * fetch user id (with jwt ?)
-            // * fetch area of with areaID
+            // * fetch area of user with areaID
+            // * cross check attatched user with connected user
 
             // * githubUserName = area.action.user
             // * githubRepoName = area.action.repository
             string userName = "The-Law-1";
             string repoName = "Redditech";
 
-            _client.DefaultRequestHeaders.Add("Authorization", $"token {_apiKey}");
-
-            IssueJson[] ?response = await _client.GetAsync<IssueJson[]>($"https://api.github.com/repos{userName}/{repoName}/issues");
-            // IssueJson? response = await _client.GetAsync<WeatherJson>($"https://api.openweathermap.org/data/2.5/weather?q={widget.City}&appid={_apiKey}&units={widget.Unit}");
+            IssueJson[] ?response = await _client.GetAsync<IssueJson[]>($"https://api.github.com/repos/{userName}/{repoName}/issues");
             if (response == null)
                 throw new ApiException("Failed to call API");
 
             return (new IssueData(response[0].Title, response[0].Body, response[0].User.Html_Url));
         }
+
         // * getLatestCommit ('')
         // * getLatestRepository ('')
 
