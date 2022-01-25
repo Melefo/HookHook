@@ -37,6 +37,14 @@ namespace HookHook.Backend.Services
         public string ?Updated_At {get; set;}
     }
 
+    public class Repository
+    {
+        public string ?Name {get; set;}
+        public GithubUser ?Owner {get; set;}
+        public bool Private {get; set;}
+        public string ?Description {get; set;}
+    }
+
     public class GithubService
     {
         private readonly string _apiKey;
@@ -66,9 +74,7 @@ namespace HookHook.Backend.Services
 
             // * change the authorization token to github oauth token from database
 
-            // ! needs a body and I don't know how
             // * title is required, the rest is optional (check for null values)
-
             HttpRequestMessage requestMessage = new HttpRequestMessage();
             requestMessage.Content = JsonContent.Create(new {
                 title = newIssue.Title,
@@ -77,7 +83,7 @@ namespace HookHook.Backend.Services
                 assignees = newIssue.Assignees
             });
 
-            IssueJson ?response = await _client.PostAsync<IssueJson>($"https://api.github.com/repos/{newIssue.UserName}/{newIssue.RepositoryName}/issues");
+            IssueJson ?response = await _client.PostAsync<IssueJson>($"https://api.github.com/repos/{newIssue.UserName}/{newIssue.RepositoryName}/issues", requestMessage);
             if (response == null)
                 throw new ApiException("Failed to call API");
 
@@ -86,6 +92,30 @@ namespace HookHook.Backend.Services
         }
 
         // * createRepository (oauth)
+        public async Task<RepositoryData> CreateRepository(RepositoryModel repoModel)
+        {
+            // * fetch user id (with jwt ?)
+            // * fetch area of user with areaID
+            // * cross check attatched user with connected user
+
+            // * change the authorization token to github oauth token from database
+
+
+            HttpRequestMessage requestMessage = new HttpRequestMessage();
+
+            // * name is required, the rest is optional (check for null values)
+            // ! je peux pas ajouter la clé 'private' ici parce que c'est un mot clé C# .-.
+            requestMessage.Content = JsonContent.Create(new {
+                name = repoModel.RepositoryName,
+                description = repoModel.Description
+            });
+
+            Repository ?response = await _client.PostAsync<Repository>($"https://api.github.com/user/repos", requestMessage);
+            if (response == null)
+                throw new ApiException("Failed to call API");
+
+            return (new RepositoryData(response.Name, response.Description, response.Owner.Login, false));
+        }
 
         // * getLatestIssue (needs oauth for private repos)
         public async Task<IssueData> GetLatestIssue(string areaID)

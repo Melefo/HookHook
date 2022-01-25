@@ -31,11 +31,15 @@ namespace HookHook.Backend.Controllers
 
 		// * create repo, needs oauth
 		[HttpPost("CreateRepository")]
-		public RepositoryData CreateRepository(RepositoryModel repoModel)
+		public async Task<ActionResult<RepositoryData>> CreateRepository(RepositoryModel repoModel)
 		{
-			// * call the service
-
-			return (new RepositoryData { RepositoryName = repoModel.RepositoryName });
+            try {
+                return (await _service.CreateRepository(repoModel));
+            } catch (MongoException ex) {
+                return BadRequest(new { error = ex.Message });
+            } catch (ApiException ex) {
+                return (StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message}));
+            }
 		}
 
 		// * get latest issue, for private repos needs oauth
@@ -64,7 +68,7 @@ namespace HookHook.Backend.Controllers
 		public RepositoryData GetLatestRepository([FromBody] string userName)
 		{
 			// * call the service which cross-checks in database
-			return (new RepositoryData { RepositoryName = "YEP" });
+			return (new RepositoryData("name", "desc", "user", false));
 		}
 	}
 }

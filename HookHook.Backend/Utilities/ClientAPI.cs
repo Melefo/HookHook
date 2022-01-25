@@ -20,9 +20,9 @@ namespace HookHook.Backend.Utilities
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
-        public static async Task<T?> PostAsync<T>(this HttpClient client, string url)
+        public static async Task<T?> PostAsync<T>(this HttpClient client, string url, HttpRequestMessage ?request = null)
         {
-            var response = await client.PostAsync(url, null);
+            var response = await client.PostAsync(url, request?.Content);
 
             if (!response.IsSuccessStatusCode)
                 return default;
