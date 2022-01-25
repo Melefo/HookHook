@@ -107,14 +107,15 @@ namespace HookHook.Backend.Services
             // ! je peux pas ajouter la clé 'private' ici parce que c'est un mot clé C# .-.
             requestMessage.Content = JsonContent.Create(new {
                 name = repoModel.RepositoryName,
-                description = repoModel.Description
+                description = repoModel.Description,
+                @private = repoModel.Private
             });
 
             Repository ?response = await _client.PostAsync<Repository>($"https://api.github.com/user/repos", requestMessage);
             if (response == null)
                 throw new ApiException("Failed to call API");
 
-            return (new RepositoryData(response.Name, response.Description, response.Owner.Login, false));
+            return (new RepositoryData(response.Name, response.Description, response.Owner.Login, response.Private));
         }
 
         // * getLatestIssue (needs oauth for private repos)
