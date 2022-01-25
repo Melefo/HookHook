@@ -43,7 +43,14 @@ namespace HookHook.Backend.Entities
             MinutesBetween = minutes;
         }
 
-        public async Task Launch(User user) =>
-            await Action.Check(user, Reaction);
+        public async Task Launch(User user)
+        {
+            (string? actionInfo, bool actionValue) = await Action.Check(user);
+
+            if (actionValue)
+            {
+                await Reaction.Execute();
+            }
     }
+        }
 }

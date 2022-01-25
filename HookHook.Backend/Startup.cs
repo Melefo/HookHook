@@ -1,4 +1,8 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Text;
+using HookHook.Backend.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using HookHook.Backend.Services;
 
 namespace HookHook.Backend
@@ -26,13 +30,56 @@ namespace HookHook.Backend
         /// <param name="services">Where to register services</param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(new MongoService(Configuration));
+
+            services.AddScoped<UserService>();
+            services.AddSingleton<GithubService>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HookHook", Version = "v1" });
+
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "Using the Authorization header with the Bearer scheme.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                c.AddSecurityDefinition("Bearer", securitySchema);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                  { securitySchema, new[] { "Bearer" } }
+                });
             });
 
             services.AddEndpointsApiExplorer();
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"])),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+
+            });
             services.AddRouting(x => x.LowercaseUrls = true);
             services.AddSingleton<MongoService>();
         }

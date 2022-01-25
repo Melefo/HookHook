@@ -20,10 +20,10 @@ namespace HookHook.Backend.Actions
             Channel = channel;
         }
 
-        public async Task Check(User user, IReaction reaction)
+        public async Task<(string?, bool)> Check(User user)
         {
             await _client.LoginAsync(TokenType.Bot, user.DiscordToken);
-            
+
             var guild = await _client.GetGuildAsync(Guild);
             var channel = await guild.GetTextChannelAsync(Channel);
 
@@ -32,9 +32,14 @@ namespace HookHook.Backend.Actions
             {
                 if (PinnedMessages.Contains(message.Id))
                     continue;
-                await reaction.Execute();
+
+                // await reaction.Execute();
                 PinnedMessages.Add(message.Id);
+
+                // * send message.id to database ?
+                return (message.Content, true);
             }
+            return (null, false);
         }
     }
 }

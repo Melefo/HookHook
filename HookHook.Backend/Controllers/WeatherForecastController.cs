@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using HookHook.Backend.Models;
 
 namespace HookHook.Backend.Controllers
 {
@@ -17,7 +18,7 @@ namespace HookHook.Backend.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet("GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
