@@ -17,12 +17,12 @@ namespace HookHook.Backend.Controllers
         [HttpPost]
         public async Task Post(string token, ulong guild, ulong channel, string url, string message)
         {
-            var user = new User
-            {
-                DiscordToken = token
-            };
-            IAction action = new DiscordPinned(guild, channel);
-            await action.Check(user, new DiscordWebhook(url, message));
+            // var user = new User
+            // {
+            //     DiscordToken = token
+            // };
+            // IAction action = new DiscordPinned(guild, channel);
+            // await action.Check(user, new DiscordWebhook(url, message));
         }
     }
 }
