@@ -1,4 +1,4 @@
-import 'dart:async';
+import 'package:hookhook/widgets/list_items.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
@@ -24,23 +24,25 @@ class _Home extends StateMVC<HomeView> {
           body: Column(
             children: <Widget>[
               const Padding(
-                padding: EdgeInsets.only(top: 80),
+                padding: EdgeInsets.only(top: 70),
                 child: Text('HookHook', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45)),
               ),
               const Padding(
-                padding: EdgeInsets.fromLTRB(0, 50, 0, 30),
+                padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                 child: Text('Hello, Arthur', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
               ),
               const Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 30),
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
                 child: Text('Welcome back !', style: TextStyle(fontSize: 30)),
               ),
-              SizedBox(
-                height: 120,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (_, __) => _buildBox(color: Colors.orange),
-                ),
+              const HList(Widgets:
+              <Widget>[
+                ListItem(cornerRadius: 25, color: Color(0xFFA3E7EE), Content: Icon(Icons.category, color: Color(0xFF73B6BD), size: 70)),
+                ListItem(cornerRadius: 25, color: Color(0xFFB4E1DC), Content: Icon(Icons.category, color: Color(0xFF85B1AC), size: 70)),
+                ListItem(cornerRadius: 25, color: Color(0xFFF5CDCB), Content: Icon(Icons.category, color: Color(0xFFC49E9C), size: 70)),
+                ListItem(cornerRadius: 25, color: Color(0xFFF8CBAA), Content: Icon(Icons.category, color: Color(0xFFC79D7D), size: 70)),
+                ListItem(cornerRadius: 25, color: Color(0xFFFFFFC7), Content: Icon(Icons.category, color: Color(0xFFC6C791), size: 70))
+              ]
               ),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -49,16 +51,24 @@ class _Home extends StateMVC<HomeView> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(30.0),
                 child: Container(
-                  color: Color.fromRGBO(59, 63, 67, 100),
+                  color: Color(0xFF3B3F43),
                   width: 350,
-                  height: 200,
+                  height: 300,
                 ),
               ),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: Text('Your AREAs', style: TextStyle(fontFamily: 'Comfortaa', fontSize: 15)),
+                child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontFamily: 'Comfortaa', fontSize: 15)),
               ),
-              HList(),
+              const HList(Widgets:
+                <Widget>[
+                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
+                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
+                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
+                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
+                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,))
+                ]
+              ),
             ],
           ),
       );
