@@ -57,10 +57,15 @@ namespace HookHook.Backend.Controllers
 
 		// * get latest commit, for private repos needs oauth
 		[HttpGet("GetLatestCommit")]
-		public CommitData GetLatestCommit([FromBody] RepositoryModel repository)
+		public async Task<ActionResult<CommitData>> GetLatestCommit()
 		{
-			// * call the service which cross-checks in database
-			return (new CommitData { Message = "fix bug" });
+            try {
+                return (await _service.GetLatestCommit("1"));
+            } catch (MongoException ex) {
+                return BadRequest(new { error = ex.Message });
+            } catch (ApiException ex) {
+                return (StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message}));
+            }
 		}
 
 		// * either takes a username for public repos, or uses the personal oauth token for private repos

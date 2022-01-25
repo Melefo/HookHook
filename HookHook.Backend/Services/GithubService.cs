@@ -37,6 +37,24 @@ namespace HookHook.Backend.Services
         public string ?Updated_At {get; set;}
     }
 
+    public class CommitAuthor
+    {
+        public string ?Name {get; set;}
+        public string ?Date {get; set;}
+    }
+
+    public class CommitObject
+    {
+        public string ?Url {get; set;}
+        public CommitAuthor ?Author {get; set;}
+        public string ?Message {get; set;}
+    }
+
+    public class CommitJson
+    {
+        public CommitObject ?Commit {get; set;}
+    }
+
     public class Repository
     {
         public string ?Name {get; set;}
@@ -65,7 +83,6 @@ namespace HookHook.Backend.Services
             // _client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
         }
 
-        // * createIssue (oauth)
         public async Task<IssueData> CreateIssue(IssueModel newIssue)
         {
             // * fetch user id (with jwt ?)
@@ -91,7 +108,6 @@ namespace HookHook.Backend.Services
 
         }
 
-        // * createRepository (oauth)
         public async Task<RepositoryData> CreateRepository(RepositoryModel repoModel)
         {
             // * fetch user id (with jwt ?)
@@ -99,7 +115,6 @@ namespace HookHook.Backend.Services
             // * cross check attatched user with connected user
 
             // * change the authorization token to github oauth token from database
-
 
             HttpRequestMessage requestMessage = new HttpRequestMessage();
 
@@ -139,6 +154,29 @@ namespace HookHook.Backend.Services
         }
 
         // * getLatestCommit ('')
+        public async Task<CommitData> GetLatestCommit(string areaID)
+        {
+            // * fetch user id (with jwt ?)
+            // * fetch area of user with areaID
+            // * cross check attatched user with connected user
+
+            // * change the authorization token to github oauth token from database
+
+            // * githubUserName = area.action.user
+            // * githubRepoName = area.action.repository
+
+            string userName = "The-Law-1";
+            string repoName = "portfolio2";
+
+            CommitJson[] ?response = await _client.GetAsync<CommitJson[]>($"https://api.github.com/repos/{userName}/{repoName}/commits");
+            if (response == null)
+                throw new ApiException("Failed to call API");
+
+            CommitData commitData = new CommitData(repoName, userName, response[0].Commit.Message, response[0].Commit.Author.Name, response[0].Commit.Author.Date);
+
+            return (commitData);
+        }
+
         // * getLatestRepository ('')
 
         // * getRepositoriesFromUser (pour faire un dropdown éventuellement ?)
