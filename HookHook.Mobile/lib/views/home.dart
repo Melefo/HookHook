@@ -1,8 +1,11 @@
+import 'package:hookhook/widgets/areas_creator.dart';
 import 'package:hookhook/widgets/list_items.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
 import 'package:hookhook/widgets/h_list.dart';
+import 'package:hookhook/widgets/services_items.dart';
+import 'package:hookhook/widgets/your_area_items.dart';
 
 //view
 class HomeView extends StatefulWidget {
@@ -35,40 +38,20 @@ class _Home extends StateMVC<HomeView> {
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
                 child: Text('Welcome back !', style: TextStyle(fontSize: 30)),
               ),
-              const HList(Widgets:
-              <Widget>[
-                ListItem(cornerRadius: 25, color: Color(0xFFA3E7EE), Content: Icon(Icons.category, color: Color(0xFF73B6BD), size: 70)),
-                ListItem(cornerRadius: 25, color: Color(0xFFB4E1DC), Content: Icon(Icons.category, color: Color(0xFF85B1AC), size: 70)),
-                ListItem(cornerRadius: 25, color: Color(0xFFF5CDCB), Content: Icon(Icons.category, color: Color(0xFFC49E9C), size: 70)),
-                ListItem(cornerRadius: 25, color: Color(0xFFF8CBAA), Content: Icon(Icons.category, color: Color(0xFFC79D7D), size: 70)),
-                ListItem(cornerRadius: 25, color: Color(0xFFFFFFC7), Content: Icon(Icons.category, color: Color(0xFFC6C791), size: 70))
-              ]
-              ),
+              HList(Widgets: ServicesItems.servicesWidgets),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: Text('Creator', style: TextStyle(fontFamily: 'Comfortaa', fontSize: 15)),
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(30.0),
-                child: Container(
-                  color: Color(0xFF3B3F43),
-                  width: 350,
-                  height: 300,
-                ),
+                child: const AreasCreator()
               ),
               const Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                padding: EdgeInsets.fromLTRB(0, 13, 0, 4),
                 child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontFamily: 'Comfortaa', fontSize: 15)),
               ),
-              const HList(Widgets:
-                <Widget>[
-                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
-                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
-                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
-                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,)),
-                  ListItem(cornerRadius: 20, color: Color(0xFF3B3F43), Content: Icon(Icons.category, color: Colors.orange,))
-                ]
-              ),
+              HList(Widgets: YourAreaItems.yourAreaWidgets),
             ],
           ),
       );
