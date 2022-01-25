@@ -1,5 +1,4 @@
 import 'package:hookhook/widgets/areas_creator.dart';
-import 'package:hookhook/widgets/list_items.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
@@ -28,20 +27,26 @@ class _Home extends StateMVC<HomeView> {
             children: <Widget>[
               const Padding(
                 padding: EdgeInsets.only(top: 70),
-                child: Text('HookHook', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45)),
+                child: Text('HookHook', textAlign: TextAlign.left,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45)),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
-                child: Text('Hello, Arthur', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
+                  child: Text('Hello, Arthur', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                ),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 20),
-                child: Text('Welcome back !', style: TextStyle(fontSize: 30)),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(30, 10, 0, 20),
+                  child: Text('Welcome back !', style: TextStyle(fontSize: 20, color: Color(0xFF6A6A6A))),
+                ),
               ),
               HList(Widgets: ServicesItems.servicesWidgets),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: Text('Creator', style: TextStyle(fontFamily: 'Comfortaa', fontSize: 15)),
+                child: Text('Creator', style: TextStyle(fontSize: 15)),
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(30.0),
@@ -49,7 +54,7 @@ class _Home extends StateMVC<HomeView> {
               ),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 13, 0, 4),
-                child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontFamily: 'Comfortaa', fontSize: 15)),
+                child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontSize: 15)),
               ),
               HList(Widgets: YourAreaItems.yourAreaWidgets),
             ],

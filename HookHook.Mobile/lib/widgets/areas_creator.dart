@@ -12,11 +12,13 @@ class AreasCreator extends StatelessWidget {
         color: const Color(0xFF3B3F43),
         width: 350,
         height: 300,
-        child: const TextField(
-          obscureText: true,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(),
-            labelText: 'Your Area Name',
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Text('Your Area name :', style: TextStyle(color: Colors.white)),
+              TextField(),
+            ],
           ),
         )
     );

@@ -18,7 +18,6 @@ class Hookhook extends AppMVC {
           debugShowCheckedModeBanner: kReleaseMode,
           title: "HookHook",
           theme: ThemeData(
-              primarySwatch: Colors.pink, //ToDo changer la couleur
               fontFamily: 'Comfortaa'
           ),
           initialRoute: HomeView.routeName,
