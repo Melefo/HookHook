@@ -49,6 +49,11 @@ namespace HookHook.Backend.Entities
         public string Role { get; set; } = "User";
         public GoogleAccount? Google { get; set; }
 
+        public string? DiscordToken {get; set;}
+        public string? GithubToken {get; set;}
+
+        public List<Area> Areas {get; set;} = new();
+
         /// <summary>
         /// User constructor
         /// </summary>

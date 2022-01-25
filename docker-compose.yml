@@ -1,0 +1,37 @@
+version: '3.9'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: "HookHook.Backend/Dockerfile"
+    ports:
+      - "8080:80"
+    depends_on:
+      - "mongo"
+  client_mobile:
+    build:
+      context: .
+      dockerfile: "HookHook.Mobile/Dockerfile"
+    volumes:
+      - "apk:/build"
+  client_web:
+    build:
+      context: .
+      dockerfile: "HookHook.Web/Dockerfile"
+    ports:
+      - "8081:80"
+    depends_on:
+      - "server"
+      - "client_mobile"
+    volumes:
+      - "apk:/app/public"
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+volumes:
+  apk:

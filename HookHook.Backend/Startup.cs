@@ -81,6 +81,7 @@ namespace HookHook.Backend
 
             });
             services.AddRouting(x => x.LowercaseUrls = true);
+            services.AddSingleton<MongoService>();
         }
 
         /// <summary>
