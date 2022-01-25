@@ -104,7 +104,6 @@ namespace HookHook.Backend.Services
             HttpRequestMessage requestMessage = new HttpRequestMessage();
 
             // * name is required, the rest is optional (check for null values)
-            // ! je peux pas ajouter la clé 'private' ici parce que c'est un mot clé C# .-.
             requestMessage.Content = JsonContent.Create(new {
                 name = repoModel.RepositoryName,
                 description = repoModel.Description,
