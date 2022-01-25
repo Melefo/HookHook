@@ -178,6 +178,26 @@ namespace HookHook.Backend.Services
         }
 
         // * getLatestRepository ('')
+        public async Task<RepositoryData> GetLatestRepository(string areaID)
+        {
+            // * fetch user id (with jwt ?)
+            // * fetch area of user with areaID
+            // * cross check attatched user with connected user
+
+            // * change the authorization token to github oauth token from database
+
+            // * githubUserName = area.action.user
+            // * githubRepoName = area.action.repository
+
+            string userName = "niklasf";
+
+            Repository[] ?response = await _client.GetAsync<Repository[]>($"https://api.github.com/users/{userName}/repos");
+            if (response == null)
+                throw new ApiException("Failed to call API");
+
+            RepositoryData repoData = new RepositoryData(response[0].Name, response[0].Description, response[0].Owner.Login, response[0].Private);
+            return (repoData);
+        }
 
         // * getRepositoriesFromUser (pour faire un dropdown éventuellement ?)
     }

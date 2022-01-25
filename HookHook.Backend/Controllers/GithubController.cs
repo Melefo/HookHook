@@ -70,10 +70,15 @@ namespace HookHook.Backend.Controllers
 
 		// * either takes a username for public repos, or uses the personal oauth token for private repos
 		[HttpGet("GetLatestRepository")]
-		public RepositoryData GetLatestRepository([FromBody] string userName)
+		public async Task<ActionResult<RepositoryData>> GetLatestRepository()
 		{
-			// * call the service which cross-checks in database
-			return (new RepositoryData("name", "desc", "user", false));
+            try {
+                return (await _service.GetLatestRepository("1"));
+            } catch (MongoException ex) {
+                return BadRequest(new { error = ex.Message });
+            } catch (ApiException ex) {
+                return (StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message}));
+            }
 		}
 	}
 }
