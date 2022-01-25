@@ -1,5 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
-using System.Text;
+using HookHook.Backend.Services;
 
 namespace HookHook.Backend
 {
@@ -34,6 +34,7 @@ namespace HookHook.Backend
 
             services.AddEndpointsApiExplorer();
             services.AddRouting(x => x.LowercaseUrls = true);
+            services.AddSingleton<MongoService>();
         }
 
         /// <summary>
