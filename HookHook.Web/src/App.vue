@@ -1,6 +1,8 @@
 <template>
   <div :class="{ dark: darkMode }">
-    <router-view @ToggleDarkMode="ToggleDarkMode" />
+    <component :is='layout' @ToggleDarkMode="ToggleDarkMode">
+      <router-view />
+    </component>
   </div>
 </template>
 
@@ -11,7 +13,7 @@ export default defineComponent({
   name: "App",
   data() {
     return {
-      darkMode: false,
+      darkMode: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches,
     };
   },
   methods: {
@@ -19,5 +21,10 @@ export default defineComponent({
       this.darkMode = !this.darkMode;
     },
   },
+  computed: {
+    layout() {
+      return this.$route.meta?.layout || 'DefaultLayout';
+    }
+  }
 });
 </script>
