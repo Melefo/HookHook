@@ -58,6 +58,33 @@ namespace HookHook.Backend.Services
         }
 
         // * createIssue (oauth)
+        public async Task<IssueData> CreateIssue(IssueModel newIssue)
+        {
+            // * fetch user id (with jwt ?)
+            // * fetch area of user with areaID
+            // * cross check attatched user with connected user
+
+            // * change the authorization token to github oauth token from database
+
+            // ! needs a body and I don't know how
+            // * title is required, the rest is optional (check for null values)
+
+            HttpRequestMessage requestMessage = new HttpRequestMessage();
+            requestMessage.Content = JsonContent.Create(new {
+                title = newIssue.Title,
+                body = newIssue.Body,
+                labels = newIssue.Labels,
+                assignees = newIssue.Assignees
+            });
+
+            IssueJson ?response = await _client.PostAsync<IssueJson>($"https://api.github.com/repos/{newIssue.UserName}/{newIssue.RepositoryName}/issues");
+            if (response == null)
+                throw new ApiException("Failed to call API");
+
+            return (new IssueData(response.Title, response.Body, response.User.Html_Url, response.User.Login, response.Repository_Url));
+
+        }
+
         // * createRepository (oauth)
 
         // * getLatestIssue (needs oauth for private repos)
@@ -66,6 +93,8 @@ namespace HookHook.Backend.Services
             // * fetch user id (with jwt ?)
             // * fetch area of user with areaID
             // * cross check attatched user with connected user
+
+            // * change the authorization token to github oauth token from database
 
             // * githubUserName = area.action.user
             // * githubRepoName = area.action.repository
@@ -76,7 +105,7 @@ namespace HookHook.Backend.Services
             if (response == null)
                 throw new ApiException("Failed to call API");
 
-            return (new IssueData(response[0].Title, response[0].Body, response[0].User.Html_Url));
+            return (new IssueData(response[0].Title, response[0].Body, response[0].User.Html_Url, response[0].User.Login, response[0].Repository_Url));
         }
 
         // * getLatestCommit ('')

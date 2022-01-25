@@ -18,11 +18,15 @@ namespace HookHook.Backend.Controllers
 
 		// * create issue, needs oauth + authorization
 		[HttpPost("CreateIssue")]
-		public IssueData CreateIssue(IssueModel issueModel)
+		public async Task<ActionResult<IssueData>> CreateIssue(IssueModel issueModel)
 		{
-			// * call the service
-
-			return (new IssueData("New issue", "", ""));
+            try {
+                return (await _service.CreateIssue(issueModel));
+            } catch (MongoException ex) {
+                return BadRequest(new { error = ex.Message });
+            } catch (ApiException ex) {
+                return (StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message}));
+            }
 		}
 
 		// * create repo, needs oauth
