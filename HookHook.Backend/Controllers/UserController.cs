@@ -11,7 +11,6 @@ namespace HookHook.Backend.Controllers
     /// <summary>
     /// user information/auth route
     /// </summary>
-    [Authorize(Roles = "Admin")]
     [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -22,20 +21,10 @@ namespace HookHook.Backend.Controllers
             _service = service;
 
         /// <summary>
-        /// Get all users
-        /// </summary>
-        /// <returns>List of User</returns>
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<List<User>> GetUsers() =>
-            _service.GetUsers();
-
-        /// <summary>
         /// Register an user to database
         /// </summary>
         /// <param name="form">User informations</param>
         /// <returns>return newly created if succesfully registered</returns>
-        [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -63,18 +52,38 @@ namespace HookHook.Backend.Controllers
 
             return Created("", null);
         }
-        
+
+
         /// <summary>
-        /// Delete an user from database
+        /// Register an user to database with OAuth
         /// </summary>
-        /// <param name="id">User id</param>
-        /// <returns>Request Accepted</returns>
-        [HttpDelete("delete")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        public ActionResult Delete([BindRequired] string id)
+        /// <param name="form">User informations</param>
+        /// <returns>return newly created if succesfully registered</returns>
+        [HttpPost("oauth/{provider}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<ActionResult> RegisterOAuth(string provider, [BindRequired][FromQuery] string code)
         {
-            _service.Delete(id);
-            return Accepted();
+            if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
+            {
+                try
+                {
+                    (bool exists, string? token) = await _service.DiscordOAuth(code);
+
+                    if (exists)
+                        return Ok(new { token });
+                }
+                catch (ApiException ex)
+                {
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
+                }
+            }
+            if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         /// <summary>
@@ -82,7 +91,6 @@ namespace HookHook.Backend.Controllers
         /// </summary>
         /// <param name="form">User informations</param>
         /// <returns></returns>
-        [AllowAnonymous]
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -104,45 +112,5 @@ namespace HookHook.Backend.Controllers
                 return Unauthorized(new { error = ex.Message });
             }
         }
-
-        /// <summary>
-        /// Promote user to Admin
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpPatch("promote")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        public ActionResult PromoteUser(string id)
-        {
-            _service.Promote(id);
-            return Accepted();
-        }
-
-        /// <summary>
-        /// Login and link user with google account
-        /// </summary>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        // [AllowAnonymous]
-        // [HttpPost("login/google")]
-        // [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        // [ProducesResponseType(StatusCodes.Status200OK)]
-        // public async Task<ActionResult> Google([BindRequired] string code)
-        // {
-        //     try
-        //     {
-        //         (var token, var user) = await _service.GoogleAuthenticate(code);
-
-        //         return Ok(new { token, user });
-        //     }
-        //     catch (ApiException ex)
-        //     {
-        //         return Unauthorized(new { error = ex.Message });
-        //     }
-        //     catch (UserException ex)
-        //     {
-        //         return Unauthorized(new { error = ex.Message });
-        //     }
-        // }
     }
 }

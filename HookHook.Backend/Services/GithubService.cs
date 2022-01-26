@@ -92,8 +92,7 @@ namespace HookHook.Backend.Services
             // * change the authorization token to github oauth token from database
 
             // * title is required, the rest is optional (check for null values)
-            HttpRequestMessage requestMessage = new HttpRequestMessage();
-            requestMessage.Content = JsonContent.Create(new {
+            var requestMessage = JsonContent.Create(new {
                 title = newIssue.Title,
                 body = newIssue.Body,
                 labels = newIssue.Labels,
@@ -116,10 +115,7 @@ namespace HookHook.Backend.Services
 
             // * change the authorization token to github oauth token from database
 
-            HttpRequestMessage requestMessage = new HttpRequestMessage();
-
-            // * name is required, the rest is optional (check for null values)
-            requestMessage.Content = JsonContent.Create(new {
+            var requestMessage = JsonContent.Create(new {
                 name = repoModel.RepositoryName,
                 description = repoModel.Description,
                 @private = repoModel.Private
