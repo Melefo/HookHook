@@ -38,8 +38,8 @@ namespace HookHook.Backend.Controllers
         [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public ActionResult<User> Create([FromBody] RegisterForm form)
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public ActionResult Create([FromBody] RegisterForm form)
         {
             if (!ModelState.IsValid)
                 return BadRequest(form);
@@ -52,9 +52,16 @@ namespace HookHook.Backend.Controllers
             }
             catch (UserException ex)
             {
-                return BadRequest(new { error = ex.Message });
+                return ex.Type switch
+                {
+                    TypeUserException.Email => BadRequest(new {errors = new {Email = ex.Message}}),
+                    TypeUserException.Password => BadRequest(new {errors = new {Password = ex.Message}}),
+                    TypeUserException.Username => BadRequest(new {errors = new {Username = ex.Message}}),
+                    _ => BadRequest(new {error = ex.Message})
+                };
             }
-            return Created("", user);
+
+            return Created("", null);
         }
         
         /// <summary>

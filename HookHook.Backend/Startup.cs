@@ -1,6 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
 using System.Text;
-using HookHook.Backend.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using HookHook.Backend.Services;
