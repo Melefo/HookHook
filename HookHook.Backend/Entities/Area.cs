@@ -49,7 +49,7 @@ namespace HookHook.Backend.Entities
 
             if (actionValue)
             {
-                await Reaction.Execute();
+                await Reaction.Execute(user);
             }
     }
         }

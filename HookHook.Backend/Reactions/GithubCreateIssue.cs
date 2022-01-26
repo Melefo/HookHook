@@ -32,18 +32,11 @@ namespace HookHook.Backend.Reactions
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
         }
 
-        public async Task Execute()
+        public async Task Execute(Entities.User user)
         {
-            // * fetch user id (with jwt ?)
-            // * fetch area of user with areaID
-            // * cross check attatched user with connected user
-
-            // * change the authorization token to github oauth token from database
-
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
-            // ! j'ai besoin du token quand meme, passé en constructeur ?
-            // _githubClient.Credentials = new Credentials(user.GithubToken);
+            _githubClient.Credentials = new Credentials(user.GithubToken);
 
             var createIssue = new NewIssue(Title);
             createIssue.Body = Body;
