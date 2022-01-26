@@ -107,31 +107,6 @@ namespace HookHook.Backend.Services
             return (new RepositoryData(response.Name, response.Description, response.Owner.Login, response.Private));
         }
 
-
-        // * getLatestCommit ('')
-        public async Task<CommitData> GetLatestCommit(string areaID)
-        {
-            // * fetch user id (with jwt ?)
-            // * fetch area of user with areaID
-            // * cross check attatched user with connected user
-
-            // * change the authorization token to github oauth token from database
-
-            // * githubUserName = area.action.user
-            // * githubRepoName = area.action.repository
-
-            string userName = "The-Law-1";
-            string repoName = "portfolio2";
-
-            CommitJson[] ?response = await _client.GetAsync<CommitJson[]>($"https://api.github.com/repos/{userName}/{repoName}/commits");
-            if (response == null)
-                throw new ApiException("Failed to call API");
-
-            CommitData commitData = new CommitData(repoName, userName, response[0].Commit.Message, response[0].Commit.Author.Name, response[0].Commit.Author.Date);
-
-            return (commitData);
-        }
-
         // * getLatestRepository ('')
         public async Task<RepositoryData> GetLatestRepository(string areaID)
         {

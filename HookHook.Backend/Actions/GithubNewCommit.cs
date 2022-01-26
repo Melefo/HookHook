@@ -1,9 +1,6 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Models.Github;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Services;
-using System.Net.Http.Headers;
 using Octokit;
 
 namespace HookHook.Backend.Actions
