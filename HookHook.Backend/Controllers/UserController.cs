@@ -92,8 +92,8 @@ namespace HookHook.Backend.Controllers
                 return BadRequest(form);
             try
             {
-                var token = _service.Authenticate(form.Username, form.Password, out var user);
-                return Ok(new { token, user });
+                var token = _service.Authenticate(form.Username, form.Password);
+                return Ok(new { token });
             }
             catch (MongoException ex)
             {

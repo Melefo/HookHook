@@ -152,18 +152,16 @@ namespace HookHook.Backend.Services
         /// </summary>
         /// <param name="username">User username or email</param>
         /// <param name="password">User password</param>
-        /// <param name="user">User informations</param>
         /// <returns>JWT</returns>
-        public string Authenticate(string username, string password, out User user)
+        public string Authenticate(string username, string password)
         {
-            var found = _db.GetUserByIdentifier(username);
+            var user = _db.GetUserByIdentifier(username);
 
-            if (found == null)
+            if (user == null)
                 throw new MongoException("User not found");
-            if (!PasswordHash.VerifyPassword(password, found.Password))
+            if (!PasswordHash.VerifyPassword(password, user.Password))
                 throw new UserException(TypeUserException.Password, "Wrong password");
 
-            user = found;
             JwtSecurityTokenHandler tokenHandler = new();
 
             var tokenKey = Encoding.UTF8.GetBytes(_key);
