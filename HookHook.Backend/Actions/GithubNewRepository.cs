@@ -5,7 +5,7 @@ using Octokit;
 
 namespace HookHook.Backend.Actions
 {
-    class GithuNewRepository
+    public class GithuNewRepository
     {
         public string UserName {get; private init;}
 
