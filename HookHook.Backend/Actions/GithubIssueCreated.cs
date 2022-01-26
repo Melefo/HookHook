@@ -6,7 +6,7 @@ using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Actions
 {
     public class GithubIssueCreated : IAction
     {

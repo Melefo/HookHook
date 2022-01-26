@@ -42,6 +42,7 @@ namespace HookHook.Backend.Reactions
 
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
+            // ! j'ai besoin du token quand meme, passé en constructeur ?
             // _githubClient.Credentials = new Credentials(user.GithubToken);
 
             var createIssue = new NewIssue(Title);
