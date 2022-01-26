@@ -74,7 +74,7 @@
           v-model="confirm"
         />
       </div>
-      <Input type="submit" value="S'enregistrer" :reverse="true" />
+      <Input type="submit" value="Register" :reverse="true" />
     </form>
   </div>
 </template>
@@ -94,7 +94,7 @@ declare interface Errors {
 
 export default defineComponent({
   components: { Input },
-  data: function () {
+  data() {
     return {
       firstname: "",
       lastname: "",

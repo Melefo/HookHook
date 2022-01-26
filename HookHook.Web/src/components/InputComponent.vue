@@ -22,7 +22,7 @@
       :type="type"
       :value="value"
     />
-    <input v-else class="rounded-lg w-auto p-2" :type="type" :required="required" :placeholder="label" minlength="2" maxlength="256" @input="handleInput($event.target.value)" />
+    <input v-else class="rounded-lg w-auto p-2" :type="type" :required="required" :placeholder="label" minlength="4" maxlength="256" @input="handleInput($event.target.value)" />
   </div>
 </template>
 
