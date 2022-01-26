@@ -47,9 +47,9 @@ namespace HookHook.Backend.Services
         public void Create(User user)
         {
             if (_db.GetUserByIdentifier(user.Email) != null)
-                throw new UserException("An user with this email is already registered");
+                throw new UserException(TypeUserException.Email, "An user with this email is already registered");
             if (_db.GetUserByIdentifier(user.Username) != null)
-                throw new UserException("An user with this username is already registered");
+                throw new UserException(TypeUserException.Username, "An user with this username is already registered");
             user.Password = PasswordHash.HashPassword(user.Password);
             _db.CreateUser(user);
         }
@@ -161,7 +161,7 @@ namespace HookHook.Backend.Services
             if (found == null)
                 throw new MongoException("User not found");
             if (!PasswordHash.VerifyPassword(password, found.Password))
-                throw new UserException("Wrong password");
+                throw new UserException(TypeUserException.Password, "Wrong password");
 
             user = found;
             JwtSecurityTokenHandler tokenHandler = new();
