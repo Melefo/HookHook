@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
+import 'list_items.dart';
 
 class HList extends StatelessWidget {
 
-  final List<Widget> Widgets;
+  final Widget widget;
+  final double height;
 
-  const HList({Key? key, required this.Widgets}) : super(key: key);
+  const HList({Key? key, required this.widget, required this.height}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
       return SizedBox(
-        height: 120,
-        child: ListView(
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          scrollDirection: Axis.horizontal,
-          children: Widgets,
-        ),
+        height: height,
+        child: widget,
       );
   }
 

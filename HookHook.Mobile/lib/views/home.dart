@@ -3,7 +3,7 @@ import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
 import 'package:hookhook/widgets/h_list.dart';
-import 'package:hookhook/widgets/services_items.dart';
+import 'package:hookhook/widgets/services_list.dart';
 import 'package:hookhook/widgets/your_area_items.dart';
 
 //view
@@ -43,7 +43,7 @@ class _Home extends StateMVC<HomeView> {
                   child: Text('Welcome back !', style: TextStyle(fontSize: 20, color: Color(0xFF6A6A6A))),
                 ),
               ),
-              HList(Widgets: ServicesItems.servicesWidgets),
+              const HList(height: 110, widget: ServicesList(itemWidth: 110)),
               const Padding(
                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: Text('Creator', style: TextStyle(fontSize: 15)),
@@ -56,7 +56,7 @@ class _Home extends StateMVC<HomeView> {
                 padding: EdgeInsets.fromLTRB(0, 13, 0, 4),
                 child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontSize: 15)),
               ),
-              HList(Widgets: YourAreaItems.yourAreaWidgets),
+              const HList(height: 150, widget: ServicesList(itemWidth: 150)),
             ],
           ),
       );

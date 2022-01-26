@@ -18,8 +18,43 @@ class AreasCreator extends StatelessWidget {
             children: [
               Text('Your Area name :', style: TextStyle(color: Colors.white)),
               TextField(),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  children: [
+                    Text('When : ', style: TextStyle(color: Colors.white)),
+                    DropdownButton<String>(
+                      items: <String>['Tweet', 'Push', 'Like', 'Message Pinned'].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (_) {},
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  children: [
+                    Text('Do : ', style: TextStyle(color: Colors.white)),
+                    DropdownButton<String>(
+                      items: <String>['Tweet', 'Push', 'Like', 'Message Pinned'].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (_) {},
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
+
         )
     );
   }
