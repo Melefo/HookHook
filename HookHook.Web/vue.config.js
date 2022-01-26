@@ -12,5 +12,12 @@ module.exports = defineConfig({
         }
     },
     port: 80
+  },
+  configureWebpack: {
+    resolve: {
+      fallback: {
+        "https": false
+      }
+    }
   }
 })

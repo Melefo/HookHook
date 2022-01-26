@@ -50,7 +50,7 @@ namespace HookHook.Backend.Services
         /// </summary>
         /// <param name="username">User's username</param>
         /// <returns>User account</returns>
-        public User GetUser(string id) =>
+        public User? GetUser(string id) =>
             _usersCollection.Find(x => x.Id == id).SingleOrDefault();
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace HookHook.Backend.Services
         /// </summary>
         /// <param name="identifier">User username or email</param>
         /// <returns>User account</returns>
-        public User GetUserByIdentifier(string identifier) =>
+        public User? GetUserByIdentifier(string identifier) =>
             _usersCollection.Find(x => x.Username == identifier || x.Email == identifier).SingleOrDefault();
 
         // public User GetUserByGoogle(string id) =>
