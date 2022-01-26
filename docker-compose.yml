@@ -12,6 +12,8 @@ services:
     build:
       context: .
       dockerfile: "HookHook.Mobile/Dockerfile"
+    volumes:
+      - "apk:/build"
   client_web:
     build:
       context: .
@@ -21,6 +23,8 @@ services:
     depends_on:
       - "server"
       - "client_mobile"
+    volumes:
+      - "apk:/app/public"
   mongo:
     image: mongo
     restart: always
@@ -29,3 +33,5 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+volumes:
+  apk:

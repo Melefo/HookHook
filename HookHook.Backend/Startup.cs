@@ -1,5 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 using System.Text;
+using HookHook.Backend.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using HookHook.Backend.Services;
@@ -32,6 +33,7 @@ namespace HookHook.Backend
             services.AddSingleton(new MongoService(Configuration));
 
             services.AddScoped<UserService>();
+            services.AddSingleton<GithubService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -79,6 +81,7 @@ namespace HookHook.Backend
 
             });
             services.AddRouting(x => x.LowercaseUrls = true);
+            services.AddSingleton<MongoService>();
         }
 
         /// <summary>
