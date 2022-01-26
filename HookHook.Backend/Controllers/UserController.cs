@@ -80,7 +80,17 @@ namespace HookHook.Backend.Controllers
             }
             if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
             {
-                return Ok();
+                try
+                {
+                    (bool exists, string? token) = await _service.GitHubOAuth(code);
+
+                    if (exists)
+                        return Ok(new { token });
+                }
+                catch (ApiException ex)
+                {
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
+                }
             }
 
             return BadRequest();

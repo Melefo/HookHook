@@ -1,4 +1,3 @@
-using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Utilities;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +7,9 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Discord;
 using Discord.Rest;
+using Octokit;
+using ApiException = HookHook.Backend.Exceptions.ApiException;
+using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Services
 {
@@ -20,6 +22,7 @@ namespace HookHook.Backend.Services
         /// Database access
         /// </summary>
         private readonly MongoService _db;
+
         /// <summary>
         /// JWT key
         /// </summary>
@@ -28,6 +31,9 @@ namespace HookHook.Backend.Services
         private readonly string _discordId;
         private readonly string _discordSecret;
         private readonly string _discordRedirect;
+
+        private readonly string _gitHubId;
+        private readonly string _gitHubSecret;
 
         private readonly HttpClient _client = new();
 
@@ -39,6 +45,9 @@ namespace HookHook.Backend.Services
             _discordId = config["Discord:ClientId"];
             _discordSecret = config["Discord:ClientSecret"];
             _discordRedirect = config["Discord:Redirect"];
+
+            _gitHubId = config["GitHub:ClientId"];
+            _gitHubSecret = config["GitHub:ClientSecret"];
         }
 
         /// <summary>
@@ -107,20 +116,15 @@ namespace HookHook.Backend.Services
 
         private class DiscordToken
         {
-            [JsonPropertyName("access_token")]
-            public string AccessToken { get; set; }
+            [JsonPropertyName("access_token")] public string AccessToken { get; set; }
 
-            [JsonPropertyName("expires_in")]
-            public int ExpiresIn { get; set; }
+            [JsonPropertyName("expires_in")] public int ExpiresIn { get; set; }
 
-            [JsonPropertyName("refresh_token")]
-            public string RefreshToken { get; set; }
+            [JsonPropertyName("refresh_token")] public string RefreshToken { get; set; }
 
-            [JsonPropertyName("scope")]
-            public string Scope { get; set; }
+            [JsonPropertyName("scope")] public string Scope { get; set; }
 
-            [JsonPropertyName("token_type")]
-            public string TokenType { get; set; }
+            [JsonPropertyName("token_type")] public string TokenType { get; set; }
         }
 
         public async Task<(bool, string?)> DiscordOAuth(string code)
@@ -147,6 +151,39 @@ namespace HookHook.Backend.Services
             }
 
             user.DiscordToken = res.RefreshToken;
+            _db.SaveUser(user);
+
+            return (true, CreateJWT(user));
+        }
+
+        public async Task<(bool, string?)> GitHubOAuth(string code)
+        {
+            var client = new GitHubClient(new ProductHeaderValue("HookHook"));
+
+            var request = new OauthTokenRequest(_gitHubId, _gitHubSecret, code);
+            var res = await client.Oauth.CreateAccessToken(request);
+
+            if (res == null)
+                throw new ApiException("Failed to call API");
+
+            client.Credentials = new Credentials(res.AccessToken);
+
+            var emails = await client.User.Email.GetAll();
+            var primary = emails.SingleOrDefault(x => x.Primary);
+
+            if (primary == null)
+            {
+                return (false, null);
+            }
+
+            var user = _db.GetUserByIdentifier(primary.Email);
+            if (user == null)
+            {
+                Console.WriteLine("nia");
+                return (false, null);
+            }
+
+            user.GithubToken = res.AccessToken;
             _db.SaveUser(user);
 
             return (true, CreateJWT(user));

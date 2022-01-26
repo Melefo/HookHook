@@ -65,26 +65,23 @@ const user = {
             }
             return {};
         },
-        async registerWithGithub(_: any, json: any)
-        {
-            const res = await fetch(`https://github.com/login/oauth/authorize?client_id=${json.clientID}&response_type=code&redirect_uri=${json.redirectURI}`, {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Accept": "application/json",
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Mehotds": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-                    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
+        async github({ commit }: any, code: String) {
+            const res = await fetch("/api/user/oauth/github?code=" + code, {
+                method: 'POST',
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                const { token, error, errors } = await res.json();
+                if (token) {
+                    commit('login', token);
                 }
-            })
-            .then((response) => {
-                console.log("Got response = ", response);
-            })
-            .catch((err) => {
-                return ({error: err})
-            })
-            return res;
-        }
+                return { error, errors };
+            }
+            return {};
+        },
     },
     getters: {
         isLoggedIn(state: any): Boolean {

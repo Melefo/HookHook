@@ -9,8 +9,14 @@ import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
 export default defineComponent({
+  data() {
+    return {
+      error: null,
+      errors: null,
+    };
+  },
   methods: {
-    ...mapActions("user", ["registerWithGithub"]),
+    ...mapActions("user", ["github"]),
     async handleGithub() {
       window.removeEventListener("message", this.receiveGitHub);
 
@@ -39,7 +45,12 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveGitHub);
-      console.log(data);
+      const { errors, error } = await this.github(data.code);
+      this.errors = errors || null;
+      this.error = error || null;
+      if (!this.error && !this.errors) {
+        this.$router.push("/dashboard");
+      }
     },
   },
 });
