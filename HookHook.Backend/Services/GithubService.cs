@@ -83,31 +83,6 @@ namespace HookHook.Backend.Services
             // _client.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
         }
 
-        public async Task<IssueData> CreateIssue(IssueModel newIssue)
-        {
-            // * fetch user id (with jwt ?)
-            // * fetch area of user with areaID
-            // * cross check attatched user with connected user
-
-            // * change the authorization token to github oauth token from database
-
-            // * title is required, the rest is optional (check for null values)
-            HttpRequestMessage requestMessage = new HttpRequestMessage();
-            requestMessage.Content = JsonContent.Create(new {
-                title = newIssue.Title,
-                body = newIssue.Body,
-                labels = newIssue.Labels,
-                assignees = newIssue.Assignees
-            });
-
-            IssueJson ?response = await _client.PostAsync<IssueJson>($"https://api.github.com/repos/{newIssue.UserName}/{newIssue.RepositoryName}/issues", requestMessage);
-            if (response == null)
-                throw new ApiException("Failed to call API");
-
-            return (new IssueData(response.Title, response.Body, response.User.Html_Url, response.User.Login, response.Repository_Url));
-
-        }
-
         public async Task<RepositoryData> CreateRepository(RepositoryModel repoModel)
         {
             // * fetch user id (with jwt ?)
@@ -132,26 +107,6 @@ namespace HookHook.Backend.Services
             return (new RepositoryData(response.Name, response.Description, response.Owner.Login, response.Private));
         }
 
-        // * getLatestIssue (needs oauth for private repos)
-        public async Task<IssueData> GetLatestIssue(string areaID)
-        {
-            // * fetch user id (with jwt ?)
-            // * fetch area of user with areaID
-            // * cross check attatched user with connected user
-
-            // * change the authorization token to github oauth token from database
-
-            // * githubUserName = area.action.user
-            // * githubRepoName = area.action.repository
-            string userName = "The-Law-1";
-            string repoName = "Redditech";
-
-            IssueJson[] ?response = await _client.GetAsync<IssueJson[]>($"https://api.github.com/repos/{userName}/{repoName}/issues");
-            if (response == null)
-                throw new ApiException("Failed to call API");
-
-            return (new IssueData(response[0].Title, response[0].Body, response[0].User.Html_Url, response[0].User.Login, response[0].Repository_Url));
-        }
 
         // * getLatestCommit ('')
         public async Task<CommitData> GetLatestCommit(string areaID)

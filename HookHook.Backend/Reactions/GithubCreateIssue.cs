@@ -18,7 +18,8 @@ namespace HookHook.Backend.Reactions
         public string[] Labels { get; private init; }
         public string[] Assignees { get; private init; }
 
-        public GitHubClient _client;
+        public GitHubClient _githubClient;
+        private readonly HttpClient _httpClient = new();
 
         public GithubCreateIssue(string user, string repository, string title, string body, string[] labels, string[] assignees)
         {
@@ -28,7 +29,7 @@ namespace HookHook.Backend.Reactions
             Body = body;
             Labels = labels;
             Assignees = assignees;
-            _client = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
         }
 
         public async Task Execute()
@@ -41,6 +42,19 @@ namespace HookHook.Backend.Reactions
 
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
+            // _githubClient.Credentials = new Credentials(user.GithubToken);
+
+            var createIssue = new NewIssue(Title);
+            createIssue.Body = Body;
+            var issue = await _githubClient.Issue.Create(UserName, Repository, createIssue);
+
+            // ? add new issue to database ?
+
+            // ? error checks ?
+            if (issue == null) {
+                throw new Exceptions.ApiException("Failed to call API");
+            }
+
             // * title is required, the rest is optional (check for null values)
             // HttpRequestMessage requestMessage = new HttpRequestMessage();
             // requestMessage.Content = JsonContent.Create(new {
@@ -50,7 +64,7 @@ namespace HookHook.Backend.Reactions
             //     Assignees
             // });
 
-            // IssueJson ?response = await _client.PostAsync<IssueJson>($"https://api.github.com/repos/{UserName}/{Repository}/issues", requestMessage);
+            // IssueJson ?response = await _httpClient.PostAsync<IssueJson>($"https://api.github.com/repos/{UserName}/{Repository}/issues", requestMessage);
             // if (response == null)
             //     throw new Exceptions.ApiException("Failed to call API");
         }
