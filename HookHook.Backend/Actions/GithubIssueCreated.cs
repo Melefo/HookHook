@@ -27,7 +27,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient.Credentials = new Credentials(user.GithubToken);
+            _githubClient.Credentials = new Credentials(user.GitHub.AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 

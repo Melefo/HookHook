@@ -64,10 +64,29 @@ namespace HookHook.Backend.Services
         {
             if (_db.GetUserByIdentifier(user.Email) != null)
                 throw new UserException(TypeUserException.Email, "An user with this email is already registered");
-            if (_db.GetUserByIdentifier(user.Username) != null)
+            if (user.Username != null && _db.GetUserByIdentifier(user.Username) != null)
                 throw new UserException(TypeUserException.Username, "An user with this username is already registered");
-            user.Password = PasswordHash.HashPassword(user.Password);
+            if (user.Password != null)
+                user.Password = PasswordHash.HashPassword(user.Password);
             _db.CreateUser(user);
+        }
+
+        public void Register(User user)
+        {
+            var existing = _db.GetUserByIdentifier(user.Email);
+
+            if (existing != null && existing.Password == null)
+            {
+                if (_db.GetUserByIdentifier(user.Username!) != null)
+                    throw new UserException(TypeUserException.Username, "An user with this username is already registered");
+                existing.Username = user.Username;
+                existing.FirstName = user.FirstName;
+                existing.LastName = user.LastName;
+                existing.Password = PasswordHash.HashPassword(user.Password!);
+                _db.SaveUser(existing);
+                return;
+            }
+            Create(user);
         }
 
         /// <summary>
@@ -82,13 +101,15 @@ namespace HookHook.Backend.Services
 
             if (user == null)
                 throw new MongoException("User not found");
+            if (user.Password == null)
+                throw new MongoException("User not found");
             if (!PasswordHash.VerifyPassword(password, user.Password))
                 throw new UserException(TypeUserException.Password, "Wrong password");
 
-            return CreateJWT(user);
+            return CreateJwt(user);
         }
 
-        public string CreateJWT(User user)
+        public string CreateJwt(User user)
         {
             JwtSecurityTokenHandler tokenHandler = new();
 
@@ -127,7 +148,7 @@ namespace HookHook.Backend.Services
             [JsonPropertyName("token_type")] public string TokenType { get; set; }
         }
 
-        public async Task<(bool, string?)> DiscordOAuth(string code)
+        public async Task<string> DiscordOAuth(string code, HttpContext ctx)
         {
             var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
             {
@@ -143,20 +164,26 @@ namespace HookHook.Backend.Services
                 throw new ApiException("Failed to call API");
             var client = new DiscordRestClient();
             await client.LoginAsync(TokenType.Bearer, res.AccessToken);
-            var user = _db.GetUserByIdentifier(client.CurrentUser.Email);
+
+            User? user = null;
+            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+                user = _db.GetUser(ctx.User.Identity.Name);
+            user ??= _db.GetUserByDiscord(client.CurrentUser.Id.ToString());
+            user ??= _db.GetUserByIdentifier(client.CurrentUser.Email);
             if (user == null)
             {
-                Console.WriteLine("nia");
-                return (false, null);
+                user = new(client.CurrentUser.Email);
+                Create(user);
             }
 
-            user.DiscordToken = res.RefreshToken;
+            user.Discord = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
+                res.RefreshToken);
             _db.SaveUser(user);
 
-            return (true, CreateJWT(user));
+            return CreateJwt(user);
         }
 
-        public async Task<(bool, string?)> GitHubOAuth(string code)
+        public async Task<string> GitHubOAuth(string code, HttpContext ctx)
         {
             var client = new GitHubClient(new ProductHeaderValue("HookHook"));
 
@@ -167,26 +194,23 @@ namespace HookHook.Backend.Services
                 throw new ApiException("Failed to call API");
 
             client.Credentials = new Credentials(res.AccessToken);
+            var github = await client.User.Current();
 
-            var emails = await client.User.Email.GetAll();
-            var primary = emails.SingleOrDefault(x => x.Primary);
-
-            if (primary == null)
-            {
-                return (false, null);
-            }
-
-            var user = _db.GetUserByIdentifier(primary.Email);
+            User? user = null;
+            if (ctx.User.Identity is {IsAuthenticated: true, Name: { }})
+                user = _db.GetUser(ctx.User.Identity.Name);
+            user ??=  _db.GetUserByGitHub(github.Id.ToString());
+            user ??= _db.GetUserByIdentifier(github.Email);
             if (user == null)
             {
-                Console.WriteLine("nia");
-                return (false, null);
+                user = new(github.Email);
+                Create(user);
             }
 
-            user.GithubToken = res.AccessToken;
+            user.GitHub = new(github.Id.ToString(), res.AccessToken);
             _db.SaveUser(user);
 
-            return (true, CreateJWT(user));
+            return CreateJwt(user);
         }
     }
 }
