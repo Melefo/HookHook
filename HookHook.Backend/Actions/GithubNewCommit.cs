@@ -43,7 +43,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.DiscordToken}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.GitHub.AccessToken}");
 
             CommitJson[] ?response = await _httpClient.GetAsync<CommitJson[]>($"https://api.github.com/repos/{UserName}/{Repository}/commits");
             if (response == null)

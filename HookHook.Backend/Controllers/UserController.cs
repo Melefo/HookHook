@@ -2,7 +2,6 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -32,12 +31,16 @@ namespace HookHook.Backend.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(form);
-            var user = new User(form.Username, form.Email, form.FirstName, form.LastName, form.Password);
+            var user = new User(form.Email);
+            user.Username = form.Username;
+            user.FirstName = form.FirstName;
+            user.LastName = form.LastName;
+            user.Password = form.Password;
             if (_service.GetUsers().Count == 0)
                 user.Role = "Admin";
             try
             {
-                _service.Create(user);
+                _service.Register(user);
             }
             catch (UserException ex)
             {
@@ -62,34 +65,33 @@ namespace HookHook.Backend.Controllers
         [HttpPost("oauth/{provider}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> RegisterOAuth(string provider, [BindRequired][FromQuery] string code)
+        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code)
         {
             if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {
-                    (bool exists, string? token) = await _service.DiscordOAuth(code);
+                    string token = await _service.DiscordOAuth(code, HttpContext);
 
-                    if (exists)
-                        return Ok(new { token });
+                    return Ok(new {token});
                 }
                 catch (ApiException ex)
                 {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
                 }
             }
+
             if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {
-                    (bool exists, string? token) = await _service.GitHubOAuth(code);
+                    string token = await _service.GitHubOAuth(code, HttpContext);
 
-                    if (exists)
-                        return Ok(new { token });
+                    return Ok(new {token});
                 }
                 catch (ApiException ex)
                 {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
                 }
             }
 

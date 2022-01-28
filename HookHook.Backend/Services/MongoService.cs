@@ -61,6 +61,12 @@ namespace HookHook.Backend.Services
         public User? GetUserByIdentifier(string identifier) =>
             _usersCollection.Find(x => x.Username == identifier || x.Email == identifier).SingleOrDefault();
 
+        public User? GetUserByDiscord(string id) =>
+            _usersCollection.Find(x => x.Discord != null && x.Discord.UserId == id).SingleOrDefault();
+
+        public User? GetUserByGitHub(string id) =>
+            _usersCollection.Find(x => x.GitHub != null && x.GitHub.UserId == id).SingleOrDefault();
+
         // public User GetUserByGoogle(string id) =>
         //     _usersCollection.Find(x => x.Google != null && x.Google.UserId == id).SingleOrDefault();
 
