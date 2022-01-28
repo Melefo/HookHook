@@ -22,7 +22,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(User user)
         {
-            await _client.LoginAsync(TokenType.Bot, user.DiscordToken);
+            await _client.LoginAsync(TokenType.Bot, user.Discord.AccessToken);
 
             var guild = await _client.GetGuildAsync(Guild);
             var channel = await guild.GetTextChannelAsync(Channel);

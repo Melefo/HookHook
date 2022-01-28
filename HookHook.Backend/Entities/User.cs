@@ -20,7 +20,7 @@ namespace HookHook.Backend.Entities
         /// <summary>
         /// User username
         /// </summary>
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
         /// <summary>
         /// User email
@@ -30,57 +30,55 @@ namespace HookHook.Backend.Entities
         /// <summary>
         /// User first name
         /// </summary>
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         /// <summary>
         /// User last name
         /// </summary>
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
         /// <summary>
         /// User password
         /// </summary>
         [JsonIgnore]
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         /// <summary>
         /// User Role
         /// </summary>
         public string Role { get; set; } = "User";
-        public GoogleAccount? Google { get; set; }
 
-        public string? DiscordToken {get; set;}
-        public string? GithubToken {get; set;}
+        public OAuthAccount? Google { get; set; }
+        public OAuthAccount? Discord { get; set; }
+        public OAuthAccount? Spotify { get; set; }
+        public OAuthAccount? Twitter { get; set; }
+        public OAuthAccount? Twitch { get; set; }
+        public OAuthAccount? GitHub { get; set; }
 
         public List<Area> Areas {get; set;} = new();
 
         /// <summary>
         /// User constructor
         /// </summary>
-        /// <param name="username">Username</param>
         /// <param name="email">Email</param>
-        /// <param name="firstName">First name</param>
-        /// <param name="lastName">Last name</param>
-        /// <param name="password">Password</param>
-        public User(string username, string email, string firstName, string lastName, string password)
-        {
-            Username = username;
+        public User(string email) => 
             Email = email;
-            FirstName = firstName;
-            LastName = lastName;
-            Password = password;
-        }
     }
 
-    public class GoogleAccount
+    public class OAuthAccount
     {
         public string UserId { get; set; }
-        public string RefreshToken { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? ExpiresIn { get; set; }
+        public string AccessToken { get; set; }
 
-        public GoogleAccount(string id, string refresh)
+        public OAuthAccount(string id, string access, TimeSpan? date = null, string? refresh = null)
         {
             UserId = id;
             RefreshToken = refresh;
+            if (date.HasValue)
+                ExpiresIn = DateTime.UtcNow.Add(date.Value);
+            AccessToken = access;
         }
     }
 }
