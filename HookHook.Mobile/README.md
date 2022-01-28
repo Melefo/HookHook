@@ -1,4 +1,4 @@
-# hookhok
+# hookhook
 
 Mobile client for HookHook
 

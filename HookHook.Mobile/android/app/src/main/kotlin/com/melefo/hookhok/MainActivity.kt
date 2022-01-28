@@ -1,4 +1,4 @@
-package com.melefo.hookhok
+package com.melefo.hookhook
 
 import io.flutter.embedding.android.FlutterActivity
 

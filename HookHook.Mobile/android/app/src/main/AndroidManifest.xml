@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.melefo.hookhok">
+    package="com.melefo.hookhook">
    <application
-        android:label="hookhok"
+        android:label="HookHook"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
