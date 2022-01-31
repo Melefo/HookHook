@@ -48,12 +48,20 @@ namespace HookHook.Backend.Entities
         /// </summary>
         public string Role { get; set; } = "User";
 
-        public OAuthAccount? Google { get; set; }
-        public OAuthAccount? Discord { get; set; }
-        public OAuthAccount? Spotify { get; set; }
-        public OAuthAccount? Twitter { get; set; }
-        public OAuthAccount? Twitch { get; set; }
-        public OAuthAccount? GitHub { get; set; }
+        public OAuthAccount? GoogleOAuth { get; set; }
+        public OAuthAccount? DiscordOAuth { get; set; }
+        public OAuthAccount? SpotifyOAuth { get; set; }
+        public OAuthAccount? TwitterOAuth { get; set; }
+        public OAuthAccount? TwitchOAuth { get; set; }
+        public OAuthAccount? GitHubOAuth { get; set; }
+
+        public List<OAuthAccount> GoogleServices { get; set; } = new();
+        public List<OAuthAccount> DiscordServices { get; set; } = new();
+        public List<OAuthAccount> SpotifyServices { get; set; } = new();
+        public List<OAuthAccount> TwitterServices { get; set; } = new();
+        public List<OAuthAccount> TwitchServices { get; set; } = new();
+        public List<OAuthAccount> GitHubServices { get; set; } = new();
+
 
         public List<Area> Areas {get; set;} = new();
 

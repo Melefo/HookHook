@@ -1,33 +1,20 @@
-using Microsoft.AspNetCore.Mvc;
-using HookHook.Backend.Actions;
+﻿using HookHook.Backend.Actions;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Reactions;
 using HookHook.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HookHook.Backend.Controllers
 {
     [Route("[controller]")]
-	[ApiController]
-    public class AreaController: ControllerBase
+    [ApiController]
+    public class AreaController : ControllerBase
     {
-         public MongoService _db;
+        public MongoService _db;
 
         public AreaController(MongoService db) =>
             _db = db;
-
-
-        [HttpPost("create")]
-        public async Task<ActionResult> CreateArea(Area area)
-        {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
-            if (user == null)
-                return BadRequest();
-
-            // * create an action from area.Action.type
-
-            return Ok();
-        }
 
         [Authorize]
         [HttpPost("poc")]

@@ -32,14 +32,14 @@ namespace HookHook.Backend.Entities
         public IAction Action { get; private init; }
 
         /// <summary>
-        /// Reaction executed if action
+        /// Reactions executed if action
         /// </summary>
-        public IReaction Reaction { get; private init; }
+        public List<IReaction> Reactions { get; private init; }
 
-        public Area(IAction action, IReaction reaction, int minutes)
+        public Area(IAction action, IEnumerable<IReaction> reactions, int minutes)
         {
             Action = action;
-            Reaction = reaction;
+            Reactions = new(reactions);
             MinutesBetween = minutes;
         }
 
@@ -47,10 +47,10 @@ namespace HookHook.Backend.Entities
         {
             (string? actionInfo, bool actionValue) = await Action.Check(user);
 
-            if (actionValue)
-            {
-                await Reaction.Execute(user);
-            }
-    }
+            if (!actionValue)
+                return;
+            foreach (var reaction in Reactions)
+                await reaction.Execute(user);
         }
+    }
 }
