@@ -195,12 +195,15 @@ namespace HookHook.Backend.Services
 
             client.Credentials = new Credentials(res.AccessToken);
             var github = await client.User.Current();
+            var emails = await client.User.Email.GetAll();
+            var email = emails.SingleOrDefault(x => x.Primary);
 
             User? user = null;
             if (ctx.User.Identity is {IsAuthenticated: true, Name: { }})
                 user = _db.GetUser(ctx.User.Identity.Name);
             user ??=  _db.GetUserByGitHub(github.Id.ToString());
-            user ??= _db.GetUserByIdentifier(github.Email);
+            if (email != null)
+                user ??= _db.GetUserByIdentifier(email.Email);
             if (user == null)
             {
                 user = new(github.Email);
