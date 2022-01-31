@@ -6,4 +6,4 @@ EXPOSE 443
 COPY ["HookHook.Web/", "/app"]
 RUN npm install
 
-CMD ["npm", "run", "dev", "--", "--port", "80"]
+CMD ["npm", "run", "serve"]

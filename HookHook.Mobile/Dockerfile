@@ -28,7 +28,6 @@ WORKDIR /app
 COPY ["HookHook.Mobile", "/app"]
 
 RUN flutter pub get
-RUN flutter analyze
 RUN flutter build apk
 
 WORKDIR /build
