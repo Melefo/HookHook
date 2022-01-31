@@ -51,6 +51,6 @@ namespace HookHook.Backend.Entities
             {
                 await Reaction.Execute(user);
             }
-    }
         }
+    }
 }
