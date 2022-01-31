@@ -56,7 +56,7 @@ class _Home extends StateMVC<HomeView> {
                 padding: EdgeInsets.fromLTRB(0, 13, 0, 4),
                 child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontSize: 15)),
               ),
-              const HList(height: 150, widget: ServicesList(itemWidth: 150)),
+              const HList(height: 150, widget: YourAreaList(itemWidth: 150)),
             ],
           ),
       );

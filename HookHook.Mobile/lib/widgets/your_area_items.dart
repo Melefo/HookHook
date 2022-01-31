@@ -3,12 +3,6 @@ import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'list_items.dart';
 
-
-import 'package:flutter/material.dart';
-import 'package:mvc_application/controller.dart';
-import 'package:mvc_application/view.dart';
-import 'list_items.dart';
-
 class YourAreaList extends StatelessWidget {
 
   final double itemWidth;
@@ -43,27 +37,64 @@ class AreaItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(service),
-        Text(action),
-        Icon(Icons.category, color: Colors.orange,),
-        Icon(Icons.arrow_right_alt_rounded, color: Colors.orange,),
-        Icon(Icons.category, color: Colors.orange,),
-        Text(dateTime),
-        IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: () {
-          },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(service, style: TextStyle(color: Colors.white)),
+            Text(" " + action, style: TextStyle(color: Colors.white)),
+          ],
         ),
-        IconButton(
-          icon: const Icon(Icons.settings),
-          onPressed: () {
-          },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.category, color: Colors.orange,),
+            Icon(Icons.arrow_right_alt_rounded, color: Colors.orange,),
+            Icon(Icons.category, color: Colors.orange,),
+          ],
         ),
-        IconButton(
-          icon: const Icon(Icons.delete),
-          onPressed: () {
-          },
+        Text(dateTime, style: TextStyle(color: Colors.white)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.white
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  print("Refresh");
+                },
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.white
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () {
+                  print("Settings");
+                },
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.white
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  print("Trash");
+                },
+              ),
+            ),
+          ],
         ),
       ],
     );
