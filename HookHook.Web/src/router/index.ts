@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/HomeView.vue'
 import Login from '@/views/LoginView.vue'
 import Dashbaord from '@/views/DashbaordView.vue'
+import OAuth from '@/views/OAuthView.vue'
 import store from '@/store'
 
 const routes = [
@@ -28,6 +29,11 @@ const routes = [
     meta: {
       onlyUser: true
     }
+  },
+  {
+    path: '/oauth',
+    name: 'oauth',
+    component: OAuth
   }
 ]
 
