@@ -42,12 +42,12 @@ namespace HookHook.Backend.Services
             _db = db;
             _key = config["JwtKey"];
 
-            _discordId = config["Discord:ClientId"];
-            _discordSecret = config["Discord:ClientSecret"];
-            _discordRedirect = config["Discord:Redirect"];
+            _discordId = config["DiscordOAuth:ClientId"];
+            _discordSecret = config["DiscordOAuth:ClientSecret"];
+            _discordRedirect = config["DiscordOAuth:Redirect"];
 
-            _gitHubId = config["GitHub:ClientId"];
-            _gitHubSecret = config["GitHub:ClientSecret"];
+            _gitHubId = config["GitHubOAuth:ClientId"];
+            _gitHubSecret = config["GitHubOAuth:ClientSecret"];
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace HookHook.Backend.Services
                 Create(user);
             }
 
-            user.Discord = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
+            user.DiscordOAuth = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
                 res.RefreshToken);
             _db.SaveUser(user);
 
@@ -210,7 +210,7 @@ namespace HookHook.Backend.Services
                 Create(user);
             }
 
-            user.GitHub = new(github.Id.ToString(), res.AccessToken);
+            user.GitHubOAuth = new(github.Id.ToString(), res.AccessToken);
             _db.SaveUser(user);
 
             return CreateJwt(user);

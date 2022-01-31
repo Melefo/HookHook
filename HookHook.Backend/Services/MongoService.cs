@@ -62,13 +62,13 @@ namespace HookHook.Backend.Services
             _usersCollection.Find(x => x.Username == identifier || x.Email == identifier).SingleOrDefault();
 
         public User? GetUserByDiscord(string id) =>
-            _usersCollection.Find(x => x.Discord != null && x.Discord.UserId == id).SingleOrDefault();
+            _usersCollection.Find(x => x.DiscordOAuth != null && x.DiscordOAuth.UserId == id).SingleOrDefault();
 
         public User? GetUserByGitHub(string id) =>
-            _usersCollection.Find(x => x.GitHub != null && x.GitHub.UserId == id).SingleOrDefault();
+            _usersCollection.Find(x => x.GitHubOAuth != null && x.GitHubOAuth.UserId == id).SingleOrDefault();
 
         // public User GetUserByGoogle(string id) =>
-        //     _usersCollection.Find(x => x.Google != null && x.Google.UserId == id).SingleOrDefault();
+        //     _usersCollection.Find(x => x.GoogleOAuth != null && x.GoogleOAuth.UserId == id).SingleOrDefault();
 
         /// <summary>
         /// Create and insert user inside database
