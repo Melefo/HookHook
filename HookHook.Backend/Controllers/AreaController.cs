@@ -30,14 +30,8 @@ namespace HookHook.Backend.Controllers
             reactionTypes.Add("GithubCreateIssue", (string[] args) => new GithubCreateIssue(args[0], args[1], args[1], args[2]));
         }
 
-        // * create a new area
-        [HttpPost("create")]
-        public async Task<ActionResult> CreateArea([FromBody] Models.Area area)
+        Entities.Area CreateEntityFromModel(Models.Area area)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
-            if (user == null)
-                return BadRequest();
-
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments);
             // * create list of IReactions from area.Reactions
@@ -46,17 +40,67 @@ namespace HookHook.Backend.Controllers
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments));
             }
 
-            // * create an area entity and save it to the user
+            // * create an area entity
             Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
+            return (areaEntity);
+        }
+
+        // * create a new area
+        [HttpPost("create")]
+        public async Task<ActionResult> CreateArea([FromBody] Models.Area area)
+        {
+            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            if (user == null)
+                return BadRequest();
+
+            Entities.Area areaEntity = CreateEntityFromModel(area);
 
             user.Areas.Add(areaEntity);
             _db.SaveUser(user);
-            return Ok();
+
+            return Ok(areaEntity);
         }
 
         // * modify -> add/remove reactions/action, so a new area ??
+        // * PUT vu qu'on envoie un nouveau AREA je dirais
+        [HttpPut("modify/{id}")]
+        public async Task<ActionResult> ModifyArea([FromBody] Models.Area area, string id)
+        {
+            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            if (user == null)
+                return (BadRequest());
 
-        // * delete -> rm area by ID ??
+            // * find the AREA to modify and replace it...
+            for (int i = 0; i < user.Areas.Count; i++) {
+                if (user.Areas[i].Id == id) {
+                    Entities.Area areaEntity = CreateEntityFromModel(area);
+
+                    user.Areas[i] = areaEntity;
+                    _db.SaveUser(user);
+
+                    return (Ok(areaEntity));
+                }
+            }
+            return (BadRequest());
+        }
+
+        // * delete -> rm area by ID
+        [HttpDelete("delete/{id}")]
+        public async Task<ActionResult> DeleteArea(string id)
+        {
+            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            if (user == null)
+                return (BadRequest());
+
+            // * il doit y avoir moyen plus stylé mais que vous voulez vous
+            for (int i = 0; i < user.Areas.Count; i++) {
+                if (user.Areas[i].Id == id) {
+                    user.Areas.RemoveAt(i);
+                    return(Ok());
+                }
+            }
+            return (BadRequest());
+        }
 
         // * trigger all areas
         [HttpGet("TriggerAll")]
