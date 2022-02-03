@@ -1,13 +1,16 @@
 ﻿using Discord.Webhook;
 using HookHook.Backend.Entities;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Reactions
 {
+    [BsonIgnoreExtraElements]
     public class DiscordWebhook : IReaction
     {
         public string Url { get; private init; }
         public string Message { get; private init; }
 
+        [BsonIgnore]
         private DiscordWebhookClient _client;
 
         public DiscordWebhook(string url, string message)

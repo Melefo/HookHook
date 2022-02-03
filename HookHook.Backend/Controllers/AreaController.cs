@@ -32,13 +32,19 @@ namespace HookHook.Backend.Controllers
 
         Entities.Area CreateEntityFromModel(Models.Area area)
         {
+            Console.WriteLine("OKAY HERE");
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments);
+            Console.WriteLine("OKAY HERE");
+
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
+                Console.WriteLine($"Reaction {i} has {area.Reactions[i].Arguments.Length} args");
+
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments));
             }
+            Console.WriteLine("OKAY HERE");
 
             // * create an area entity
             Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
@@ -109,6 +115,8 @@ namespace HookHook.Backend.Controllers
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
                 return BadRequest();
+
+            Console.WriteLine("AFTER USER GET");
 
             for (int i = 0; i < user.Areas.Count; i++) {
                 // * bon pour le temps entre chaque lancement je sais pas si tu veux check ici ou dans Launch
