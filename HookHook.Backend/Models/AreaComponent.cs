@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace HookHook.Backend.Models
 {
     /// <summary>
-    /// Action data
+    /// Area component data
     /// </summary>
     public class AreaComponent
     {
@@ -17,14 +17,14 @@ namespace HookHook.Backend.Models
         /// Arguments for component
         /// </summary>
         [Required(ErrorMessage = "Component arguments are required")]
-        public List<string> Arguments = new();
+        public string[] Arguments {get; set;}
 
         /// <summary>
         /// AreaComponent constructor
         /// </summary>
         /// <param name="type">Type</param>
         /// <param name="arguments">Arguments</param>
-        public AreaComponent(string type, List<string> arguments)
+        public AreaComponent(string type, string[] arguments)
         {
             Type = type;
             Arguments = arguments;
