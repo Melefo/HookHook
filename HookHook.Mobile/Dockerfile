@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu as build
 
 ENV DEBIAN_FRONTEND=noninteractive 
 
@@ -30,5 +30,7 @@ COPY ["HookHook.Mobile", "/app"]
 RUN flutter pub get
 RUN flutter build apk
 
+FROM scratch as app
+
 WORKDIR /build
-RUN cp /app/build/app/outputs/flutter-apk/app-release.apk /build/client.apk
+COPY --from=build /app/build/app/outputs/flutter-apk/app-release.apk /build/client.apk
