@@ -3,15 +3,18 @@ using Discord.Rest;
 using Discord.WebSocket;
 using HookHook.Backend.Entities;
 using IReaction = HookHook.Backend.Entities.IReaction;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Actions
 {
+    [BsonIgnoreExtraElements]
     public class DiscordPinned : IAction
     {
         public ulong Guild { get; private init; }
         public ulong Channel { get; private init; }
         public List<ulong> PinnedMessages { get; private init; } = new();
 
+        [BsonIgnore]
         private DiscordRestClient _client = new();
 
         public DiscordPinned(ulong guild, ulong channel)
