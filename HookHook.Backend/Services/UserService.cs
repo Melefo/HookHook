@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using Discord;
 using Discord.Rest;
 using Octokit;
+using SpotifyAPI.Web;
 using ApiException = HookHook.Backend.Exceptions.ApiException;
 using User = HookHook.Backend.Entities.User;
 
@@ -35,6 +36,9 @@ namespace HookHook.Backend.Services
         private readonly string _gitHubId;
         private readonly string _gitHubSecret;
 
+        private readonly string _spotifyId;
+        private readonly string _spotifySecret;
+
         private readonly HttpClient _client = new();
 
         public UserService(MongoService db, IConfiguration config)
@@ -42,12 +46,15 @@ namespace HookHook.Backend.Services
             _db = db;
             _key = config["JwtKey"];
 
-            _discordId = config["DiscordOAuth:ClientId"];
-            _discordSecret = config["DiscordOAuth:ClientSecret"];
-            _discordRedirect = config["DiscordOAuth:Redirect"];
+            _discordId = config["Discord:ClientId"];
+            _discordSecret = config["Discord:ClientSecret"];
+            _discordRedirect = config["Discord:Redirect"];
 
-            _gitHubId = config["GitHubOAuth:ClientId"];
-            _gitHubSecret = config["GitHubOAuth:ClientSecret"];
+            _gitHubId = config["GitHub:ClientId"];
+            _gitHubSecret = config["GitHub:ClientSecret"];
+
+            _spotifyId = config["Spotify:ClientId"];
+            _spotifySecret = config["Spotify:ClientSecret"];
         }
 
         /// <summary>
@@ -146,6 +153,35 @@ namespace HookHook.Backend.Services
             [JsonPropertyName("scope")] public string Scope { get; set; }
 
             [JsonPropertyName("token_type")] public string TokenType { get; set; }
+        }
+
+        public async Task<string> SpotifyOAuth(string code, HttpContext ctx)
+        {
+            var response = await new OAuthClient().RequestToken(
+                new AuthorizationCodeTokenRequest(_spotifyId, _spotifySecret, code, new Uri(_discordRedirect))
+            );
+
+            if (response == null)
+                throw new ApiException("Failed to call API");
+            var spotify = new SpotifyClient(response.AccessToken);
+
+            User? user = null;
+            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+                user = _db.GetUser(ctx.User.Identity.Name);
+
+            var spotifyUser = await spotify.UserProfile.Current();
+            user ??= _db.GetUserBySpotify(spotifyUser.Id.ToString());
+            user ??= _db.GetUserByIdentifier(spotifyUser.Email);
+            if (user == null) {
+                user = new(spotifyUser.Email);
+                Create(user);
+            }
+
+            user.SpotifyOAuth = new(spotifyUser.Id.ToString(), response.AccessToken, TimeSpan.FromSeconds(response.ExpiresIn),
+                response.RefreshToken);
+            _db.SaveUser(user);
+
+            return CreateJwt(user);
         }
 
         public async Task<string> DiscordOAuth(string code, HttpContext ctx)

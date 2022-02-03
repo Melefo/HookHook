@@ -19,7 +19,7 @@ namespace HookHook.Backend.Actions
 
         public List<long> StoredRepositories { get; private init; } = new();
 
-        public GithuNewRepository(string user)
+        public GithubNewRepository(string user)
         {
             UserName = user;
             // _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
@@ -36,6 +36,8 @@ namespace HookHook.Backend.Actions
                     continue;
 
                 StoredRepositories.Add(repository.Id);
+
+                // TODO save in db
 
                 return (repository.Name, true);
             }

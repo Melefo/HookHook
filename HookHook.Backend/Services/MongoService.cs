@@ -95,6 +95,9 @@ namespace HookHook.Backend.Services
             return result.IsAcknowledged && result.ModifiedCount == 1;
         }
 
+        public User? GetUserBySpotify(string id) =>
+            _usersCollection.Find(x => x.SpotifyOAuth != null && x.SpotifyOAuth.UserId == id).SingleOrDefault();
+
     }
 
 }

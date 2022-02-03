@@ -25,14 +25,12 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
-        public GithubCreateIssue(string user, string repository, string title, string body, string[] labels, string[] assignees)
+        public GithubCreateIssue(string user, string repository, string title, string body)
         {
             UserName = user;
             Repository = repository;
             Title = title;
             Body = body;
-            Labels = labels;
-            Assignees = assignees;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
         }
 

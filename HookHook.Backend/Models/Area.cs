@@ -19,6 +19,11 @@ namespace HookHook.Backend.Models
         public AreaComponent[] Reactions {get; set;}
 
         /// <summary>
+        /// Reactions
+        /// </summary>
+        public int Minutes {get; set;}
+
+        /// <summary>
         /// Area constructor
         /// </summary>
         /// <param name="action">Action</param>
@@ -27,6 +32,7 @@ namespace HookHook.Backend.Models
         {
             Action = action;
             Reactions = reactions;
+            Minutes = minutes;
         }
 
     }
