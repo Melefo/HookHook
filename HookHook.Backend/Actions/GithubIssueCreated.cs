@@ -5,15 +5,19 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Actions
 {
+    [BsonIgnoreExtraElements]
     public class GithubIssueCreated : IAction
     {
         public string UserName {get; private init;}
         public string Repository {get; private init;}
 
+        [BsonIgnore]
         public GitHubClient _githubClient;
+        [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
         public List<int> StoredIssues { get; private init; } = new();
@@ -27,7 +31,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient.Credentials = new Credentials(user.GitHub.AccessToken);
+            _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 

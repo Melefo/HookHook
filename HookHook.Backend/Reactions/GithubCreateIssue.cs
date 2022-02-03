@@ -5,9 +5,11 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Reactions
 {
+    [BsonIgnoreExtraElements]
     public class GithubCreateIssue : IReaction
     {
         public string UserName {get; private init;}
@@ -18,7 +20,9 @@ namespace HookHook.Backend.Reactions
         public string[] Labels { get; private init; }
         public string[] Assignees { get; private init; }
 
+        [BsonIgnore]
         public GitHubClient _githubClient;
+        [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
         public GithubCreateIssue(string user, string repository, string title, string body, string[] labels, string[] assignees)
@@ -36,7 +40,7 @@ namespace HookHook.Backend.Reactions
         {
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
-            _githubClient.Credentials = new Credentials(user.GitHub.AccessToken);
+            _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
 
             var createIssue = new NewIssue(Title);
             createIssue.Body = Body;

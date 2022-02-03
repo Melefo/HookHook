@@ -67,7 +67,7 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code)
         {
-            if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(provider, "DiscordOAuth", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {
@@ -81,7 +81,7 @@ namespace HookHook.Backend.Controllers
                 }
             }
 
-            if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(provider, "GitHubOAuth", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {

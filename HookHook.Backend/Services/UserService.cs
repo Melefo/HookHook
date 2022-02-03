@@ -42,12 +42,12 @@ namespace HookHook.Backend.Services
             _db = db;
             _key = config["JwtKey"];
 
-            _discordId = config["Discord:ClientId"];
-            _discordSecret = config["Discord:ClientSecret"];
-            _discordRedirect = config["Discord:Redirect"];
+            _discordId = config["DiscordOAuth:ClientId"];
+            _discordSecret = config["DiscordOAuth:ClientSecret"];
+            _discordRedirect = config["DiscordOAuth:Redirect"];
 
-            _gitHubId = config["GitHub:ClientId"];
-            _gitHubSecret = config["GitHub:ClientSecret"];
+            _gitHubId = config["GitHubOAuth:ClientId"];
+            _gitHubSecret = config["GitHubOAuth:ClientSecret"];
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace HookHook.Backend.Services
                 Create(user);
             }
 
-            user.Discord = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
+            user.DiscordOAuth = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
                 res.RefreshToken);
             _db.SaveUser(user);
 
@@ -195,19 +195,22 @@ namespace HookHook.Backend.Services
 
             client.Credentials = new Credentials(res.AccessToken);
             var github = await client.User.Current();
+            var emails = await client.User.Email.GetAll();
+            var email = emails.SingleOrDefault(x => x.Primary);
 
             User? user = null;
             if (ctx.User.Identity is {IsAuthenticated: true, Name: { }})
                 user = _db.GetUser(ctx.User.Identity.Name);
             user ??=  _db.GetUserByGitHub(github.Id.ToString());
-            user ??= _db.GetUserByIdentifier(github.Email);
+            if (email != null)
+                user ??= _db.GetUserByIdentifier(email.Email);
             if (user == null)
             {
                 user = new(github.Email);
                 Create(user);
             }
 
-            user.GitHub = new(github.Id.ToString(), res.AccessToken);
+            user.GitHubOAuth = new(github.Id.ToString(), res.AccessToken);
             _db.SaveUser(user);
 
             return CreateJwt(user);

@@ -5,16 +5,20 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Reactions
 {
+    [BsonIgnoreExtraElements]
     public class GithubCreateRepository : IReaction
     {
         public string RepositoryName {get; private init;}
 
         public string Description {get; private init;}
 
+        [BsonIgnore]
         public GitHubClient _githubClient;
+        [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
         public GithubCreateRepository(string repositoryName, string description)
@@ -31,7 +35,7 @@ namespace HookHook.Backend.Reactions
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
             // ! j'ai besoin du token quand meme, passé en constructeur ?
-            _githubClient.Credentials = new Credentials(user.GitHub.AccessToken);
+            _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
 
             var createRepository = new NewRepository(RepositoryName);
             createRepository.Description = Description;
