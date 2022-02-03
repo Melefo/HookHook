@@ -4,7 +4,7 @@ using HookHook.Backend.Entities;
 using Octokit;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
     [BsonIgnoreExtraElements]
     public class GithubNewRepository : IAction

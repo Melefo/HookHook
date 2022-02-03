@@ -1,6 +1,6 @@
-﻿using HookHook.Backend.Actions;
+﻿using HookHook.Backend.Area.Actions;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Reactions;
+using HookHook.Backend.Area.Reactions;
 using HookHook.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
