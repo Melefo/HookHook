@@ -1,4 +1,5 @@
-﻿using HookHook.Backend.Area.Actions;
+﻿using HookHook.Backend.Area;
+using HookHook.Backend.Area.Actions;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Area.Reactions;
 using HookHook.Backend.Services;
@@ -24,10 +25,15 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("GithubIssueCreated", (string[] args) => new GithubIssueCreated(args[0], args[1]));
             actionTypes.Add("GithubNewCommit", (string[] args) => new GithubNewCommit(args[0], args[1]));
             actionTypes.Add("GithubNewRepository", (string[] args) => new GithubNewRepository(args[0]));
+            actionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
+            actionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
 
             reactionTypes.Add("DiscordWebhook", (string[] args) => new DiscordWebhook(args[0], args[1]));
             reactionTypes.Add("GithubCreateRepository", (string[] args) => new GithubCreateRepository(args[0], args[1]));
             reactionTypes.Add("GithubCreateIssue", (string[] args) => new GithubCreateIssue(args[0], args[1], args[1], args[2]));
+            reactionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
+            reactionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
+
         }
 
         Entities.Area CreateEntityFromModel(Models.Area area)

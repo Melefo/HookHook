@@ -5,9 +5,9 @@ using SpotifyAPI.Web;
 namespace HookHook.Backend.Area
 {
     [BsonIgnoreExtraElements]
-    public class SpotifyLikeMusic: IAction, IReaction
+    public class SpotifyLikeAlbum: IAction, IReaction
     {
-        public string SongTitle {get; set;}
+        public string AlbumTitle {get; set;}
         public string ArtistName {get; set;}
 
         [BsonIgnore]
@@ -15,9 +15,9 @@ namespace HookHook.Backend.Area
 
         public List<string> StoredLibrary { get; private init; } = new();
 
-        public SpotifyLikeMusic(string songTitle, string artistName)
+        public SpotifyLikeAlbum(string albumTitle, string artistName)
         {
-            SongTitle = songTitle;
+            AlbumTitle = albumTitle;
             ArtistName = artistName;
         }
 
@@ -25,17 +25,21 @@ namespace HookHook.Backend.Area
         {
             _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
 
-            var tracks = await _spotifyClient.Library.GetTracks();
+            var albums = await _spotifyClient.Library.GetAlbums();
 
-            foreach (var item in tracks.Items) {
-                if (StoredLibrary.Contains(item.Track.Id)) {
+            foreach (var item in albums.Items) {
+
+                DateTime dateAdded = item.AddedAt;
+                // ! possible de trier avec dateAdded ;(
+
+                if (StoredLibrary.Contains(item.Album.Id)) {
                     continue;
                 }
 
                 // todo save stored library
 
-                StoredLibrary.Add(item.Track.Id);
-                return (item.Track.Name, true);
+                StoredLibrary.Add(item.Album.Id);
+                return (item.Album.Name, true);
             }
 
             return (null, false);
@@ -45,15 +49,15 @@ namespace HookHook.Backend.Area
         {
             _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
 
-            // * search song
-            // * add song to library
-            SearchRequest searchRequest = new SearchRequest(SearchRequest.Types.Track, $"{SongTitle} {ArtistName}");
+            // * search album
+            // * add album to library
+            SearchRequest searchRequest = new SearchRequest(SearchRequest.Types.Album, $"{AlbumTitle} {ArtistName}");
             var searchResults = await _spotifyClient.Search.Item(searchRequest);
 
             // todo gestion d'erreur
 
-            LibrarySaveTracksRequest saveTracks = new (new List<string>() {searchResults.Tracks.Items[0].Id});
-            await _spotifyClient.Library.SaveTracks(saveTracks);
+            LibrarySaveAlbumsRequest saveAlbums = new (new List<string>() {searchResults.Albums.Items[0].Id});
+            await _spotifyClient.Library.SaveAlbums(saveAlbums);
         }
     }
 }
