@@ -98,6 +98,8 @@ namespace HookHook.Backend.Services
         public User? GetUserBySpotify(string id) =>
             _usersCollection.Find(x => x.SpotifyOAuth != null && x.SpotifyOAuth.UserId == id).SingleOrDefault();
 
+        public User? GetUserByTwitch(string id) =>
+            _usersCollection.Find(x => x.TwitchOAuth != null && x.TwitchOAuth.UserId == id).SingleOrDefault();
     }
 
 }

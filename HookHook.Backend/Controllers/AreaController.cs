@@ -27,13 +27,15 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("GithubNewRepository", (string[] args) => new GithubNewRepository(args[0]));
             actionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
             actionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
+            actionTypes.Add("TwitchLiveStarted", (string[] args) => new TwitchLiveStarted(args[0]));
+            actionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
 
             reactionTypes.Add("DiscordWebhook", (string[] args) => new DiscordWebhook(args[0], args[1]));
             reactionTypes.Add("GithubCreateRepository", (string[] args) => new GithubCreateRepository(args[0], args[1]));
             reactionTypes.Add("GithubCreateIssue", (string[] args) => new GithubCreateIssue(args[0], args[1], args[1], args[2]));
             reactionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
             reactionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
-
+            reactionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
         }
 
         Entities.Area CreateEntityFromModel(Models.Area area)
