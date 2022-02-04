@@ -9,6 +9,9 @@ using Discord;
 using Discord.Rest;
 using Octokit;
 using SpotifyAPI.Web;
+using TwitchLib.Api;
+using TwitchLib.Client;
+using TwitchLib.Api.Helix.Models.Users;
 using ApiException = HookHook.Backend.Exceptions.ApiException;
 using User = HookHook.Backend.Entities.User;
 
@@ -175,20 +178,20 @@ namespace HookHook.Backend.Services
             [JsonPropertyName("token_type")] public string TokenType { get; set; }
         }
 
-        private class WrappedUsers
-        {
-            [JsonPropertyName("data")] public TwitchUser[] Users{get; set;}
-        }
+        // private class WrappedUsers
+        // {
+        //     [JsonPropertyName("data")] public TwitchUser[] Users{get; set;}
+        // }
 
-        private class TwitchUser
-        {
-            [JsonPropertyName("id")] public string Id { get; set; }
-            [JsonPropertyName("login")] public string Login { get; set; }
-            [JsonPropertyName("display_name")] public string DisplayName { get; set; }
-            [JsonPropertyName("description")] public string Description { get; set; }
-            [JsonPropertyName("email")] public string Email { get; set; }
+        // private class TwitchUser
+        // {
+        //     [JsonPropertyName("id")] public string Id { get; set; }
+        //     [JsonPropertyName("login")] public string Login { get; set; }
+        //     [JsonPropertyName("display_name")] public string DisplayName { get; set; }
+        //     [JsonPropertyName("description")] public string Description { get; set; }
+        //     [JsonPropertyName("email")] public string Email { get; set; }
 
-        }
+        // }
 
         public async Task<string> TwitchOAuth(string code, HttpContext ctx)
         {
@@ -205,17 +208,22 @@ namespace HookHook.Backend.Services
             if (res == null)
                 throw new ApiException("Failed to call API");
 
+            var api = new TwitchAPI();
+            api.Settings.ClientId = _twitchId;
+            api.Settings.AccessToken = res.AccessToken;
+
             // * you need to send a request to get the user's ID and email
-            _client.DefaultRequestHeaders.Clear();
-            _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {res.AccessToken}");
-            _client.DefaultRequestHeaders.Add("Client-Id", $"{_twitchId}");
+            // _client.DefaultRequestHeaders.Clear();
+            // _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {res.AccessToken}");
+            // _client.DefaultRequestHeaders.Add("Client-Id", $"{_twitchId}");
 
-            var usersWrapper = await _client.GetAsync<WrappedUsers>("https://api.twitch.tv/helix/users");
+            // var usersWrapper = await _client.GetAsync<WrappedUsers>("https://api.twitch.tv/helix/users");
+            var users = await api.Helix.Users.GetUsersAsync(null, null, res.AccessToken);
 
-            if (usersWrapper == null)
+            if (users == null)
                 throw new ApiException("Failed to call API");
 
-            var client = usersWrapper.Users[0];
+            var client = users.Users[0];
 
             User? user = null;
             if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
