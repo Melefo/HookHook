@@ -55,7 +55,7 @@ namespace HookHook.Backend.Area
             // todo gestion d'erreur
 
             // * j'imagine que to -> from c'est to qui suit from
-            await _twitchClient.Helix.Users.CreateUserFollows(from_id: authenticatedUser.Users[0].Id, authToken: user.TwitchOAuth.AccessToken, to_id: userToFollow.Users[0].Id)
+            await _twitchClient.Helix.Users.CreateUserFollows(from_id: authenticatedUser.Users[0].Id, authToken: user.TwitchOAuth.AccessToken, to_id: userToFollow.Users[0].Id);
         }
     }
 }
