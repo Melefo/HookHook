@@ -8,29 +8,36 @@
     <!-- // todo centrer et colorier les svg pliz -->
     <div class="text-black mt-2 justify-start">
         <button class="button bg-[#A3E7EE]">
-            <img class="w-14 align-center" alt="twitter" src="@/assets/img/twitter.svg" />
+            <img class="w-14 h-14 m-auto" alt="twitter" src="@/assets/img/coloredsvg/twitter.svg" />
         </button>
         <button class="button bg-[#B4E1DC]">
-            <img class="w-14 align-center" alt="spotify" src="@/assets/img/spotify.svg" />
+            <img class="w-14 h-14 m-auto" alt="spotify" src="@/assets/img/coloredsvg/spotify.svg" />
         </button>
         <button class="button bg-[#D9D1EA]">
-            <img class="w-14 align-center" alt="discord" src="@/assets/img/discord.svg" />
+            <img class="w-14 h-14 m-auto" alt="discord" src="@/assets/img/coloredsvg/discord.svg" />
         </button>
         <button class="button bg-[#F5CDCB]">
-            <img class="w-14 align-center" alt="github" src="@/assets/img/github.svg" />
+            <img class="w-14 h-14 m-auto" alt="github" src="@/assets/img/coloredsvg/github.svg" />
         </button>
         <button class="button bg-[#F8CBAA]">
-            <img class="w-14 align-center" alt="google" src="@/assets/img/google.svg" />
+            <img class="w-14 h-14 m-auto" alt="google" src="@/assets/img/coloredsvg/google.svg" />
         </button>
         <button class="button bg-[#FFFFC7]">
-            <img class="w-14 align-center" alt="twitch" src="@/assets/img/twitch.svg" />
+            <img class="w-14 h-14 m-auto" alt="twitch" src="@/assets/img/coloredsvg/twitch.svg" />
         </button>
     </div>
-    <div class="gridCreator mt-8 text-black dark:text-white">
+    <div class="gridCreator text-black dark:text-white">
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
+      <!--AREA CREATOR-->
       <div class="creatorBG rounded-xl bg-[#3B3F43] p-5"/>
-      <div class="urAreaBG rounded-xl bg-[#3B3F43] p-5"/>
+      <!--MY AREA-->
+      <div class="urAreaBG rounded-xl bg-[#3B3F43] p-5">
+        <p class="place-self-center	">bonjour</p>
+        <p class="place-self-center	">bonjour</p>
+        <p class="place-self-center	">bonjour</p>
+        <p class="place-self-center	">bonjour</p>
+      </div>
     </div>
 </template>
 
@@ -40,9 +47,9 @@
     }
     .button {
       border-radius: 10px;
-      width: 12%;
-      margin: 0 2% 0 0;
-      padding: 5% 0;
+      width: 160px;
+      margin: 0 2% 2% 0;
+      padding: 52px 0;
       transition-duration: 1s;
     }
     .button:hover {
@@ -50,7 +57,7 @@
     }
     .gridCreator {
       display: grid;
-      height: 400px;
+      height: 475px;
       grid-template-columns: 40% 60%;
       grid-template-rows: 10% 45% 45%;
       gap: 1%;
@@ -70,6 +77,10 @@
     .urAreaBG {
       grid-column: 2 / span 1;
       grid-row: 2 / span 2;
+      flex-flow: column wrap;
+      display: grid;
+      grid-template-columns: 25% 25% 25% 25%;
+      grid-template-rows: 50% 50%;
     }
 </style>
 
