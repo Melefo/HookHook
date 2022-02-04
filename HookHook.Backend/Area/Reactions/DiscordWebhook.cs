@@ -2,7 +2,7 @@
 using HookHook.Backend.Entities;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Area.Reactions
 {
     [BsonIgnoreExtraElements]
     public class DiscordWebhook : IReaction

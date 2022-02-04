@@ -5,7 +5,7 @@ using HookHook.Backend.Entities;
 using IReaction = HookHook.Backend.Entities.IReaction;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
     [BsonIgnoreExtraElements]
     public class DiscordPinned : IAction

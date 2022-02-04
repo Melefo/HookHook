@@ -67,7 +67,7 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code)
         {
-            if (string.Equals(provider, "DiscordOAuth", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {
@@ -81,7 +81,17 @@ namespace HookHook.Backend.Controllers
                 }
             }
 
-            if (string.Equals(provider, "GitHubOAuth", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(provider, "Spotify", StringComparison.InvariantCultureIgnoreCase)) {
+                try {
+                    string token = await _service.SpotifyOAuth(code, HttpContext);
+
+                    return Ok(new {token});
+                } catch (ApiException ex) {
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
+                }
+            }
+
+            if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
                 {

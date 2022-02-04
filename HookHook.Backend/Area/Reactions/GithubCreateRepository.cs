@@ -7,49 +7,44 @@ using System.Net.Http.Headers;
 using Octokit;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Area.Reactions
 {
     [BsonIgnoreExtraElements]
-    public class GithubCreateIssue : IReaction
+    public class GithubCreateRepository : IReaction
     {
-        public string UserName {get; private init;}
-        public string Repository {get; private init;}
+        public string RepositoryName {get; private init;}
 
-        public string Title { get; private init; }
-        public string Body { get; private init; }
-        public string[] Labels { get; private init; }
-        public string[] Assignees { get; private init; }
+        public string Description {get; private init;}
 
         [BsonIgnore]
         public GitHubClient _githubClient;
         [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
-        public GithubCreateIssue(string user, string repository, string title, string body, string[] labels, string[] assignees)
+        public GithubCreateRepository(string repositoryName, string description)
         {
-            UserName = user;
-            Repository = repository;
-            Title = title;
-            Body = body;
-            Labels = labels;
-            Assignees = assignees;
+            RepositoryName = repositoryName;
+            Description = description;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
         }
 
+
         public async Task Execute(Entities.User user)
         {
+
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
+            // ! j'ai besoin du token quand meme, passé en constructeur ?
             _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
 
-            var createIssue = new NewIssue(Title);
-            createIssue.Body = Body;
-            var issue = await _githubClient.Issue.Create(UserName, Repository, createIssue);
+            var createRepository = new NewRepository(RepositoryName);
+            createRepository.Description = Description;
+            var repository = await _githubClient.Repository.Create(createRepository);
 
-            // ? add new issue to database ?
+            // ? add new repo to database ?
 
             // ? error checks ?
-            if (issue == null) {
+            if (repository == null) {
                 throw new Exceptions.ApiException("Failed to call API");
             }
 

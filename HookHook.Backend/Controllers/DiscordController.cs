@@ -3,9 +3,9 @@ using System.Text;
 using Discord;
 using Discord.Rest;
 using Discord.Webhook;
-using HookHook.Backend.Actions;
+using HookHook.Backend.Area.Actions;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Reactions;
+using HookHook.Backend.Area.Reactions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HookHook.Backend.Controllers

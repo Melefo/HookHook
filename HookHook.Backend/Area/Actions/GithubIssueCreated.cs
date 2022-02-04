@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 using Octokit;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
     [BsonIgnoreExtraElements]
     public class GithubIssueCreated : IAction
