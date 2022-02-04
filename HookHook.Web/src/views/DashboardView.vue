@@ -30,13 +30,15 @@
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
       <!--AREA CREATOR-->
-      <div class="creatorBG rounded-xl bg-[#3B3F43] p-5"/>
+      <div class="creatorBG rounded-xl bg-[#3B3F43]"/>
       <!--MY AREA-->
-      <div class="urAreaBG rounded-xl bg-[#3B3F43] p-5">
-        <p class="place-self-center	">bonjour</p>
-        <p class="place-self-center	">bonjour</p>
-        <p class="place-self-center	">bonjour</p>
-        <p class="place-self-center	">bonjour</p>
+      <div class="urAreaBG">
+        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
+        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
+        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
+        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
+        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
+        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
       </div>
     </div>
 </template>
