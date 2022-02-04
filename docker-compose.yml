@@ -8,12 +8,16 @@ services:
       - "8080:80"
     depends_on:
       - "mongo"
+    environment:
+      - Mongo__Client=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/
+      - Mongo__Database=${MONGO_DATABASE}
   client_mobile:
+    scale: 0
     build:
       context: .
       dockerfile: "HookHook.Mobile/Dockerfile"
     volumes:
-      - "apk:/build"
+      - "apk:/build/client.apk"
   client_web:
     build:
       context: .
@@ -24,7 +28,7 @@ services:
       - "server"
       - "client_mobile"
     volumes:
-      - "apk:/app/public"
+      - "apk:/app"
   mongo:
     image: mongo
     restart: always
