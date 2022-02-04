@@ -8,22 +8,22 @@
     <!-- // todo centrer et colorier les svg pliz -->
     <div class="text-black mt-2 justify-start">
         <button class="button bg-[#A3E7EE]">
-            <img class="w-14 h-14 m-auto" alt="twitter" src="@/assets/img/coloredsvg/twitter.svg" />
+            <img class="w-20 h-20 m-auto" alt="twitter" src="@/assets/img/coloredsvg/twitter.svg" />
         </button>
         <button class="button bg-[#B4E1DC]">
-            <img class="w-14 h-14 m-auto" alt="spotify" src="@/assets/img/coloredsvg/spotify.svg" />
+            <img class="w-20 h-20 m-auto" alt="spotify" src="@/assets/img/coloredsvg/spotify.svg" />
         </button>
         <button class="button bg-[#D9D1EA]">
-            <img class="w-14 h-14 m-auto" alt="discord" src="@/assets/img/coloredsvg/discord.svg" />
+            <img class="w-20 h-20 m-auto" alt="discord" src="@/assets/img/coloredsvg/discord.svg" />
         </button>
         <button class="button bg-[#F5CDCB]">
-            <img class="w-14 h-14 m-auto" alt="github" src="@/assets/img/coloredsvg/github.svg" />
+            <img class="w-20 h-20 m-auto" alt="github" src="@/assets/img/coloredsvg/github.svg" />
         </button>
         <button class="button bg-[#F8CBAA]">
-            <img class="w-14 h-14 m-auto" alt="google" src="@/assets/img/coloredsvg/google.svg" />
+            <img class="w-20 h-20 m-auto" alt="google" src="@/assets/img/coloredsvg/google.svg" />
         </button>
         <button class="button bg-[#FFFFC7]">
-            <img class="w-14 h-14 m-auto" alt="twitch" src="@/assets/img/coloredsvg/twitch.svg" />
+            <img class="w-20 h-20 m-auto" alt="twitch" src="@/assets/img/coloredsvg/twitch.svg" />
         </button>
     </div>
     <div class="gridCreator text-black dark:text-white">
@@ -32,14 +32,7 @@
       <!--AREA CREATOR-->
       <div class="creatorBG rounded-xl bg-[#3B3F43]"/>
       <!--MY AREA-->
-      <div class="urAreaBG">
-        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
-        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
-        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
-        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
-        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
-        <div class="place-self-center rounded-xl bg-[#3B3F43] table text-white text-center w-[95%] h-[95%]"><span class="table-cell align-middle">AREA BOX</span></div>
-      </div>
+      <CarouselComponent/>
     </div>
 </template>
 
@@ -49,9 +42,9 @@
     }
     .button {
       border-radius: 10px;
-      width: 160px;
-      margin: 0 2% 2% 0;
-      padding: 52px 0;
+      width: 150px;
+      margin: 0 25px 10px 0;
+      padding: 35px 0;
       transition-duration: 1s;
     }
     .button:hover {
@@ -90,10 +83,10 @@
 import { defineComponent } from "vue";
 import { parseJwt } from "@/router";
 import { mapGetters } from "vuex";
-
+import CarouselComponent from "@/components/CarouselComponent.vue";
 
 export default defineComponent({
-  components: {  },
+  components: { CarouselComponent },
   methods: {
 
   },
