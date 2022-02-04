@@ -5,15 +5,19 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
+    [BsonIgnoreExtraElements]
     public class GithubIssueCreated : IAction
     {
         public string UserName {get; private init;}
         public string Repository {get; private init;}
 
+        [BsonIgnore]
         public GitHubClient _githubClient;
+        [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
         public List<int> StoredIssues { get; private init; } = new();

@@ -5,16 +5,20 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Area.Reactions
 {
+    [BsonIgnoreExtraElements]
     public class GithubCreateRepository : IReaction
     {
         public string RepositoryName {get; private init;}
 
         public string Description {get; private init;}
 
+        [BsonIgnore]
         public GitHubClient _githubClient;
+        [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
         public GithubCreateRepository(string repositoryName, string description)

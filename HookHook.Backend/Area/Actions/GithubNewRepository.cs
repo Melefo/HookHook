@@ -2,23 +2,27 @@ using HookHook.Backend.Utilities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
-    public class GithuNewRepository
+    [BsonIgnoreExtraElements]
+    public class GithubNewRepository : IAction
     {
         public string UserName {get; private init;}
 
-        public GitHubClient _githubClient;
+        [BsonIgnore]
+        public GitHubClient _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
 
+        [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
         public List<long> StoredRepositories { get; private init; } = new();
 
-        public GithuNewRepository(string user)
+        public GithubNewRepository(string user)
         {
             UserName = user;
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            // _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
@@ -32,6 +36,8 @@ namespace HookHook.Backend.Actions
                     continue;
 
                 StoredRepositories.Add(repository.Id);
+
+                // TODO save in db
 
                 return (repository.Name, true);
             }

@@ -8,6 +8,10 @@ using System.Text.Json.Serialization;
 using Discord;
 using Discord.Rest;
 using Octokit;
+using SpotifyAPI.Web;
+using TwitchLib.Api;
+using TwitchLib.Client;
+using TwitchLib.Api.Helix.Models.Users;
 using ApiException = HookHook.Backend.Exceptions.ApiException;
 using User = HookHook.Backend.Entities.User;
 
@@ -35,6 +39,12 @@ namespace HookHook.Backend.Services
         private readonly string _gitHubId;
         private readonly string _gitHubSecret;
 
+        private readonly string _spotifyId;
+        private readonly string _spotifySecret;
+
+        private readonly string _twitchId;
+        private readonly string _twitchSecret;
+
         private readonly HttpClient _client = new();
 
         public UserService(MongoService db, IConfiguration config)
@@ -42,12 +52,18 @@ namespace HookHook.Backend.Services
             _db = db;
             _key = config["JwtKey"];
 
-            _discordId = config["DiscordOAuth:ClientId"];
-            _discordSecret = config["DiscordOAuth:ClientSecret"];
-            _discordRedirect = config["DiscordOAuth:Redirect"];
+            _discordId = config["Discord:ClientId"];
+            _discordSecret = config["Discord:ClientSecret"];
+            _discordRedirect = config["Discord:Redirect"];
 
-            _gitHubId = config["GitHubOAuth:ClientId"];
-            _gitHubSecret = config["GitHubOAuth:ClientSecret"];
+            _gitHubId = config["GitHub:ClientId"];
+            _gitHubSecret = config["GitHub:ClientSecret"];
+
+            _spotifyId = config["Spotify:ClientId"];
+            _spotifySecret = config["Spotify:ClientSecret"];
+
+            _twitchId = config["Twitch:ClientId"];
+            _twitchSecret = config["Twitch:ClientSecret"];
         }
 
         /// <summary>
@@ -146,6 +162,114 @@ namespace HookHook.Backend.Services
             [JsonPropertyName("scope")] public string Scope { get; set; }
 
             [JsonPropertyName("token_type")] public string TokenType { get; set; }
+        }
+
+        // * exact same as the discordtoken except scope is an array
+        private class TwitchToken
+        {
+           [JsonPropertyName("access_token")] public string AccessToken { get; set; }
+
+            [JsonPropertyName("expires_in")] public int ExpiresIn { get; set; }
+
+            [JsonPropertyName("refresh_token")] public string RefreshToken { get; set; }
+
+            [JsonPropertyName("scope")] public string[] Scope { get; set; }
+
+            [JsonPropertyName("token_type")] public string TokenType { get; set; }
+        }
+
+        // private class WrappedUsers
+        // {
+        //     [JsonPropertyName("data")] public TwitchUser[] Users{get; set;}
+        // }
+
+        // private class TwitchUser
+        // {
+        //     [JsonPropertyName("id")] public string Id { get; set; }
+        //     [JsonPropertyName("login")] public string Login { get; set; }
+        //     [JsonPropertyName("display_name")] public string DisplayName { get; set; }
+        //     [JsonPropertyName("description")] public string Description { get; set; }
+        //     [JsonPropertyName("email")] public string Email { get; set; }
+
+        // }
+
+        public async Task<string> TwitchOAuth(string code, HttpContext ctx)
+        {
+            var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            {
+                new("client_id", _twitchId),
+                new("client_secret", _twitchSecret),
+                new("code", code),
+                new("grant_type", "authorization_code"),
+                new("redirect_uri", _discordRedirect),
+            });
+            var res = await _client.PostAsync<TwitchToken>("https://id.twitch.tv/oauth2/token", content);
+
+            if (res == null)
+                throw new ApiException("Failed to call API");
+
+            var api = new TwitchAPI();
+            api.Settings.ClientId = _twitchId;
+            api.Settings.AccessToken = res.AccessToken;
+
+            // * you need to send a request to get the user's ID and email
+            // _client.DefaultRequestHeaders.Clear();
+            // _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {res.AccessToken}");
+            // _client.DefaultRequestHeaders.Add("Client-Id", $"{_twitchId}");
+
+            // var usersWrapper = await _client.GetAsync<WrappedUsers>("https://api.twitch.tv/helix/users");
+            var users = await api.Helix.Users.GetUsersAsync(null, null, res.AccessToken);
+
+            if (users == null)
+                throw new ApiException("Failed to call API");
+
+            var client = users.Users[0];
+
+            User? user = null;
+            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+                user = _db.GetUser(ctx.User.Identity.Name);
+            user ??= _db.GetUserByTwitch(client.Id.ToString());
+            user ??= _db.GetUserByIdentifier(client.Email);
+            if (user == null)
+            {
+                user = new(client.Email);
+                Create(user);
+            }
+
+            user.TwitchOAuth = new(client.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
+                res.RefreshToken);
+            _db.SaveUser(user);
+
+            return CreateJwt(user);
+        }
+
+        public async Task<string> SpotifyOAuth(string code, HttpContext ctx)
+        {
+            var response = await new OAuthClient().RequestToken(
+                new AuthorizationCodeTokenRequest(_spotifyId, _spotifySecret, code, new Uri(_discordRedirect))
+            );
+
+            if (response == null)
+                throw new ApiException("Failed to call API");
+            var spotify = new SpotifyClient(response.AccessToken);
+
+            User? user = null;
+            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+                user = _db.GetUser(ctx.User.Identity.Name);
+
+            var spotifyUser = await spotify.UserProfile.Current();
+            user ??= _db.GetUserBySpotify(spotifyUser.Id.ToString());
+            user ??= _db.GetUserByIdentifier(spotifyUser.Email);
+            if (user == null) {
+                user = new(spotifyUser.Email);
+                Create(user);
+            }
+
+            user.SpotifyOAuth = new(spotifyUser.Id.ToString(), response.AccessToken, TimeSpan.FromSeconds(response.ExpiresIn),
+                response.RefreshToken);
+            _db.SaveUser(user);
+
+            return CreateJwt(user);
         }
 
         public async Task<string> DiscordOAuth(string code, HttpContext ctx)

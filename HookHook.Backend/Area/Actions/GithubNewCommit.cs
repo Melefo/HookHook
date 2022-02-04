@@ -2,8 +2,9 @@ using HookHook.Backend.Utilities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
     public class CommitAuthor
     {
@@ -24,12 +25,15 @@ namespace HookHook.Backend.Actions
         public CommitObject ?Commit {get; set;}
     }
 
+    [BsonIgnoreExtraElements]
     public class GithubNewCommit : IAction
     {
         public string UserName {get; private init;}
         public string Repository {get; private init;}
 
+        [BsonIgnore]
         public GitHubClient _githubClient;
+        [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
         public List<string> StoredCommitHashes { get; private init; } = new();

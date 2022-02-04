@@ -26,9 +26,9 @@
       <Login />
       <div class="grid grid-cols-3 sm:grid-cols-6 gap-4 mt-8">
         <img class="h-10" alt="google" src="@/assets/img/google.svg" />
-        <img class="h-10" alt="twitch" src="@/assets/img/twitch.svg" />
+        <TwitchOauth/>
         <GitHubOauth />
-        <img class="h-10" alt="spotify" src="@/assets/img/spotify.svg" />
+        <SpotifyOauth/>
         <img class="h-10" alt="twitter" src="@/assets/img/twitter.svg" />
         <DiscordOauth />
       </div>
@@ -56,12 +56,15 @@ import Bloc from "@/components/BlocComponent.vue";
 import HookHook from "@/components/HookHookComponent.vue";
 import Register from "@/components/User/RegisterComponent.vue";
 import Login from "@/components/User/LoginComponent.vue";
-import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue"
-import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue"
+import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
+import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
+import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
+
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: { Bloc, HookHook, Register, Login, DiscordOauth, GitHubOauth },
+  components: { Bloc, HookHook, Register, Login, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth },
   methods: {
   },
 });

@@ -1,4 +1,4 @@
-﻿using HookHook.Backend.Actions;
+using HookHook.Backend.Area.Actions;
 using Microsoft.AspNetCore.Mvc;
 using HookHook.Backend.Models;
 using HookHook.Backend.Models.Github;
