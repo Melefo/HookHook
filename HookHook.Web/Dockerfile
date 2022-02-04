@@ -14,4 +14,4 @@ EXPOSE 80
 RUN mkdir /app
 
 COPY --from=build /app/dist /app
-COPY HookHook.Web/nginx.conf /etc/nginx/nginx.conf
+COPY HookHook.Web/nginx.conf /etc/nginx/templates/default.conf.template
