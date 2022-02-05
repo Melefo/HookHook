@@ -26,12 +26,11 @@ services:
       - Google__ClientId=${GOOGLE_CLIENTID}
       - Google__ClientSecret=${GOOGLE_CLIENTSECRET}
   client_mobile:
-    scale: 0
     build:
       context: .
       dockerfile: "HookHook.Mobile/Dockerfile"
     volumes:
-      - "apk:/build/client.apk"
+      - "apk:/build"
   client_web:
     build:
       context: .
