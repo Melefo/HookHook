@@ -5,9 +5,11 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using HookHook.Backend.Attributes;
 
 namespace HookHook.Backend.Reactions
 {
+    [Service("github", "create a new issue")]
     public class GithubCreateIssue : IReaction
     {
         public string UserName {get; private init;}

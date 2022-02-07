@@ -1,8 +1,10 @@
 ﻿using Discord.Webhook;
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 
 namespace HookHook.Backend.Reactions
 {
+    [Service("discord", "send message inside a webhook")]
     public class DiscordWebhook : IReaction
     {
         public string Url { get; private init; }

@@ -2,9 +2,11 @@ using HookHook.Backend.Utilities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
+using HookHook.Backend.Attributes;
 
 namespace HookHook.Backend.Actions
 {
+    [Service("github", "new repository is created")]
     public class GithuNewRepository
     {
         public string UserName {get; private init;}

@@ -1,11 +1,13 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using IReaction = HookHook.Backend.Entities.IReaction;
 
 namespace HookHook.Backend.Actions
 {
+    [Service("discord", "message is pinned")]
     public class DiscordPinned : IAction
     {
         public ulong Guild { get; private init; }

@@ -2,6 +2,7 @@ using HookHook.Backend.Utilities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
+using HookHook.Backend.Attributes;
 
 namespace HookHook.Backend.Actions
 {
@@ -24,6 +25,7 @@ namespace HookHook.Backend.Actions
         public CommitObject ?Commit {get; set;}
     }
 
+    [Service("github", "new commit is done")]
     public class GithubNewCommit : IAction
     {
         public string UserName {get; private init;}

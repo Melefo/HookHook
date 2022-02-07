@@ -5,10 +5,12 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using HookHook.Backend.Attributes;
 
 namespace HookHook.Backend.Actions
 {
-    public class GithubIssueCreated : IAction
+   [Service("github", "new issue is created")]
+   public class GithubIssueCreated : IAction
     {
         public string UserName {get; private init;}
         public string Repository {get; private init;}

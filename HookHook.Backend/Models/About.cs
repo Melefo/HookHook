@@ -1,4 +1,8 @@
 ﻿
+using HookHook.Backend.Attributes;
+using HookHook.Backend.Entities;
+using System.Reflection;
+
 namespace HookHook.Backend.Models
 {
     /// <summary>
@@ -82,8 +86,24 @@ namespace HookHook.Backend.Models
         /// Service class constructore
         /// </summary>
         /// <param name="name"></param>
-        public Service(string name) =>
+        public Service(string name, List<Type> areas)
+        {
             Name = name;
+            var iaction = typeof(IAction).GetTypeInfo();
+            var ireaction = typeof(IReaction).GetTypeInfo();
+            var actionList = areas.Where(x => x.GetInterfaces().Contains(iaction) && !x.IsAbstract && !x.IsInterface);
+            var reactionList = areas.Where(x => x.GetInterfaces().Contains(ireaction) && !x.IsAbstract && !x.IsInterface);
+
+            foreach (var action in actionList)
+            {
+                Actions.Add(new Action(action.Name, action.GetCustomAttribute<ServiceAttribute>().Description));
+            }
+
+            foreach (var reaction in reactionList)
+            {
+                Reactions.Add(new Reaction(reaction.Name, reaction.GetCustomAttribute<ServiceAttribute>().Description));
+            }
+        }
 
         /// <summary>
         /// Service Name
@@ -112,6 +132,13 @@ namespace HookHook.Backend.Models
         public Server()
         {
             CurrentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
+            var groupedServices = services.GroupBy(x => x.GetCustomAttribute<ServiceAttribute>().Name).ToDictionary(x => x.Key, x => x.ToList());
+            foreach (var service in groupedServices)
+            {
+                Services.Add(new Service(service.Key, service.Value));
+            }
         }
 
         /// <summary>
@@ -133,8 +160,10 @@ namespace HookHook.Backend.Models
         /// About model constructor
         /// </summary>
         /// <param name="host">Client address</param>
-        public About(string host) =>
+        public About(string host)
+        {
             Client = new(host);
+        }
 
         /// <summary>
         /// Client informations
