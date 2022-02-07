@@ -389,7 +389,7 @@ namespace HookHook.Backend.Services
             }
 
             // * jsp comment récupérer le expires-in cf: https://developer.twitter.com/en/docs/authentication/api-reference/access_token
-            user.TwitterOAuth = new(twitterUser.Id.ToString(), res.OAuthToken, TimeSpan.FromSeconds(0), "");
+            user.TwitterOAuth = new(twitterUser.Id.ToString(), res.OAuthToken, res.OAuthTokenSecret, TimeSpan.FromSeconds(0), "");
             _db.SaveUser(user);
 
             return CreateJwt(user);
