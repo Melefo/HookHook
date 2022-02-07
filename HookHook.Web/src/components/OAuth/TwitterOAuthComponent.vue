@@ -12,8 +12,8 @@ import { mapActions } from "vuex";
 import TwitterApi from 'twitter-api-v2';
 
 const twitterClient = new TwitterApi({
-    clientId: "Ujd4akZvNlFJZ00tWmpha24yekM6MTpjaQ",
-    clientSecret: "MpiuzIJuZITNmoiB_O7Cl5EUgFhKB7i4YbpeS1-XKVKMnQ7R18"
+    clientId: process.env.VUE_APP_TWITTER_CLIENTID,
+    clientSecret: process.env.VUE_APP_TWITTER_SECRET
 });
 
 export default defineComponent({
