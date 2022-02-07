@@ -6,31 +6,22 @@
       <p>Services</p>
     </div>
     <!-- // todo centrer et colorier les svg pliz -->
-    <div class="text-black mt-2 justify-start">
-        <button class="button bg-[#A3E7EE]">
-            <img class="w-20 h-20 m-auto" alt="twitter" src="@/assets/img/coloredsvg/twitter.svg" />
-        </button>
-        <button class="button bg-[#B4E1DC]">
-            <img class="w-20 h-20 m-auto" alt="spotify" src="@/assets/img/coloredsvg/spotify.svg" />
-        </button>
-        <button class="button bg-[#D9D1EA]">
-            <img class="w-20 h-20 m-auto" alt="discord" src="@/assets/img/coloredsvg/discord.svg" />
-        </button>
-        <button class="button bg-[#F5CDCB]">
-            <img class="w-20 h-20 m-auto" alt="github" src="@/assets/img/coloredsvg/github.svg" />
-        </button>
-        <button class="button bg-[#F8CBAA]">
-            <img class="w-20 h-20 m-auto" alt="google" src="@/assets/img/coloredsvg/google.svg" />
-        </button>
-        <button class="button bg-[#FFFFC7]">
-            <img class="w-20 h-20 m-auto" alt="twitch" src="@/assets/img/coloredsvg/twitch.svg" />
-        </button>
-    </div>
+    <OAuthButtonsComponent/>
     <div class="gridCreator text-black dark:text-white">
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
       <!--AREA CREATOR-->
-      <div class="creatorBG rounded-xl bg-[#3B3F43]"/>
+      <div class="creatorBG rounded-xl bg-[#3B3F43] text-black">
+        <!-- TEST DROPDOWN 2 -->
+        <div id="app">
+          <select v-model="selectedValue">
+            <option disabled value="">Please select one</option>
+            <option v-bind:key="item" v-for="item in filters" :value="item">{{item}}</option>
+          </select>
+        </div>
+        <!-- TEST DROPDOWN HEADLESS UI-->
+        <DropdownComponent/>
+      </div>
       <!--MY AREA-->
       <CarouselComponent/>
     </div>
@@ -80,10 +71,13 @@
 import { defineComponent } from "vue";
 import { parseJwt } from "@/router";
 import { mapGetters } from "vuex";
+
 import CarouselComponent from "@/components/CarouselComponent.vue";
+import DropdownComponent from "@/components/DropdownComponent.vue";
+import OAuthButtonsComponent from "@/components/OAuthButtonsComponent.vue";
 
 export default defineComponent({
-  components: { CarouselComponent },
+  components: { CarouselComponent, DropdownComponent, OAuthButtonsComponent },
   methods: {
 
   },
@@ -92,6 +86,12 @@ export default defineComponent({
     firstName: function() {
         return parseJwt(this.token).given_name;
     }
-  }
+  },
+  data() {
+    return {
+      filters: ["Tweeter: 'j'ai juré c'est une dinguerie'", "Envoyer un message privé à Kev Adams"],
+      selectedValue: null,
+    }
+  },
 });
 </script>
