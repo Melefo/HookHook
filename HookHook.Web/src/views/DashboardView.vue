@@ -73,9 +73,6 @@
       grid-column: 2 / span 1;
       grid-row: 2 / span 2;
       flex-flow: column wrap;
-      display: grid;
-      grid-template-columns: 25% 25% 25% 25%;
-      grid-template-rows: 50% 50%;
     }
 </style>
 

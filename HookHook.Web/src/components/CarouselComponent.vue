@@ -49,7 +49,7 @@ export default defineComponent({
 
 <style>
 .carousel__item {
-  min-height: 200px;
+  min-height: 432.25px;
   width: 100%;
   background-color: #3B3F43;
   color:  white;
@@ -61,7 +61,14 @@ export default defineComponent({
 }
 
 .carousel__slide {
-  padding: 10px;
+  padding: 0px 5px 0px 5px;
+}
+
+.carousel__prev {
+  margin: 105px 0px 0px 30px;
+}
+.carousel__next {
+  margin: 105px 30px 0px 0px;
 }
 
 .carousel__prev,
