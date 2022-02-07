@@ -17,7 +17,7 @@ namespace HookHook.Backend.Controllers
         public Dictionary<string, Func<string[], IAction>> actionTypes = new();
         public Dictionary<string, Func<string[], IReaction>> reactionTypes = new();
 
-        public AreaController(MongoService db)
+        public AreaController(MongoService db, IConfiguration config)
         {
             _db = db;
 
