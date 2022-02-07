@@ -1,4 +1,4 @@
-FROM itachi1706/flutter-alpine-android:latest as build
+FROM mingc/android-build-box:latest as build
 
 #Installing app
 WORKDIR /app

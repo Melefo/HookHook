@@ -1,7 +1,7 @@
 FROM node:lts-alpine as build
 WORKDIR /app
 
-COPY HookHook.Web/package*.json /app
+COPY HookHook.Web/package*.json /app/
 RUN npm install
 
 COPY HookHook.Web/ /app
