@@ -7,6 +7,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { mapActions } from "vuex";
+// import twitterApi from 'twitter-api-v2';
+// const twitterApi = require('twitter-api-v2').default;
+import TwitterApi from 'twitter-api-v2';
+
+const twitterClient = new TwitterApi({
+    clientId: process.env.VUE_APP_TWITTER_CLIENTID,
+    clientSecret: process.env.VUE_APP_TWITTER_SECRET
+});
 
 export default defineComponent({
   data() {
