@@ -1,6 +1,8 @@
+using CoreTweet;
 using HookHook.Backend.Entities;
+using HookHook.Backend.Services;
 using MongoDB.Bson.Serialization.Attributes;
-using Tweetinvi;
+using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
@@ -10,13 +12,13 @@ namespace HookHook.Backend.Area
         public string UserName {get; set;}
 
         [BsonIgnore]
-        public TwitterClient _twitterClient;
+        private Tokens _twitterClient;
 
         public List<long> Followers { get; private init; } = new();
 
         private IConfiguration _config;
 
-        public TwitterFollowUser(string user, IConfiguration config)
+        public TwitterFollowUser(string user, TwitterService service, IConfiguration config)
         {
             UserName = user;
             _config = config;
@@ -24,38 +26,30 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _twitterClient = new TwitterClient(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret);
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
 
-            var userToCheck = await _twitterClient.Users.GetAuthenticatedUserAsync();
+            var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);
 
-            var followers = userToCheck.GetFollowers();
+            foreach (var follower in followers)
+            {
+                if (!follower.Id.HasValue)
+                    continue;
+                if (Followers.Contains(follower.Id.Value))
+                    continue;
 
-            while (!followers.Completed) {
-
-                var page = await followers.NextPageAsync();
-
-                foreach (var follower in page) {
-
-                    if (Followers.Contains(follower.Id)) {
-                        continue;
-                    }
-
-                    // todo save
-                    Followers.Add(follower.Id);
-                    return (follower.Name, true);
-                }
+                // todo save
+                Followers.Add(follower.Id.Value);
+                return (follower.Name, true);
             }
             return (null, false);
         }
 
         public async Task Execute(User user)
         {
-            _twitterClient = new TwitterClient(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret);
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
 
-            var userToFollow = await _twitterClient.UsersV2.GetUserByNameAsync(UserName);
-
-            var currentUser = await _twitterClient.Users.GetAuthenticatedUserAsync();
-            await _twitterClient.Users.FollowUserAsync(userToFollow.User.Id);
+            var currentUser = await _twitterClient.Users.ShowAsync(_twitterClient.UserId);
+            await _twitterClient.Friendships.CreateAsync(UserName);
         }
     }
 }

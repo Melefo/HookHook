@@ -7,14 +7,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { mapActions } from "vuex";
-// import twitterApi from 'twitter-api-v2';
-// const twitterApi = require('twitter-api-v2').default;
-import TwitterApi from 'twitter-api-v2';
-
-const twitterClient = new TwitterApi({
-    clientId: process.env.VUE_APP_TWITTER_CLIENTID,
-    clientSecret: process.env.VUE_APP_TWITTER_SECRET
-});
 
 export default defineComponent({
   data() {
@@ -24,20 +16,17 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["twitter"]),
-    async handleTwitch() {
+    ...mapActions("user", ["twitter", "authorize"]),
+    async handleTwitter() {
       window.removeEventListener("message", this.receiveTwitter);
 
-        // * essayons ceci:
-        // * https://github.com/feross/login-with-twitter
+      var { url, error, errors } = await this.authorize("twitter");
+      if (url === null) {
+        this.errors = errors || null;
+        this.error = error || null;
+        return;
+      }
 
-      var scopes = "";
-
-      const url = `https://api.twitter.com/oauth/request_token?oauth_token=${
-        process.env.VUE_APP_TWITTER_CLIENTID
-      }&callback_url=${
-        process.env.VUE_APP_TWITTER_REDIRECT
-      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes}`;
       let popup = window.open(
         url,
         "_blank",
@@ -47,25 +36,22 @@ export default defineComponent({
         return;
       }
       popup.focus();
+
       window.addEventListener("message", this.receiveTwitter, false);
     },
     async receiveTwitter(event: any) {
       if (event.origin !== window.location.origin) {
         return;
       }
-
-      // * on devrait cross check le state ?
-
       let data = Object.fromEntries(new URLSearchParams(event.data));
-      if (!data.code) {
+      console.log(data);
+      if (!data.oauth_token || !data.oauth_verifier) {
         return;
       }
-      console.log("About to call twitter");
       window.removeEventListener("message", this.receiveTwitter);
-      const { errors, error } = await this.twitch(data.code);
+      const { errors, error } = await this.twitter({token: data.oauth_token, verifier: data.oauth_verifier });
       this.errors = errors || null;
       this.error = error || null;
-      console.log(this.error);
       if (!this.error && !this.errors) {
         this.$router.push("/dashboard");
       }

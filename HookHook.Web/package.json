@@ -13,6 +13,7 @@
     "@tailwindcss/forms": "^0.4.0",
     "core-js": "^3.8.3",
     "discord-oauth2": "^2.9.0",
+    "stream-browserify": "^3.0.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0",

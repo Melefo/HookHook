@@ -1,6 +1,7 @@
+using CoreTweet;
 using HookHook.Backend.Entities;
 using MongoDB.Bson.Serialization.Attributes;
-using Tweetinvi;
+using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
@@ -12,7 +13,7 @@ namespace HookHook.Backend.Area
         public string TweetContent { get; set; }
 
         [BsonIgnore]
-        public TwitterClient _twitterClient;
+        public Tokens _twitterClient;
 
         public List<long> Tweets { get; private init; } = new();
 
@@ -27,9 +28,9 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _twitterClient = new TwitterClient(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret);
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
             // * https://linvi.github.io/tweetinvi/dist/twitter-api-v1.1/tweets.html
-            var tweets = await _twitterClient.TweetsV2.GetTweetsAsync();
+            //var tweets = await _twitterClient.TweetsV2.GetTweetsAsync();
 
 
             return (null, false);
@@ -37,7 +38,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            _twitterClient = new TwitterClient(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret);
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
         }
     }
 }
