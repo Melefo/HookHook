@@ -14,6 +14,7 @@ using TwitchLib.Client;
 using TwitchLib.Api.Helix.Models.Users;
 using ApiException = HookHook.Backend.Exceptions.ApiException;
 using User = HookHook.Backend.Entities.User;
+using Tweetinvi;
 
 namespace HookHook.Backend.Services
 {
@@ -45,6 +46,9 @@ namespace HookHook.Backend.Services
         private readonly string _twitchId;
         private readonly string _twitchSecret;
 
+        private readonly string _twitterId;
+        private readonly string _twitterSecret;
+
         private readonly HttpClient _client = new();
 
         public UserService(MongoService db, IConfiguration config)
@@ -64,6 +68,11 @@ namespace HookHook.Backend.Services
 
             _twitchId = config["Twitch:ClientId"];
             _twitchSecret = config["Twitch:ClientSecret"];
+
+            // * j'utilise mon oauth key + secret ici, jsp
+            _twitterId = config["Twitter:ClientId"];
+            _twitterSecret = config["Twitter:ClientSecret"];
+
         }
 
         /// <summary>
@@ -349,7 +358,7 @@ namespace HookHook.Backend.Services
            [JsonPropertyName("user_id")] public string UserId { get; set; }
         }
 
-        public async Task<string> TwitterOAuth(string code, string codeVerifier, HttpContext httpContext)
+        public async Task<string> TwitterOAuth(string code, string codeVerifier, HttpContext ctx)
         {
             Console.WriteLine(codeVerifier);
 
@@ -364,23 +373,24 @@ namespace HookHook.Backend.Services
 
             if (res == null)
                 throw new ApiException("Failed to call API");
-            // var client = new DiscordRestClient();
-            // await client.LoginAsync(TokenType.Bearer, res.AccessToken);
+            var client = new TwitterClient(_twitterId, _twitterSecret, res.OAuthToken, res.OAuthTokenSecret);
 
-            // User? user = null;
-            // if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
-            //     user = _db.GetUser(ctx.User.Identity.Name);
-            // user ??= _db.GetUserByDiscord(client.CurrentUser.Id.ToString());
-            // user ??= _db.GetUserByIdentifier(client.CurrentUser.Email);
-            // if (user == null)
-            // {
-            //     user = new(client.CurrentUser.Email);
-            //     Create(user);
-            // }
+            User? user = null;
+            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+                user = _db.GetUser(ctx.User.Identity.Name);
+            // * will v1 still work ?
+            var twitterUser = await client.Users.GetAuthenticatedUserAsync();
+            user ??= _db.GetUserByTwitter(twitterUser.Id.ToString());
+            user ??= _db.GetUserByIdentifier(twitterUser.Email);
+            if (user == null)
+            {
+                user = new(twitterUser.Email);
+                Create(user);
+            }
 
-            // user.DiscordOAuth = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
-            //     res.RefreshToken);
-            // _db.SaveUser(user);
+            // * jsp comment récupérer le expires-in cf: https://developer.twitter.com/en/docs/authentication/api-reference/access_token
+            user.TwitterOAuth = new(twitterUser.Id.ToString(), res.OAuthToken, TimeSpan.FromSeconds(0), "");
+            _db.SaveUser(user);
 
             return CreateJwt(user);
         }
