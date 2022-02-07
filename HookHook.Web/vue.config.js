@@ -16,7 +16,10 @@ module.exports = defineConfig({
   configureWebpack: {
     resolve: {
       fallback: {
-        "https": false
+        "https": false,
+        "fs": false,
+        "crypto": require.resolve("crypto-browserify"),
+        "stream": require.resolve("stream-browserify")
       }
     }
   }

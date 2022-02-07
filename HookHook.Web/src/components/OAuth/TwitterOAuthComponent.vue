@@ -7,31 +7,53 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { mapActions } from "vuex";
+// import twitterApi from 'twitter-api-v2';
+// const twitterApi = require('twitter-api-v2').default;
+import TwitterApi from 'twitter-api-v2';
+
+const twitterClient = new TwitterApi({
+    clientId: "Ujd4akZvNlFJZ00tWmpha24yekM6MTpjaQ",
+    clientSecret: "MpiuzIJuZITNmoiB_O7Cl5EUgFhKB7i4YbpeS1-XKVKMnQ7R18"
+});
 
 export default defineComponent({
   data() {
     return {
       error: null,
       errors: null,
+      codeVerifier: "",
+      state: ""
     };
   },
   methods: {
     ...mapActions("user", ["twitter"]),
-    async handleTwitch() {
+    async handleTwitter() {
       window.removeEventListener("message", this.receiveTwitter);
 
         // * essayons ceci:
         // * https://github.com/feross/login-with-twitter
 
-      var scopes = "";
+    const { url: oauthUrl, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(
+        "http://localhost/oauth",
+        {scope: ['tweet.read', 'tweet.write', 'users.read', 'offline.access']}
+    );
 
-      const url = `https://api.twitter.com/oauth/request_token?oauth_token=${
-        process.env.VUE_APP_TWITTER_CLIENTID
-      }&callback_url=${
-        process.env.VUE_APP_TWITTER_REDIRECT
-      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes}`;
+    this.codeVerifier = codeVerifier;
+    this.state = state;
+
+    // console.log(oauthUrl);
+
+    // res.redirect(url);
+
+    // var scopes = "";
+
+    // const url = `https://api.twitter.com/oauth/request_token?oauth_token=${
+    //     process.env.VUE_APP_TWITTER_CLIENTID
+    //   }&callback_url=${
+    //     process.env.VUE_APP_TWITTER_REDIRECT
+    //   }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes}`;
       let popup = window.open(
-        url,
+        oauthUrl,
         "_blank",
         "width=500, height=750, left=20, top=20, popup=true"
       );
@@ -46,14 +68,12 @@ export default defineComponent({
         return;
       }
 
-      // * on devrait cross check le state ?
-
       let data = Object.fromEntries(new URLSearchParams(event.data));
-      if (!data.code) {
+      if (!data.code || data.state !== this.state) {
         return;
       }
       window.removeEventListener("message", this.receiveTwitter);
-      const { errors, error } = await this.twitch(data.code);
+      const { errors, error } = await this.twitter({code: data.code, codeVerifier: this.codeVerifier});
       this.errors = errors || null;
       this.error = error || null;
       if (!this.error && !this.errors) {

@@ -29,8 +29,8 @@
         <TwitchOauth/>
         <GitHubOauth />
         <SpotifyOauth/>
-        <img class="h-10" alt="twitter" src="@/assets/img/twitter.svg" />
-        <DiscordOauth />
+        <TwitterOauth/>
+        <DiscordOauth/>
       </div>
     </Bloc>
     <Bloc class="flex justify-center items-center">
@@ -60,11 +60,12 @@ import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
 import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
 import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
 import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
+import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
 
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: { Bloc, HookHook, Register, Login, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth },
+  components: { Bloc, HookHook, Register, Login, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth },
   methods: {
   },
 });

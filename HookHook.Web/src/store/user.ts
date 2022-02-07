@@ -116,8 +116,8 @@ const user = {
             }
             return {};
         },
-        async twitter({ commit }: any, code: String) {
-            const res = await fetch("/api/user/oauth/twitter?code=" + code, {
+        async twitter({ commit }: any, codes: any) {
+            const res = await fetch(`/api/user/oauth/twitter?code=${codes.code}&codeverifier=${codes.codeVerifier}`, {
                 method: 'POST',
             });
             if (res.status === 500) {
