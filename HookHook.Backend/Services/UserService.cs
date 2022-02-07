@@ -151,6 +151,8 @@ namespace HookHook.Backend.Services
             return tokenHandler.WriteToken(token);
         }
 
+
+
         private class DiscordToken
         {
             [JsonPropertyName("access_token")] public string AccessToken { get; set; }
@@ -336,6 +338,49 @@ namespace HookHook.Backend.Services
 
             user.GitHubOAuth = new(github.Id.ToString(), res.AccessToken);
             _db.SaveUser(user);
+
+            return CreateJwt(user);
+        }
+
+        private class TwitterOauthResult
+        {
+           [JsonPropertyName("oauth_token")] public string OAuthToken { get; set; }
+           [JsonPropertyName("oauth_token_secret")] public string OAuthTokenSecret { get; set; }
+           [JsonPropertyName("user_id")] public string UserId { get; set; }
+        }
+
+        public async Task<string> TwitterOAuth(string code, string codeVerifier, HttpContext httpContext)
+        {
+            Console.WriteLine(codeVerifier);
+
+            // * https://developer.twitter.com/en/docs/authentication/api-reference/access_token
+
+            var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            {
+                new("oauth_token", code),
+                new("oauth_verifier", codeVerifier)
+            });
+            var res = await _client.PostAsync<TwitterOauthResult>("https://api.twitter.com/oauth/access_token", content);
+
+            if (res == null)
+                throw new ApiException("Failed to call API");
+            // var client = new DiscordRestClient();
+            // await client.LoginAsync(TokenType.Bearer, res.AccessToken);
+
+            // User? user = null;
+            // if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+            //     user = _db.GetUser(ctx.User.Identity.Name);
+            // user ??= _db.GetUserByDiscord(client.CurrentUser.Id.ToString());
+            // user ??= _db.GetUserByIdentifier(client.CurrentUser.Email);
+            // if (user == null)
+            // {
+            //     user = new(client.CurrentUser.Email);
+            //     Create(user);
+            // }
+
+            // user.DiscordOAuth = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
+            //     res.RefreshToken);
+            // _db.SaveUser(user);
 
             return CreateJwt(user);
         }

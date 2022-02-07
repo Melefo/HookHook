@@ -52,10 +52,12 @@ export default defineComponent({
       if (!data.code) {
         return;
       }
+      console.log("About to call twitter");
       window.removeEventListener("message", this.receiveTwitter);
       const { errors, error } = await this.twitch(data.code);
       this.errors = errors || null;
       this.error = error || null;
+      console.log(this.error);
       if (!this.error && !this.errors) {
         this.$router.push("/dashboard");
       }

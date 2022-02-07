@@ -65,7 +65,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("oauth/{provider}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code)
+        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code, [FromQuery] string codeVerifier)
         {
             if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -105,6 +105,17 @@ namespace HookHook.Backend.Controllers
                 try
                 {
                     string token = await _service.GitHubOAuth(code, HttpContext);
+
+                    return Ok(new {token});
+                }
+                catch (ApiException ex)
+                {
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
+                }
+            }
+            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase)) {
+                try {
+                    string token = await _service.TwitterOAuth(code, codeVerifier, HttpContext);
 
                     return Ok(new {token});
                 }
