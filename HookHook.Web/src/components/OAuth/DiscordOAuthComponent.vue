@@ -24,7 +24,7 @@ export default defineComponent({
 
       const oauth = new DiscordOauth2({
         clientId: process.env.VUE_APP_DISCORD_CLIENTID,
-        redirectUri: process.env.VUE_APP_DISCORD_REDIRECT,
+        redirectUri: window.location.origin + '/oauth',
       });
 
       const url = oauth.generateAuthUrl({

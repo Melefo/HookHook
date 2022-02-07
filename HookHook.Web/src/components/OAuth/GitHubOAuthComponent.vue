@@ -23,7 +23,7 @@ export default defineComponent({
       const url = `https://github.com/login/oauth/authorize?client_id=${
         process.env.VUE_APP_GITHUB_CLIENTID
       }&redirect_uri=${
-        process.env.VUE_APP_GITHUB_REDIRECT
+        window.location.origin + '/oauth'
       }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=user%20repo`;
       let popup = window.open(
         url,
