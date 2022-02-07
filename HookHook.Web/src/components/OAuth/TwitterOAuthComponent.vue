@@ -72,10 +72,12 @@ export default defineComponent({
       if (!data.code || data.state !== this.state) {
         return;
       }
+      console.log("About to call twitter");
       window.removeEventListener("message", this.receiveTwitter);
       const { errors, error } = await this.twitter({code: data.code, codeVerifier: this.codeVerifier});
       this.errors = errors || null;
       this.error = error || null;
+      console.log(this.error);
       if (!this.error && !this.errors) {
         this.$router.push("/dashboard");
       }
