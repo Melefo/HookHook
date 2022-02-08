@@ -103,6 +103,7 @@ namespace HookHook.Backend.Models
             {
                 Reactions.Add(new Reaction(reaction.Name, reaction.GetCustomAttribute<ServiceAttribute>().Description));
             }
+            Console.WriteLine("debug");
         }
 
         /// <summary>

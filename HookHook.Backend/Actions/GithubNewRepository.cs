@@ -7,7 +7,7 @@ using HookHook.Backend.Attributes;
 namespace HookHook.Backend.Actions
 {
     [Service("github", "new repository is created")]
-    public class GithuNewRepository
+    public class GithuNewRepository : IAction
     {
         public string UserName {get; private init;}
 
