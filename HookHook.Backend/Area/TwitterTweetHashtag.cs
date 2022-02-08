@@ -29,9 +29,19 @@ namespace HookHook.Backend.Area
         public async Task<(string?, bool)> Check(User user)
         {
             _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
-            // * https://linvi.github.io/tweetinvi/dist/twitter-api-v1.1/tweets.html
-            //var tweets = await _twitterClient.TweetsV2.GetTweetsAsync();
 
+            // * you might want to search for a hashtag, and get the latest one
+            // * jsp ce que c'est product et label
+            var tweets = await  _twitterClient.Tweets.SearchAsync(product: "", query: Hashtag, label: "");
+
+            foreach (var tweet in tweets) {
+                if (Tweets.Contains(tweet.Id))
+                    continue;
+
+                // todo save
+                Tweets.Add(tweet.Id);
+                return (tweet.FullText, true);
+            }
 
             return (null, false);
         }
@@ -39,6 +49,8 @@ namespace HookHook.Backend.Area
         public async Task Execute(User user)
         {
             _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
+
+            await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{Hashtag}");
         }
     }
 }
