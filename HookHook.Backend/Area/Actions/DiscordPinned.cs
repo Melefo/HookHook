@@ -1,12 +1,14 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using IReaction = HookHook.Backend.Entities.IReaction;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Area.Actions
 {
+    [Service("discord", "message is pinned")]
     [BsonIgnoreExtraElements]
     public class DiscordPinned : IAction
     {

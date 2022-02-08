@@ -52,14 +52,14 @@ namespace HookHook.Backend.Entities
         public OAuthAccount? GoogleOAuth { get; set; }
         public OAuthAccount? DiscordOAuth { get; set; }
         public OAuthAccount? SpotifyOAuth { get; set; }
-        public OAuthAccount? TwitterOAuth { get; set; }
+        public TwitterAccount? TwitterOAuth { get; set; }
         public OAuthAccount? TwitchOAuth { get; set; }
         public OAuthAccount? GitHubOAuth { get; set; }
 
         public List<OAuthAccount> GoogleServices { get; set; } = new();
         public List<OAuthAccount> DiscordServices { get; set; } = new();
         public List<OAuthAccount> SpotifyServices { get; set; } = new();
-        public List<OAuthAccount> TwitterServices { get; set; } = new();
+        public List<TwitterAccount> TwitterServices { get; set; } = new();
         public List<OAuthAccount> TwitchServices { get; set; } = new();
         public List<OAuthAccount> GitHubServices { get; set; } = new();
 
@@ -88,6 +88,16 @@ namespace HookHook.Backend.Entities
             if (date.HasValue)
                 ExpiresIn = DateTime.UtcNow.Add(date.Value);
             AccessToken = access;
+        }
+    }
+
+    public class TwitterAccount : OAuthAccount
+    {
+        public string OAuthSecret { get; set; }
+
+        public TwitterAccount(string id, string access, string accessSecret, TimeSpan? date = null, string? refresh = null) : base(id, access, date, refresh)
+        {
+            OAuthSecret = accessSecret;
         }
     }
 }

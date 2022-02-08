@@ -27,6 +27,43 @@ namespace HookHook.Backend.Controllers
             _service.GetUsers();
 
         /// <summary>
+        /// Delete an user from database
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <returns>Request Accepted</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("delete/{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public ActionResult Delete(string id)
+        {
+            _service.Delete(id);
+            return Accepted();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("refresh/{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public ActionResult RefreshUser(string id)
+        {
+            _service.Refresh(id);
+            return Accepted();
+        }
+
+        /// <summary>
+        /// Promote user to Admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("promote/{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public ActionResult PromoteUser(string id)
+        {
+            _service.Promote(id);
+            return Accepted();
+        }
+
+        /// <summary>
         /// Register an user to database
         /// </summary>
         /// <param name="form">User informations</param>
@@ -53,10 +90,10 @@ namespace HookHook.Backend.Controllers
             {
                 return ex.Type switch
                 {
-                    TypeUserException.Email => BadRequest(new {errors = new {Email = ex.Message}}),
-                    TypeUserException.Password => BadRequest(new {errors = new {Password = ex.Message}}),
-                    TypeUserException.Username => BadRequest(new {errors = new {Username = ex.Message}}),
-                    _ => BadRequest(new {error = ex.Message})
+                    TypeUserException.Email => BadRequest(new { errors = new { Email = ex.Message } }),
+                    TypeUserException.Password => BadRequest(new { errors = new { Password = ex.Message } }),
+                    TypeUserException.Username => BadRequest(new { errors = new { Username = ex.Message } }),
+                    _ => BadRequest(new { error = ex.Message })
                 };
             }
 
@@ -72,7 +109,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("oauth/{provider}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code)
+        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code, [FromQuery] string? verifier)
         {
             if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -120,8 +157,29 @@ namespace HookHook.Backend.Controllers
                     return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
                 }
             }
+            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase) && verifier != null) {
+                try {
+                    string token = await _service.TwitterOAuth(code, verifier!, HttpContext);
+
+                    return Ok(new {token});
+                }
+                catch (ApiException ex)
+                {
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
+                }
+            }
 
             return BadRequest();
+        }
+
+        [HttpGet("authorize")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<string> Authorize([BindRequired] [FromQuery] string provider)
+        {
+            if (!string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase))
+                return BadRequest();
+            return _service.TwitterAuthorize();
         }
 
         /// <summary>

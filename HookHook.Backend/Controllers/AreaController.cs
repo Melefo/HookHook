@@ -5,6 +5,8 @@ using HookHook.Backend.Area.Reactions;
 using HookHook.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HookHook.Backend.Actions;
+using HookHook.Backend.Reactions;
 
 namespace HookHook.Backend.Controllers
 {
@@ -17,7 +19,7 @@ namespace HookHook.Backend.Controllers
         public Dictionary<string, Func<string[], IAction>> actionTypes = new();
         public Dictionary<string, Func<string[], IReaction>> reactionTypes = new();
 
-        public AreaController(MongoService db)
+        public AreaController(MongoService db, IConfiguration config)
         {
             _db = db;
 
