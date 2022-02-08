@@ -46,10 +46,10 @@ namespace HookHook.Backend.Controllers
             {
                 return ex.Type switch
                 {
-                    TypeUserException.Email => BadRequest(new {errors = new {Email = ex.Message}}),
-                    TypeUserException.Password => BadRequest(new {errors = new {Password = ex.Message}}),
-                    TypeUserException.Username => BadRequest(new {errors = new {Username = ex.Message}}),
-                    _ => BadRequest(new {error = ex.Message})
+                    TypeUserException.Email => BadRequest(new { errors = new { Email = ex.Message } }),
+                    TypeUserException.Password => BadRequest(new { errors = new { Password = ex.Message } }),
+                    TypeUserException.Username => BadRequest(new { errors = new { Username = ex.Message } }),
+                    _ => BadRequest(new { error = ex.Message })
                 };
             }
 
@@ -65,7 +65,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("oauth/{provider}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code, [FromQuery] string codeVerifier)
+        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code, [FromQuery] string? verifier)
         {
             if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -113,9 +113,9 @@ namespace HookHook.Backend.Controllers
                     return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
                 }
             }
-            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase)) {
+            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase) && verifier != null) {
                 try {
-                    string token = await _service.TwitterOAuth(code, codeVerifier, HttpContext);
+                    string token = await _service.TwitterOAuth(code, verifier!, HttpContext);
 
                     return Ok(new {token});
                 }
@@ -126,6 +126,16 @@ namespace HookHook.Backend.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpGet("authorize")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<string> Authorize([BindRequired] [FromQuery] string provider)
+        {
+            if (!string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase))
+                return BadRequest();
+            return _service.TwitterAuthorize();
         }
 
         /// <summary>
