@@ -103,7 +103,6 @@ namespace HookHook.Backend.Models
             {
                 Reactions.Add(new Reaction(reaction.Name, reaction.GetCustomAttribute<ServiceAttribute>().Description));
             }
-            Console.WriteLine("debug");
         }
 
         /// <summary>
@@ -114,12 +113,12 @@ namespace HookHook.Backend.Models
         /// <summary>
         /// Service List of Actions
         /// </summary>
-        List<Action> Actions { get; set; } = new();
+        public List<Action> Actions { get; set; } = new();
 
         /// <summary>
         /// Service List of Actions
         /// </summary>
-        List<Reaction> Reactions { get; set; } = new();
+        public List<Reaction> Reactions { get; set; } = new();
     }
 
     /// <summary>
