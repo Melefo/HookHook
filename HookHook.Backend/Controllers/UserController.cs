@@ -124,6 +124,17 @@ namespace HookHook.Backend.Controllers
                     return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
                 }
             }
+            if (string.Equals(provider, "Google", StringComparison.InvariantCultureIgnoreCase)) {
+                try {
+                    string token = await _service.GoogleOAuth(code, HttpContext);
+
+                    return Ok(new {token});
+                }
+                catch (ApiException ex)
+                {
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
+                }
+            }
 
             return BadRequest();
         }

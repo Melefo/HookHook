@@ -46,6 +46,9 @@ namespace HookHook.Backend.Services
         private readonly string _twitchId;
         private readonly string _twitchSecret;
 
+        private readonly string _googleId;
+        private readonly string _googleSecret;
+
         private readonly HttpClient _client = new();
 
         public UserService(MongoService db, TwitterService twitter, IConfiguration config)
@@ -66,6 +69,9 @@ namespace HookHook.Backend.Services
 
             _twitchId = config["Twitch:ClientId"];
             _twitchSecret = config["Twitch:ClientSecret"];
+
+            _googleId = config["Google:ClientId"];
+            _googleSecret = config["Google:ClientSecret"];
         }
 
         /// <summary>
@@ -155,8 +161,6 @@ namespace HookHook.Backend.Services
 
             return tokenHandler.WriteToken(token);
         }
-
-
 
         private class DiscordToken
         {
@@ -373,6 +377,58 @@ namespace HookHook.Backend.Services
             user.TwitterOAuth = new(tokens.UserId.ToString(), tokens.AccessToken, tokens.AccessTokenSecret);
             _db.SaveUser(user);
 
+            return CreateJwt(user);
+        }
+
+        private class GoogleAuth
+        {
+            [JsonPropertyName("access_token")]
+            public string AccessToken { get; set; }
+            [JsonPropertyName("refresh_token")]
+            public string RefreshToken { get; set; }
+            [JsonPropertyName("expire_in")]
+            public int ExpiresIn { get; set; }
+            public string Scope { get; set; }
+            [JsonPropertyName("token_type")]
+            public string TokenType { get; set; }
+            [JsonPropertyName("id_token")]
+            public string IdToken { get; set; }
+        }
+
+        private class GoogleProfile
+        {
+            [JsonPropertyName("email")]
+            public string Email { get; set; }
+        }
+
+
+        public async Task<string> GoogleOAuth(string code, HttpContext ctx)
+        {
+            var res = await _client.PostAsync<GoogleAuth>($"https://oauth2.googleapis.com/token?code={code}&client_id={_googleId}&client_secret={_googleSecret}&redirect_uri=postmessage&grant_type=authorization_code");
+
+            if (res == null)
+                throw new ApiException("Failed to call API");
+
+            // * get user info by decoding the jwt
+            JwtSecurityTokenHandler tokenHandler = new();
+            string? id = tokenHandler.ReadJwtToken(res.IdToken).Payload["sub"].ToString();
+            string? email = tokenHandler.ReadJwtToken(res.IdToken).Payload["email"].ToString();
+
+            if (id == null || email == null)
+                throw new ApiException("API did not return the necessary arguments");
+
+            User? user = null;
+            if (ctx.User.Identity is {IsAuthenticated: true, Name: { }})
+                user = _db.GetUser(ctx.User.Identity.Name);
+            user ??=  _db.GetUserByGoogle(id);
+            if (user == null)
+            {
+                user = new(email);
+                Create(user);
+            }
+
+            user.GoogleOAuth = new(id, res.AccessToken);
+            _db.SaveUser(user);
             return CreateJwt(user);
         }
     }
