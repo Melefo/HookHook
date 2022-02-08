@@ -4,16 +4,19 @@ using Discord.WebSocket;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using IReaction = HookHook.Backend.Entities.IReaction;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
     [Service("discord", "message is pinned")]
+    [BsonIgnoreExtraElements]
     public class DiscordPinned : IAction
     {
         public ulong Guild { get; private init; }
         public ulong Channel { get; private init; }
         public List<ulong> PinnedMessages { get; private init; } = new();
 
+        [BsonIgnore]
         private DiscordRestClient _client = new();
 
         public DiscordPinned(ulong guild, ulong channel)
@@ -24,7 +27,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(User user)
         {
-            await _client.LoginAsync(TokenType.Bot, user.Discord.AccessToken);
+            await _client.LoginAsync(TokenType.Bot, user.DiscordOAuth.AccessToken);
 
             var guild = await _client.GetGuildAsync(Guild);
             var channel = await guild.GetTextChannelAsync(Channel);

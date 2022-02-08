@@ -3,9 +3,9 @@ using System.Text;
 using Discord;
 using Discord.Rest;
 using Discord.Webhook;
-using HookHook.Backend.Actions;
+using HookHook.Backend.Area.Actions;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Reactions;
+using HookHook.Backend.Area.Reactions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HookHook.Backend.Controllers
@@ -15,14 +15,11 @@ namespace HookHook.Backend.Controllers
     public class DiscordController: ControllerBase
     {
         [HttpPost]
-        public async Task Post(string token, ulong guild, ulong channel, string url, string message)
+        public async Task Post(string url, string message)
         {
-            // var user = new User
-            // {
-            //     DiscordToken = token
-            // };
-            // IAction action = new DiscordPinned(guild, channel);
-            // await action.Check(user, new DiscordWebhook(url, message));
+            var reaction = new DiscordWebhook(url, message);
+
+            await reaction.Execute(new User("test@bonjour.xyz"));
         }
     }
 }

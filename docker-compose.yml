@@ -8,6 +8,23 @@ services:
       - "8080:80"
     depends_on:
       - "mongo"
+    environment:
+      - Mongo__Client=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/
+      - Mongo__Database=${MONGO_DATABASE}
+      - JwtKey=${JWTKEY}
+      - Discord__ClientId=${DISCORD_CLIENTID}
+      - Discord__ClientSecret=${DISCORD_CLIENTSECRET}
+      - Discord__Redirect=${DISCORD_REDIRECT}
+      - GitHub__ClientId=${GITHUB_CLIENTID}
+      - GitHub__ClientSecret=${GITHUB_CLIENTSECRET}
+      - Spofity__ClientId=${SPOTIFY_CLIENTID}
+      - Spofity__ClientSecret=${SPOTIFY_CLIENTSECRET}
+      - Twitch__ClientId=${TWITCH_CLIENTID}
+      - Twitch__ClientSecret=${TWITCH_CLIENTSECRET}
+      - Twitter__ClientId=${TWITTER_CLIENTID}
+      - Twitter__ClientSecret=${TWITTER_CLIENTSECRET}
+      - Google__ClientId=${GOOGLE_CLIENTID}
+      - Google__ClientSecret=${GOOGLE_CLIENTSECRET}
   client_mobile:
     build:
       context: .
@@ -24,7 +41,15 @@ services:
       - "server"
       - "client_mobile"
     volumes:
-      - "apk:/app/public"
+      - "apk:/app/mobile"
+    environment:
+      - BACKEND_URL=http://server:80/
+      - VUE_APP_DISCORD_CLIENTID=${DISCORD_CLIENTID}
+      - VUE_APP_GITHUB_CLIENTID=${GITHUB_CLIENTID}
+      - VUE_APP_SPOTIFY_CLIENTID=${SPOTIFY_CLIENTID}
+      - VUE_APP_TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - VUE_APP_TWITTER_CLIENTID=${TWITTER_CLIENTID}
+      - VUE_APP_GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
   mongo:
     image: mongo
     restart: always

@@ -1,15 +1,18 @@
 ﻿using Discord.Webhook;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
+using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Area.Reactions
 {
     [Service("discord", "send message inside a webhook")]
+    [BsonIgnoreExtraElements]
     public class DiscordWebhook : IReaction
     {
         public string Url { get; private init; }
         public string Message { get; private init; }
 
+        [BsonIgnore]
         private DiscordWebhookClient _client;
 
         public DiscordWebhook(string url, string message)

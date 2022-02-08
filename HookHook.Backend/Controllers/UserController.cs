@@ -81,6 +81,25 @@ namespace HookHook.Backend.Controllers
                 }
             }
 
+            if (string.Equals(provider, "Spotify", StringComparison.InvariantCultureIgnoreCase)) {
+                try {
+                    string token = await _service.SpotifyOAuth(code, HttpContext);
+
+                    return Ok(new {token});
+                } catch (ApiException ex) {
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
+                }
+            }
+
+            if (string.Equals(provider, "Twitch", StringComparison.InvariantCultureIgnoreCase)) {
+                try {
+                    string token = await _service.TwitchOAuth(code, HttpContext);
+
+                    return (Ok(new {token}));
+                } catch (ApiException e) {
+                    return (StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = e.Message}));
+                }
+            }
             if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
             {
                 try
