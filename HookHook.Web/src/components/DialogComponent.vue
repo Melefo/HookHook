@@ -1,5 +1,5 @@
 <template>
-  <button type="button" :class="`button bg-[${bgColor}]`" @click="openModal">
+  <button type="button" class="button" :style="{ 'background-color': bgColor }" @click="openModal">
     <img class="w-20 h-20 m-auto" :src="require(`@/assets/img/coloredsvg/${src}`)"/>
   </button>
   <TransitionRoot appear :show="IsOpen" as="template">
@@ -9,9 +9,10 @@
           <span class="inline-block h-screen align-middle" aria-hidden="true"/>
           <TransitionChild as="template">
             <div
-              :class="`inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-[${bgColor}] shadow-xl rounded-2xl`"
+              :class="`inline-block w-full max-w-[35%] h-[400px] p-4 my-8 overflow-hidden text-center align-middle transition-all transform shadow-xl rounded-2xl`"
+              :style="{ 'background-color': bgColor }"
             >
-              <DialogTitle as="h3" class="text-lg font-medium leading-6 text-grey-800">
+              <DialogTitle as="h3" class=" text-lg font-bold leading-6 text-grey-800">
                 {{ text }}
               </DialogTitle>
               <div class="mt-2">
