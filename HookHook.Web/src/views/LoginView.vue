@@ -25,7 +25,7 @@
     <Bloc class="flex flex-col justify-center items-center">
       <Login />
       <div class="grid grid-cols-3 sm:grid-cols-6 gap-4 mt-8">
-        <img class="h-10" alt="google" src="@/assets/img/google.svg" />
+        <GoogleOauth/>
         <TwitchOauth/>
         <GitHubOauth />
         <SpotifyOauth/>
@@ -61,11 +61,12 @@ import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
 import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
 import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
 import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
+import GoogleOauth from '@/components/OAuth/GoogleOAuthComponent.vue';
 
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  components: { Bloc, HookHook, Register, Login, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth },
+  components: { Bloc, HookHook, Register, Login, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
   methods: {
   },
 });
