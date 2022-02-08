@@ -3,6 +3,7 @@ import Home from '@/views/HomeView.vue'
 import Login from '@/views/LoginView.vue'
 import Dashboard from '@/views/DashboardView.vue'
 import OAuth from '@/views/OAuthView.vue'
+import Admin from '@/views/AdminView.vue'
 import store from '@/store'
 
 const routes = [
@@ -34,6 +35,14 @@ const routes = [
     path: '/oauth',
     name: 'oauth',
     component: OAuth
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: Admin,
+    meta: {
+      onlyAdmin: true
+    }
   }
 ]
 
@@ -58,7 +67,7 @@ router.beforeEach((to, from, next) => {
 
 declare interface Jwt {
   email: String,
-  Role: String,
+  role: String,
   unique_name: String,
   given_name: String,
   nbf: Date,

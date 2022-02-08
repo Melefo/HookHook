@@ -48,6 +48,9 @@ const user = {
             }
             return {};
         },
+        async logout({ commit }: any) {
+            commit('login', null);
+        },
         async discord({ commit }: any, code: String) {
             const res = await fetch("/api/user/oauth/discord?code=" + code, {
                 method: 'POST',
@@ -122,7 +125,7 @@ const user = {
             return !!state.token;
         },
         isAdmin(state: any): Boolean {
-            return !!state.token && parseJwt(state.token).Role === "Admin";
+            return !!state.token && parseJwt(state.token).role === "Admin";
         },
         token(state: any): String {
             return state.token;
