@@ -57,7 +57,7 @@ export default defineComponent({
     },
     data: function() {
         return {
-            users: [],
+            users: [] as any[],
             error: null,
             errors: null
         }
