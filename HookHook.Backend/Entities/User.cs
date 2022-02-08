@@ -7,6 +7,7 @@ namespace HookHook.Backend.Entities
     /// <summary>
     /// User Model
     /// </summary>
+    [BsonIgnoreExtraElements]
     public class User
     {
         /// <summary>
@@ -62,7 +63,7 @@ namespace HookHook.Backend.Entities
         public List<OAuthAccount> TwitchServices { get; set; } = new();
         public List<OAuthAccount> GitHubServices { get; set; } = new();
 
-
+        [BsonIgnore]
         public List<Area> Areas {get; set;} = new();
 
         /// <summary>

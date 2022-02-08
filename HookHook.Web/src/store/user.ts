@@ -1,4 +1,5 @@
 import { parseJwt } from "@/router";
+import { authHeader } from "@/store";
 
 const user = {
     namespaced: true,
@@ -114,6 +115,25 @@ const user = {
                 const { token, error, errors } = await res.json();
                 if (token) {
                     commit('login', token);
+                }
+                return { error, errors };
+            }
+            return {};
+        },
+        async all({ commit }: any) {
+            const res = await fetch("/api/user/all", {
+                method: 'GET',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                const json = await res.json();
+                const { error, errors } = json;
+                if (error === null && errors === null) {
+                    return json;
                 }
                 return { error, errors };
             }

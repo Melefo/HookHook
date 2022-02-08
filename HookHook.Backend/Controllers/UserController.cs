@@ -2,6 +2,7 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -18,6 +19,12 @@ namespace HookHook.Backend.Controllers
 
         public UserController(UserService service) =>
             _service = service;
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<List<User>> All() =>
+            _service.GetUsers();
 
         /// <summary>
         /// Register an user to database
