@@ -92,10 +92,10 @@ BEGIN
             VALUE "CompanyName", "com.melefo" "\0"
             VALUE "FileDescription", "Mobile client for HookHook" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "hookhok" "\0"
+            VALUE "InternalName", "hookhook" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.melefo. All rights reserved." "\0"
-            VALUE "OriginalFilename", "hookhok.exe" "\0"
-            VALUE "ProductName", "hookhok" "\0"
+            VALUE "OriginalFilename", "hookhook.exe" "\0"
+            VALUE "ProductName", "hookhook" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

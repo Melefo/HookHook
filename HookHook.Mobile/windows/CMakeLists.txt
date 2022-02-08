@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
-project(hookhok LANGUAGES CXX)
+project(hookhook LANGUAGES CXX)
 
-set(BINARY_NAME "hookhok")
+set(BINARY_NAME "hookhook")
 
 cmake_policy(SET CMP0063 NEW)
 
