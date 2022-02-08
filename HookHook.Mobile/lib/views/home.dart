@@ -29,19 +29,24 @@ class _Home extends StateMVC<HomeView> {
                 padding: EdgeInsets.only(top: 70),
                 child: Text('HookHook', textAlign: TextAlign.left,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45)),
               ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
-                  child: Text('Hello, Arthur', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                ),
-              ),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(30, 10, 0, 20),
-                  child: Text('Welcome back !', style: TextStyle(fontSize: 20, color: Color(0xFF6A6A6A))),
-                ),
+              Row(
+                children: const [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(30, 30, 0, 0),
+                      child: Text('Hello, Arthur', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(30, 10, 0, 20),
+                      child: Text('Welcome back !', style: TextStyle(fontSize: 20, color: Color(0xFF6A6A6A))),
+                    ),
+                  ),
+
+                ],
               ),
               const HList(height: 110, widget: ServicesList(itemWidth: 110)),
               const Padding(
@@ -56,7 +61,7 @@ class _Home extends StateMVC<HomeView> {
                 padding: EdgeInsets.fromLTRB(0, 13, 0, 4),
                 child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontSize: 15)),
               ),
-              const HList(height: 150, widget: YourAreaList(itemWidth: 150)),
+              const HList(height: 210, widget: YourAreaList(itemWidth: 300)),
             ],
           ),
       );

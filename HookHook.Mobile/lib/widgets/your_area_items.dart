@@ -16,10 +16,11 @@ class YourAreaList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         children: <Widget> [
           ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),
-          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const Icon(Icons.category, color: Colors.orange,)),
-          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const Icon(Icons.category, color: Colors.orange,)),
-          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const Icon(Icons.category, color: Colors.orange,)),
-          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const Icon(Icons.category, color: Colors.orange,))
+          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),
+          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),
+          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),
+          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),
+          ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),
         ]
     );
   }
@@ -39,22 +40,31 @@ class AreaItem extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(service, style: TextStyle(color: Colors.white)),
-            Text(" " + action, style: TextStyle(color: Colors.white)),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(service, style: TextStyle(color: Colors.white)),
+              Text(" " + action, style: TextStyle(color: Colors.white)),
+            ],
+          ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.category, color: Colors.orange,),
-            Icon(Icons.arrow_right_alt_rounded, color: Colors.orange,),
-            Icon(Icons.category, color: Colors.orange,),
-          ],
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.category, color: Colors.orange,),
+              Icon(Icons.arrow_right_alt_rounded, color: Colors.orange,),
+              Icon(Icons.category, color: Colors.orange,),
+            ],
+          ),
         ),
-        Text(dateTime, style: TextStyle(color: Colors.white)),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Text(dateTime, style: TextStyle(color: Colors.white)),
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -91,6 +101,18 @@ class AreaItem extends StatelessWidget {
                 icon: const Icon(Icons.delete),
                 onPressed: () {
                   print("Trash");
+                },
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.white
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  print("Close");
                 },
               ),
             ),
