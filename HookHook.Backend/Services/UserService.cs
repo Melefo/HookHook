@@ -26,6 +26,7 @@ namespace HookHook.Backend.Services
         /// Database access
         /// </summary>
         private readonly MongoService _db;
+        private readonly TwitterService _twitter;
 
         /// <summary>
         /// JWT key
@@ -47,9 +48,10 @@ namespace HookHook.Backend.Services
 
         private readonly HttpClient _client = new();
 
-        public UserService(MongoService db, IConfiguration config)
+        public UserService(MongoService db, TwitterService twitter, IConfiguration config)
         {
             _db = db;
+            _twitter = twitter;
             _key = config["JwtKey"];
 
             _discordId = config["Discord:ClientId"];
@@ -131,15 +133,18 @@ namespace HookHook.Backend.Services
 
             var tokenKey = Encoding.UTF8.GetBytes(_key);
 
+            var claims = new List<Claim>()
+            {
+                new(ClaimTypes.Role, user.Role),
+                new(ClaimTypes.Name, user.Id),
+            };
+            if (user.Email != null)
+                claims.Add(new(ClaimTypes.Email, user.Email));
+            if (user.FirstName != null && user.LastName != null)
+                claims.Add(new(ClaimTypes.GivenName, $"{user.FirstName} {user.LastName}"));
             SecurityTokenDescriptor tokenDescriptor = new()
             {
-                Subject = new(new Claim[]
-                {
-                    new(ClaimTypes.Email, user.Email),
-                    new(ClaimTypes.Role, user.Role),
-                    new(ClaimTypes.Name, user.Id),
-                    new(ClaimTypes.GivenName, $"{user.FirstName} {user.LastName}")
-                }),
+                Subject = new(claims),
 
                 Expires = DateTime.UtcNow.AddHours(1),
 
@@ -150,6 +155,8 @@ namespace HookHook.Backend.Services
 
             return tokenHandler.WriteToken(token);
         }
+
+
 
         private class DiscordToken
         {
@@ -335,6 +342,35 @@ namespace HookHook.Backend.Services
             }
 
             user.GitHubOAuth = new(github.Id.ToString(), res.AccessToken);
+            _db.SaveUser(user);
+
+            return CreateJwt(user);
+        }
+
+        public string TwitterAuthorize() =>
+            _twitter.Authorize();
+
+        public async Task<string> TwitterOAuth(string code, string verifier, HttpContext ctx)
+        {
+            var tokens = await _twitter.Token(code, verifier);
+
+            if (tokens == null)
+                throw new ApiException("Failed to call API");
+
+            User? user = null;
+            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+                user = _db.GetUser(ctx.User.Identity.Name);
+            var twitter = await tokens.Users.ShowAsync(tokens.UserId);
+            user ??= _db.GetUserByTwitter(tokens.UserId.ToString());
+            user ??= _db.GetUserByIdentifier(twitter.Email);
+            if (user == null)
+            {
+                user = new(twitter.Email);
+                Create(user);
+            }
+
+            // * jsp comment récupérer le expires-in cf: https://developer.twitter.com/en/docs/authentication/api-reference/access_token
+            user.TwitterOAuth = new(tokens.UserId.ToString(), tokens.AccessToken, tokens.AccessTokenSecret);
             _db.SaveUser(user);
 
             return CreateJwt(user);

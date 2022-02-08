@@ -15,7 +15,9 @@
     <PackageReference Include="SpotifyAPI.Web" Version="6.2.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
     <PackageReference Include="TwitchLib" Version="3.3.0" />
+    <PackageReference Include="CoreTweet" Version="1.0.0.483" />
   </ItemGroup>
 
 </Project>
