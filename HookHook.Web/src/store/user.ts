@@ -1,4 +1,5 @@
 import { parseJwt } from "@/router";
+import { authHeader } from "@/store";
 
 const user = {
     namespaced: true,
@@ -47,6 +48,9 @@ const user = {
                 return { error, errors };
             }
             return {};
+        },
+        async logout({ commit }: any) {
+            commit('login', null);
         },
         async discord({ commit }: any, code: String) {
             const res = await fetch("/api/user/oauth/discord?code=" + code, {
@@ -150,6 +154,43 @@ const user = {
                 return { error, errors };
             }
             return {};
+        },
+        async all({ commit }: any) {
+            const res = await fetch("/api/user/all", {
+                method: 'GET',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                const json = await res.json();
+                return json;
+            }
+            if (contentType && contentType.indexOf("application/problem+json") !== -1) {
+                const json = await res.json();
+                return { error: json.error, errors: json.errors };
+            }
+            return {};
+        },
+        del({ commit }: any, id: string) {
+            fetch("/api/user/delete/" + id, {
+                method: "DELETE",
+                headers: authHeader()
+            })
+        },
+        promote({ commit }: any, id: string) {
+            fetch("/api/user/promote/" + id, {
+                method: "PATCH",
+                headers: authHeader()
+            })
+        },
+        refresh({ commit }: any, id: string) {
+            fetch("/api/user/refresh/" + id, {
+                method: "PATCH",
+                headers: authHeader()
+            })
         }
     },
     getters: {
@@ -157,7 +198,7 @@ const user = {
             return !!state.token;
         },
         isAdmin(state: any): Boolean {
-            return !!state.token && parseJwt(state.token).Role === "Admin";
+            return !!state.token && parseJwt(state.token).role === "Admin";
         },
         token(state: any): String {
             return state.token;
