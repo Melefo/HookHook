@@ -100,6 +100,9 @@ namespace HookHook.Backend.Services
 
         public User? GetUserByTwitch(string id) =>
             _usersCollection.Find(x => x.TwitchOAuth != null && x.TwitchOAuth.UserId == id).SingleOrDefault();
+
+        public User? GetUserByTwitter(string id) =>
+            _usersCollection.Find(x => x.TwitterOAuth != null && x.TwitterOAuth.UserId == id).SingleOrDefault();
     }
 
 }

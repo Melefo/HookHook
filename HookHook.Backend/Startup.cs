@@ -29,8 +29,8 @@ namespace HookHook.Backend
         /// <param name="services">Where to register services</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(new MongoService(Configuration));
-
+            services.AddSingleton<MongoService>();
+            services.AddSingleton<TwitterService>();
             services.AddScoped<UserService>();
             // services.AddSingleton<GithubService>();
 
