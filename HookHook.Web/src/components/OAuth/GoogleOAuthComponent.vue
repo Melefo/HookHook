@@ -20,7 +20,7 @@ export default defineComponent({
     async handleGoogle() {
 
         try {
-            console.log(this);
+            // console.log(Vue3GoogleOauth)
             // const code = await this.$gAuth.getAuthCode();
             // const { error, errors } = await this.google(code);
             // this.error = error;
