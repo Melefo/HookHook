@@ -5,6 +5,8 @@ using HookHook.Backend.Area.Reactions;
 using HookHook.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HookHook.Backend.Actions;
+using HookHook.Backend.Reactions;
 
 namespace HookHook.Backend.Controllers
 {

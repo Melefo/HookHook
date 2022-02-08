@@ -3,6 +3,7 @@ using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
 using MongoDB.Bson.Serialization.Attributes;
+using HookHook.Backend.Attributes;
 
 namespace HookHook.Backend.Area.Actions
 {
@@ -25,6 +26,7 @@ namespace HookHook.Backend.Area.Actions
         public CommitObject ?Commit {get; set;}
     }
 
+    [Service("github", "new commit is done")]
     [BsonIgnoreExtraElements]
     public class GithubNewCommit : IAction
     {

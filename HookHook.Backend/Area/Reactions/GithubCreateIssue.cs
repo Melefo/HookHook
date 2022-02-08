@@ -5,11 +5,13 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using System.Net.Http.Headers;
 using Octokit;
+using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Area.Reactions
+namespace HookHook.Backend.Reactions
 {
     [BsonIgnoreExtraElements]
+    [Service("github", "create a new issue")]
     public class GithubCreateIssue : IReaction
     {
         public string UserName {get; private init;}

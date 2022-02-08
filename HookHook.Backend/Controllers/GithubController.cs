@@ -5,6 +5,7 @@ using HookHook.Backend.Models.Github;
 using HookHook.Backend.Services;
 using HookHook.Backend.Exceptions;
 using Microsoft.AspNetCore.Authorization;
+using HookHook.Backend.Actions;
 
 namespace HookHook.Backend.Controllers
 {
