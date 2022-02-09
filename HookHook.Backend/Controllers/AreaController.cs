@@ -19,7 +19,7 @@ namespace HookHook.Backend.Controllers
         public Dictionary<string, Func<string[], IAction>> actionTypes = new();
         public Dictionary<string, Func<string[], IReaction>> reactionTypes = new();
 
-        public AreaController(MongoService db, IConfiguration config)
+        public AreaController(MongoService db, TwitterService twitterService, IConfiguration config)
         {
             _db = db;
 
@@ -31,6 +31,8 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
             actionTypes.Add("TwitchLiveStarted", (string[] args) => new TwitchLiveStarted(args[0]));
             actionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
+            actionTypes.Add("TwitterFollowUser", (string[] args) => new TwitterFollowUser(args[0], twitterService, config));
+            actionTypes.Add("TwitterTweetHashtag", (string[] args) => new TwitterTweetHashtag(args[0], config));
 
             reactionTypes.Add("DiscordWebhook", (string[] args) => new DiscordWebhook(args[0], args[1]));
             reactionTypes.Add("GithubCreateRepository", (string[] args) => new GithubCreateRepository(args[0], args[1]));
@@ -38,6 +40,8 @@ namespace HookHook.Backend.Controllers
             reactionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
             reactionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
             reactionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
+            reactionTypes.Add("TwitterFollowUser", (string[] args) => new TwitterFollowUser(args[0], twitterService, config));
+            reactionTypes.Add("TwitterTweetHashtag", (string[] args) => new TwitterTweetHashtag(args[0], config, args[1]));
         }
 
         Entities.Area CreateEntityFromModel(Models.Area area)

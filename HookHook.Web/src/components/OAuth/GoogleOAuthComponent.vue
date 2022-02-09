@@ -31,6 +31,7 @@ export default defineComponent({
       }&state=${Math.random().toString(36).slice(2)}
       &response_type=code
       &scope=${scopes}
+      &access_type=offline
       &nonce=${Math.random().toString(36).slice(2)}`;
       let popup = window.open(
         url,

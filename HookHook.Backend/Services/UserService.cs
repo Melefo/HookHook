@@ -421,13 +421,13 @@ namespace HookHook.Backend.Services
             if (ctx.User.Identity is {IsAuthenticated: true, Name: { }})
                 user = _db.GetUser(ctx.User.Identity.Name);
             user ??=  _db.GetUserByGoogle(id);
-            if (user == null)
-            {
+            user ??=  _db.GetUserByIdentifier(email);
+            if (user == null) {
                 user = new(email);
                 Create(user);
             }
 
-            user.GoogleOAuth = new(id, res.AccessToken);
+            user.GoogleOAuth = new(id, res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken);
             _db.SaveUser(user);
             return CreateJwt(user);
         }
