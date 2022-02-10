@@ -14,7 +14,7 @@ namespace HookHook.Backend.Area
         [BsonIgnore]
         public YouTubeService _youtubeService;
 
-        public List<long> Videos { get; private init; } = new();
+        public List<string> Videos { get; private init; } = new();
 
         private IConfiguration _config;
 
@@ -35,15 +35,17 @@ namespace HookHook.Backend.Area
 
             var uploads = wantedChannel.ContentDetails.RelatedPlaylists.Uploads;
 
-            var videos = youtubeClient.Playlists.List(uploads);
+            // var videos = youtubeClient.Playlists.List(uploads);
+            var videosRequest = youtubeClient.PlaylistItems.List(uploads);
+            var videos = videosRequest.Execute();
 
-            foreach (var tweet in tweets) {
-                if (Tweets.Contains(tweet.Id))
+            foreach (var video in videos.Items) {
+                if (Videos.Contains(video.Id))
                     continue;
 
                 // todo save
-                Tweets.Add(tweet.Id);
-                return (tweet.FullText, true);
+                Videos.Add(video.Id);
+                return (video.Snippet.Title, true);
             }
 
             return (null, false);
