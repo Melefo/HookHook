@@ -43,6 +43,8 @@ namespace HookHook.Backend.Controllers
             reactionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
             reactionTypes.Add("TwitterFollowUser", (string[] args) => new TwitterFollowUser(args[0], twitterService, config));
             reactionTypes.Add("TwitterTweetHashtag", (string[] args) => new TwitterTweetHashtag(args[0], config, args[1]));
+            reactionTypes.Add("YoutubePostComment", (string[] args) => new YoutubePostComment(args[0], args[1], youtubeService));
+
         }
 
         Entities.Area CreateEntityFromModel(Models.Area area)

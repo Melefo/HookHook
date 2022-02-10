@@ -48,7 +48,7 @@ namespace HookHook.Backend.Services
                         ClientSecret = _googleSecret
                     },
                     // ! jsp quel scope permet de commenter quelque chose
-                    Scopes = new[] { Scope.YoutubeReadonly, Scope.Youtube, Scope.Youtubepartner, Scope.YoutubeUpload }
+                    Scopes = new[] { Scope.YoutubeReadonly, Scope.Youtube, Scope.Youtubepartner, Scope.YoutubeUpload, Scope.YoutubeForceSsl }
                 }), user.GoogleOAuth.UserId, new TokenResponse()
                 {
                     RefreshToken = user.GoogleOAuth.RefreshToken,
