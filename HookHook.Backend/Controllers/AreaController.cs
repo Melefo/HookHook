@@ -19,7 +19,7 @@ namespace HookHook.Backend.Controllers
         public Dictionary<string, Func<string[], IAction>> actionTypes = new();
         public Dictionary<string, Func<string[], IReaction>> reactionTypes = new();
 
-        public AreaController(MongoService db, TwitterService twitterService, IConfiguration config)
+        public AreaController(MongoService db, TwitterService twitterService, YouTubeService youtubeService, IConfiguration config)
         {
             _db = db;
 
@@ -33,6 +33,7 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
             actionTypes.Add("TwitterFollowUser", (string[] args) => new TwitterFollowUser(args[0], twitterService, config));
             actionTypes.Add("TwitterTweetHashtag", (string[] args) => new TwitterTweetHashtag(args[0], config));
+            actionTypes.Add("YoutubeVideoPublished", (string[] args) => new YoutubeVideoPublished(args[0], youtubeService));
 
             reactionTypes.Add("DiscordWebhook", (string[] args) => new DiscordWebhook(args[0], args[1]));
             reactionTypes.Add("GithubCreateRepository", (string[] args) => new GithubCreateRepository(args[0], args[1]));
