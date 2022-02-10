@@ -1,16 +1,20 @@
 import "package:hookhook/views/home.dart";
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/view.dart'
     show AppMVC, AppState, AppStatefulWidgetMVC;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Hookhook());
+  final backend = await Backend.init();
+  runApp(Hookhook(backend: backend));
 }
 
 class Hookhook extends AppMVC {
-  Hookhook({Key? key}) : super(key: key);
+  Hookhook({Key? key, required this.backend}) : super(key: key);
+
+  Backend backend;
 
   @override
   Widget build(BuildContext context) =>
