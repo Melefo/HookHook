@@ -1,9 +1,11 @@
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using MongoDB.Bson.Serialization.Attributes;
 using TwitchLib.Api;
 
 namespace HookHook.Backend.Area
 {
+    [Service("twitch", "Follow a twitch channel")]
     [BsonIgnoreExtraElements]
     public class TwitchFollowChannel: IAction, IReaction
     {
