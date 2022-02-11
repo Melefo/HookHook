@@ -2,6 +2,7 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -18,6 +19,49 @@ namespace HookHook.Backend.Controllers
 
         public UserController(UserService service) =>
             _service = service;
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult<List<User>> All() =>
+            _service.GetUsers();
+
+        /// <summary>
+        /// Delete an user from database
+        /// </summary>
+        /// <param name="id">User id</param>
+        /// <returns>Request Accepted</returns>
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("delete/{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public ActionResult Delete(string id)
+        {
+            _service.Delete(id);
+            return Accepted();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("refresh/{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public ActionResult RefreshUser(string id)
+        {
+            _service.Refresh(id);
+            return Accepted();
+        }
+
+        /// <summary>
+        /// Promote user to Admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("promote/{id}")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        public ActionResult PromoteUser(string id)
+        {
+            _service.Promote(id);
+            return Accepted();
+        }
 
         /// <summary>
         /// Register an user to database

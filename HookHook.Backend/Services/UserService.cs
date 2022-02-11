@@ -95,6 +95,29 @@ namespace HookHook.Backend.Services
             _db.CreateUser(user);
         }
 
+        public void Delete(string id) =>
+            _db.DeleteUser(id);
+
+        /// <summary>
+        /// Promote an User to Admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool Promote(string id)
+        {
+            User user = _db.GetUser(id);
+            user.Role = user.Role == "Admin" ? "User" : "Admin";
+
+            return _db.SaveUser(user);
+        }
+
+        public async Task Refresh(string id)
+        {
+            User user = _db.GetUser(id);
+            foreach (var area in user.Areas)
+                await area.Launch(user);
+        }
+
         public void Register(User user)
         {
             var existing = _db.GetUserByIdentifier(user.Email);
@@ -189,21 +212,6 @@ namespace HookHook.Backend.Services
             [JsonPropertyName("token_type")] public string TokenType { get; set; }
         }
 
-        // private class WrappedUsers
-        // {
-        //     [JsonPropertyName("data")] public TwitchUser[] Users{get; set;}
-        // }
-
-        // private class TwitchUser
-        // {
-        //     [JsonPropertyName("id")] public string Id { get; set; }
-        //     [JsonPropertyName("login")] public string Login { get; set; }
-        //     [JsonPropertyName("display_name")] public string DisplayName { get; set; }
-        //     [JsonPropertyName("description")] public string Description { get; set; }
-        //     [JsonPropertyName("email")] public string Email { get; set; }
-
-        // }
-
         public async Task<string> TwitchOAuth(string code, HttpContext ctx)
         {
             var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
@@ -223,12 +231,6 @@ namespace HookHook.Backend.Services
             api.Settings.ClientId = _twitchId;
             api.Settings.AccessToken = res.AccessToken;
 
-            // * you need to send a request to get the user's ID and email
-            // _client.DefaultRequestHeaders.Clear();
-            // _client.DefaultRequestHeaders.Add("Authorization", $"Bearer {res.AccessToken}");
-            // _client.DefaultRequestHeaders.Add("Client-Id", $"{_twitchId}");
-
-            // var usersWrapper = await _client.GetAsync<WrappedUsers>("https://api.twitch.tv/helix/users");
             var users = await api.Helix.Users.GetUsersAsync(null, null, res.AccessToken);
 
             if (users == null)
@@ -373,7 +375,6 @@ namespace HookHook.Backend.Services
                 Create(user);
             }
 
-            // * jsp comment récupérer le expires-in cf: https://developer.twitter.com/en/docs/authentication/api-reference/access_token
             user.TwitterOAuth = new(tokens.UserId.ToString(), tokens.AccessToken, tokens.AccessTokenSecret);
             _db.SaveUser(user);
 
