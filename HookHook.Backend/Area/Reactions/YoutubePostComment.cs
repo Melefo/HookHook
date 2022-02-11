@@ -26,7 +26,6 @@ namespace HookHook.Backend.Reactions
             VideoName = videoName;
             Comment = comment;
             _youtubeService = youtubeService;
-
         }
 
         public async Task Execute(Entities.User user)

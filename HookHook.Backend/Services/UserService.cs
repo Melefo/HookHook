@@ -404,10 +404,12 @@ namespace HookHook.Backend.Services
 
         public async Task<string> GoogleOAuth(string code, HttpContext ctx)
         {
-            var res = await _client.PostAsync<GoogleAuth>($"https://oauth2.googleapis.com/token?code={code}&client_id={_googleId}&client_secret={_googleSecret}&redirect_uri=postmessage&grant_type=authorization_code");
+            var res = await _client.PostAsync<GoogleAuth>($"https://oauth2.googleapis.com/token?code={code}&client_id={_googleId}&client_secret={_googleSecret}&redirect_uri=http://localhost/oauth&grant_type=authorization_code");
 
             if (res == null)
                 throw new ApiException("Failed to call API");
+
+            Console.WriteLine("Successfully called google api");
 
             // * get user info by decoding the jwt
             JwtSecurityTokenHandler tokenHandler = new();
