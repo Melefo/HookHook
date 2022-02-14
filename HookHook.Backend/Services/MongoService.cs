@@ -67,9 +67,6 @@ namespace HookHook.Backend.Services
         public User? GetUserByGitHub(string id) =>
             _usersCollection.Find(x => x.GitHubOAuth != null && x.GitHubOAuth.UserId == id).SingleOrDefault();
 
-        // public User GetUserByGoogle(string id) =>
-        //     _usersCollection.Find(x => x.GoogleOAuth != null && x.GoogleOAuth.UserId == id).SingleOrDefault();
-
         /// <summary>
         /// Create and insert user inside database
         /// </summary>

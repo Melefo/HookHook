@@ -1,4 +1,3 @@
-
 <template>
   <div class="flex flex-col items-center">
     <span class="text-red-500" v-if="error">{{ this.error }}</span>

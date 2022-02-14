@@ -1,57 +1,94 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
+
+import 'backend.dart';
 
 class Action
 {
-  final String Name;
-  final String Description;
+  final Map<String, dynamic> _data;
 
-  Action(this.Name, this.Description);
+  String get name => _data["name"];
+  String get description => _data["description"];
+
+  Action._(this._data);
 }
 
 class Reaction
 {
-  final String Name;
-  final String Description;
+  final Map<String, dynamic> _data;
 
-  Reaction(this.Name, this.Description);
+  String get name => _data["name"];
+  String get description => _data["description"];
+
+  Reaction._(this._data);
 }
 
-class Services
+class Service
 {
-  final String Name;
-  final <Action>[] Actions;
-  final <Reaction>[] Reactions;
+  final Map<String, dynamic> _data;
 
-  Services(this.Name);
+  String get name => _data["name"];
+
+  late List<Action> actions = [];
+  late List<Reaction> reactions = [];
+
+  Service._(this._data)
+  {
+    for (var element in _data["actions"]) {
+      actions.add(Action._(element));
+    }
+    for (var element in _data["reactions"]) {
+      reactions.add(Reaction._(element));
+    }
+  }
 }
 
 class Server
 {
-  final CurrentTime;
-  final <Services>[] Services;
+  final Map<String, dynamic> _data;
 
-  Server(this.CurrentTime);
+  int get currentTime => _data["currentTime"];
+
+  List<Service> services = [];
+
+  Server._(this._data)
+  {
+    for (var element in _data["services"]) {
+      services.add(Service._(element));
+    }
+  }
 }
 
 class Client
 {
-  final String Host;
+  final Map<String, dynamic> _data;
 
-  Client(this.Host);
+  String get host => _data["host"];
+
+  Client._(this._data);
 }
 
 class About
 {
-  final String _url = String.fromEnvironment('BACKEND_URL', defaultValue: 'http://localhost:8080');
+  final Map<String, dynamic> _data;
 
-  final Client client;
-  final Server server;
+  late Client client;
+  late Server server;
 
-  About(this.client, this.server);
+  About._(this._data)
+  {
+    client = Client._(_data["client"]);
+    server = Server._(_data["server"]);
+  }
 
-  Future<void> fetch() async {
-    var res = await http.get(Uri.parse(_url + '/about.json'));
-    print(res.body);
+  static const String url = "about.json";
+
+  static Future<About> init() async {
+    final res = await http.get(Uri.parse(Backend.apiEndpoint + url));
+
+    if (res.statusCode == 200) {
+      return About._(jsonDecode(res.body));
+    }
+    throw Exception();
   }
 }
