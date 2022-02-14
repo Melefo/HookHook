@@ -12,7 +12,7 @@
               :class="`inline-block w-full max-w-[35%] h-[400px] p-4 my-8 overflow-hidden text-center align-middle transition-all transform shadow-xl rounded-2xl`"
               :style="{ 'background-color': bgColor }"
             >
-              <DialogTitle as="h3" class=" text-lg font-bold leading-6 text-grey-800">
+              <DialogTitle as="h3" class=" text-lg font-bold leading-6 text-grey-80 capitalize">
                 {{ text }}
               </DialogTitle>
               <div class="mt-2">

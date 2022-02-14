@@ -1,4 +1,5 @@
 using CoreTweet;
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using MongoDB.Bson.Serialization.Attributes;
@@ -6,6 +7,7 @@ using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
+    [Service("twitter", "Follow a twitter account")]
     [BsonIgnoreExtraElements]
     public class TwitterFollowUser: IAction, IReaction
     {

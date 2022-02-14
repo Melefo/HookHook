@@ -1,9 +1,11 @@
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using MongoDB.Bson.Serialization.Attributes;
 using SpotifyAPI.Web;
 
 namespace HookHook.Backend.Area
 {
+    [Service("spotify", "Like a spotify album")]
     [BsonIgnoreExtraElements]
     public class SpotifyLikeAlbum: IAction, IReaction
     {
