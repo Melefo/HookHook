@@ -13,7 +13,7 @@
           leave-from-class="opacity-100"
           leave-to-class="opacity-0"
         >
-          <ListboxOptions class="absolute py-1 mt-1 ml-[8%] overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <ListboxOptions class="absolute py-1 mt-1 ml-[8%] overflow-auto z-10 text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             <ListboxOption
               v-slot="{ active, selected }"
               v-for="person in people"
@@ -40,17 +40,18 @@
         </transition>
       </div>
     </Listbox>
-    <p>test</p>
+    <ActionComponent/>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
+import ActionComponent from '@/components/ActionComponent.vue';
 
 export default defineComponent({
   name: 'DropdownComponent',
-  components: { Listbox, ListboxButton, ListboxOptions, ListboxOption },
+  components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, ActionComponent },
   methods: {
   },
   computed: {
