@@ -1,8 +1,9 @@
 import { createStore } from 'vuex'
 import createPersistedState from "vuex-persistedstate";
 import User from '@/store/user'
+import About from '@/store/about'
 
-export default createStore({
+const store = createStore({
   plugins: [createPersistedState()],
   state: {
   },
@@ -13,6 +14,15 @@ export default createStore({
   actions: {
   },
   modules: {
-    'user': User
+    'user': User,
+    'about': About
   }
-})
+});
+
+export default store;
+
+export function authHeader() : HeadersInit {
+  if (store.getters["user/isLoggedIn"])
+    return { 'Authorization': 'Bearer ' + store.getters["user/token"] };
+  return {};
+}

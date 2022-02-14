@@ -6,31 +6,24 @@
       <p>Services</p>
     </div>
     <!-- // todo centrer et colorier les svg pliz -->
-    <div class="text-black mt-2 justify-start">
-        <button class="button bg-[#A3E7EE]">
-            <img class="w-14 align-center" alt="twitter" src="@/assets/img/twitter.svg" />
-        </button>
-        <button class="button bg-[#B4E1DC]">
-            <img class="w-14 align-center" alt="spotify" src="@/assets/img/spotify.svg" />
-        </button>
-        <button class="button bg-[#D9D1EA]">
-            <img class="w-14 align-center" alt="discord" src="@/assets/img/discord.svg" />
-        </button>
-        <button class="button bg-[#F5CDCB]">
-            <img class="w-14 align-center" alt="github" src="@/assets/img/github.svg" />
-        </button>
-        <button class="button bg-[#F8CBAA]">
-            <img class="w-14 align-center" alt="google" src="@/assets/img/google.svg" />
-        </button>
-        <button class="button bg-[#FFFFC7]">
-            <img class="w-14 align-center" alt="twitch" src="@/assets/img/twitch.svg" />
-        </button>
-    </div>
-    <div class="gridCreator mt-8 text-black dark:text-white">
+    <OAuthButtonsComponent/>
+    <div class="gridCreator text-black dark:text-white">
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
-      <div class="creatorBG rounded-xl bg-[#3B3F43] p-5"/>
-      <div class="urAreaBG rounded-xl bg-[#3B3F43] p-5"/>
+      <!--AREA CREATOR-->
+      <div class="creatorBG rounded-xl bg-[#3B3F43] text-black">
+        <!-- TEST DROPDOWN 2 -->
+        <div id="app">
+          <select v-model="selectedValue">
+            <option disabled value="">Please select one</option>
+            <option v-bind:key="item" v-for="item in filters" :value="item">{{item}}</option>
+          </select>
+        </div>
+        <!-- TEST DROPDOWN HEADLESS UI-->
+        <DropdownComponent/>
+      </div>
+      <!--MY AREA-->
+      <CarouselComponent/>
     </div>
 </template>
 
@@ -40,9 +33,9 @@
     }
     .button {
       border-radius: 10px;
-      width: 12%;
-      margin: 0 2% 0 0;
-      padding: 5% 0;
+      width: 150px;
+      margin: 0 25px 10px 0;
+      padding: 35px 0;
       transition-duration: 1s;
     }
     .button:hover {
@@ -50,7 +43,7 @@
     }
     .gridCreator {
       display: grid;
-      height: 400px;
+      height: 475px;
       grid-template-columns: 40% 60%;
       grid-template-rows: 10% 45% 45%;
       gap: 1%;
@@ -70,6 +63,7 @@
     .urAreaBG {
       grid-column: 2 / span 1;
       grid-row: 2 / span 2;
+      flex-flow: column wrap;
     }
 </style>
 
@@ -78,9 +72,12 @@ import { defineComponent } from "vue";
 import { parseJwt } from "@/router";
 import { mapGetters } from "vuex";
 
+import CarouselComponent from "@/components/CarouselComponent.vue";
+import DropdownComponent from "@/components/DropdownComponent.vue";
+import OAuthButtonsComponent from "@/components/OAuthButtonsComponent.vue";
 
 export default defineComponent({
-  components: {  },
+  components: { CarouselComponent, DropdownComponent, OAuthButtonsComponent },
   methods: {
 
   },
@@ -89,6 +86,12 @@ export default defineComponent({
     firstName: function() {
         return parseJwt(this.token).given_name;
     }
-  }
+  },
+  data() {
+    return {
+      filters: ["Tweeter: 'j'ai juré c'est une dinguerie'", "Envoyer un message privé à Kev Adams"],
+      selectedValue: null,
+    }
+  },
 });
 </script>
