@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HookHook.Backend.Actions;
 using HookHook.Backend.Reactions;
+using HookHook.Backend.Models;
 
 namespace HookHook.Backend.Controllers
 {
@@ -47,7 +48,7 @@ namespace HookHook.Backend.Controllers
 
         }
 
-        Entities.Area CreateEntityFromModel(Models.Area area)
+        Entities.Area CreateEntityFromModel(AreaModel area)
         {
             Console.WriteLine("OKAY HERE");
             // * create an IAction from area.Action.type
@@ -70,7 +71,7 @@ namespace HookHook.Backend.Controllers
 
         // * create a new area
         [HttpPost("create")]
-        public async Task<ActionResult> CreateArea([FromBody] Models.Area area)
+        public async Task<ActionResult> CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
@@ -87,7 +88,7 @@ namespace HookHook.Backend.Controllers
         // * modify -> add/remove reactions/action, so a new area ??
         // * PUT vu qu'on envoie un nouveau AREA je dirais
         [HttpPut("modify/{id}")]
-        public async Task<ActionResult> ModifyArea([FromBody] Models.Area area, string id)
+        public async Task<ActionResult> ModifyArea([FromBody] AreaModel area, string id)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
