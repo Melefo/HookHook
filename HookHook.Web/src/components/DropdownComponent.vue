@@ -1,11 +1,12 @@
 <template>
   <div>
-    <p class="text-white p-2">AREA name : {{ selectedPerson.name }}</p>
-    <Listbox v-model="selectedPerson">
+      <!-- // todo pour le nom du area, un input bindé à une variable -->
+    <p class="text-white p-2">AREA name : coucou</p>
+    <Listbox>
       <div class="relative mt-1">
         <span class="text-white">When : </span>
         <ListboxButton class="relative p-2 text-left text-white rounded-lg">
-          <span class="block truncate underline decoration-[#FD9524] underline-offset-4">{{ selectedPerson.name }}</span>
+          <span class="block truncate underline decoration-[#FD9524] underline-offset-4">{{ currentServiceName === "" ? "Action" : currentServiceName}}</span>
           <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"/>
         </ListboxButton>
         <transition
@@ -16,10 +17,11 @@
           <ListboxOptions class="absolute py-1 mt-1 ml-[8%] overflow-auto z-10 text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             <ListboxOption
               v-slot="{ active, selected }"
-              v-for="person in people"
-              :key="person.name"
-              :value="person"
+              v-for="possibleService in possibleServices"
+              :key="possibleService.name"
+              :value="possibleService.name"
               as="template"
+              @click="serviceSelected(possibleService)"
             >
               <li
                 :class="[
@@ -32,7 +34,7 @@
                     selected ? 'font-medium' : 'font-normal',
                     'block truncate',
                   ]"
-                  >{{ person.name }}</span
+                  >{{ possibleService.name }}</span
                 >
               </li>
             </ListboxOption>
@@ -49,16 +51,46 @@
 import { defineComponent, ref } from "vue";
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
 import ActionComponent from '@/components/ActionComponent.vue';
+import { mapActions } from "vuex";
 
 export default defineComponent({
     name: 'DropdownComponent',
     components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, ActionComponent },
     methods: {
+        ...mapActions("about", ["getServices"]),
         changeOptions(newAction) {
             console.log(newAction.actions);
+
+            this.possibleServices = newAction.actions;
+        },
+        serviceSelected(service) {
+            console.log(service);
+            this.currentServiceName = service.name;
+            // for (let i = 0; i < this.serviceDetails.length; i++) {
+            //     const serviceDetail = this.serviceDetails[i];
+
+            //     if (serviceDetail.className === newAction.actions[0].name) {
+            //         currentService = serviceDetail;
+            //         break;
+            //     }
+            // }
+            // if (currentService !== null) {
+            //     this.currentParameters = currentService.parameterNames;
+            //     this.currentServiceName = currentService.name;
+            //     this.currentServiceDescription = currentService.description;
+            // }
         }
     },
     computed: {
+    },
+    data: function() {
+        return {
+            serviceDetails: [],
+            possibleServices: [],
+            currentParameters: [],
+            currentServiceName: "",
+            currentServiceDescription: ""
+        }
     },
     setup() {
         const people = [
@@ -76,9 +108,9 @@ export default defineComponent({
     },
     created: async function() {
         // * fetch the services with the service arguments
-        // const { server: { services } } = await this.get();
-        // this.service = services;
+        const serviceDetails = await this.getServices();
+        this.serviceDetails = serviceDetails;
+        console.log("Got details = ", this.serviceDetails);
     },
-    
 });
 </script>

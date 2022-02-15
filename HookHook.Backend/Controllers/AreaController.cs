@@ -71,6 +71,7 @@ namespace HookHook.Backend.Controllers
         private class ServiceDescription
         {
             public string Name { get; set; }
+            public string ClassName { get; set; }
             public string Description { get; set; }
             // public int parameterCount { get; set; }
 
@@ -105,6 +106,7 @@ namespace HookHook.Backend.Controllers
                 newService.Description = attr.Description;
                 // newService.parameterCount = strParams.Length;
                 newService.parameterNames = strParams.Select(x => x.Name).ToArray();
+                newService.ClassName = service.Name;
 
                 if (actionType.IsAssignableFrom(service))
                     newService.areaType = "Action";
