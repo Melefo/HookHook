@@ -31,6 +31,7 @@ namespace HookHook.Backend
         {
             services.AddSingleton<MongoService>();
             services.AddSingleton<TwitterService>();
+            services.AddSingleton<YouTubeService>();
             services.AddScoped<UserService>();
             // services.AddSingleton<GithubService>();
 

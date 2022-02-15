@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Google.Apis.Oauth2.v2" Version="1.55.0.1869" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.55.0.2449" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
     <PackageReference Include="Discord.Net.Labs" Version="3.6.1" />
     <PackageReference Include="Octokit" Version="0.50.0" />

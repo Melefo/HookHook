@@ -100,6 +100,9 @@ namespace HookHook.Backend.Services
 
         public User? GetUserByTwitter(string id) =>
             _usersCollection.Find(x => x.TwitterOAuth != null && x.TwitterOAuth.UserId == id).SingleOrDefault();
+
+        public User? GetUserByGoogle(string id) =>
+            _usersCollection.Find(x => x.GoogleOAuth != null && x.GoogleOAuth.UserId == id).SingleOrDefault();
     }
 
 }
