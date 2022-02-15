@@ -12,13 +12,6 @@
       <p class="urAreaTitle">Your AREAs</p>
       <!--AREA CREATOR-->
       <div class="creatorBG rounded-xl bg-[#3B3F43] text-black">
-        <!-- TEST DROPDOWN 2 -->
-        <div id="app">
-          <select v-model="selectedValue">
-            <option disabled value="">Please select one</option>
-            <option v-bind:key="item" v-for="item in filters" :value="item">{{item}}</option>
-          </select>
-        </div>
         <!-- TEST DROPDOWN HEADLESS UI-->
         <DropdownComponent/>
       </div>
@@ -89,7 +82,7 @@ export default defineComponent({
   },
   data() {
     return {
-      filters: ["Tweeter: 'j'ai juré c'est une dinguerie'", "Envoyer un message privé à Kev Adams"],
+      filters: ["Use a tweet reaction", "Retweet a tweet from a specific user"],
       selectedValue: null,
     }
   },

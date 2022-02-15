@@ -21,21 +21,21 @@
                 </p>
               </div>
 
-              <div class="mt-4">
-                <button
-                  type="button"
-                  class="inline-flex justify-center px-4 py-2 text-sm font-medium text-black bg-neutral-200 border border-transparent rounded-md hover:bg-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-500"
-                  @click="closeModal"
-                >
-                  Close this popup
-                </button>
+                <div class="mt-4">
+                  <button
+                    type="button"
+                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-black bg-neutral-200 border border-transparent rounded-md hover:bg-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-500"
+                    @click="closeModal"
+                  >
+                    Close this popup
+                  </button>
+                </div>
               </div>
-            </div>
-          </TransitionChild>
+            </TransitionChild>
+          </div>
         </div>
-      </div>
-    </Dialog>
-  </TransitionRoot>
+      </Dialog>
+    </TransitionRoot>
 </template>
 
 <script lang="ts">
