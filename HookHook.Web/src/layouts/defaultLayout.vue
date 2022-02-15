@@ -18,7 +18,8 @@
         <div
           v-if="isLoggedIn"
           class="
-            bg-[#3B3F43]
+            bg-[#F1F1F1]
+            dark:bg-[#3B3F43]
             relative
             inline-flex
             flex-shrink-0
@@ -33,7 +34,7 @@
           <Menu as="div" class="relative inline-block text-left">
             <div>
               <MenuButton class="w-8">
-                <MenuIcon class="text-white" />
+                <MenuIcon class="text-dark dark:text-white" />
               </MenuButton>
             </div>
 
@@ -50,27 +51,32 @@
                   absolute
                   right-[-49px]
                   w-52
-                  bg-[#3B3F43]
+                  bg-[#F1F1F1]
+                  dark:bg-[#3B3F43]
                   rounded-xl
                   focus:outline-none
                   text-white
                   p-3
                 "
               >
-                <MenuItem><RouterLink to="/dashboard" class="grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white hover:text-[#3B3F43] rounded-xl"><ViewGridAddIcon class="h-8" /><span class="col-span-2 self-center">Dashboard</span></RouterLink></MenuItem>
-                <MenuItem><a class="grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white hover:text-[#3B3F43] rounded-xl"><PencilIcon class="h-8" /><span class="col-span-2 self-center">Edit Profile</span></a></MenuItem>
-                <MenuItem><RouterLink to="/admin" class="grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white hover:text-[#3B3F43] rounded-xl"><CogIcon class="h-8" /><span class="col-span-2 self-center">Admin</span></RouterLink></MenuItem>
-                <MenuItem><a href="/" @click.prevent="preventLogout" class="grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white hover:text-[#3B3F43] rounded-xl"><LogoutIcon class="h-8" /><span class="col-span-2 self-center">Logout</span></a></MenuItem>
+                <MenuItem><RouterLink to="/dashboard" class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><ViewGridAddIcon class="h-8" /><span class="col-span-2 self-center">Dashboard</span></RouterLink></MenuItem>
+                <MenuItem><a class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><PencilIcon class="h-8" /><span class="col-span-2 self-center">Edit Profile</span></a></MenuItem>
+                <MenuItem><RouterLink to="/admin" class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><CogIcon class="h-8" /><span class="col-span-2 self-center">Admin</span></RouterLink></MenuItem>
+                <MenuItem><a href="/" @click.prevent="preventLogout" class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><LogoutIcon class="h-8" /><span class="col-span-2 self-center">Logout</span></a></MenuItem>
               </MenuItems>
             </transition>
           </Menu>
           <UserIcon
             class="
-              text-[#3B3F43]
-              bg-white
+              text-white
+              dark:text-[#3B3F43]
+              bg-[#3B3F43]
+              dark:bg-white
               rounded-full
               m-[2px]
-              border-4 border-white
+              border-4
+              dark:border-white
+              border-[#3B3F43]
             "
           />
         </div>

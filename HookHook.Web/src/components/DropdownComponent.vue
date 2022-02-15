@@ -1,10 +1,10 @@
 <template>
   <div>
-    <p class="text-white p-2">AREA name : {{ selectedPerson.name }}</p>
+    <p class="text-black dark:text-white p-2">AREA name : {{ selectedPerson.name }}</p>
     <Listbox v-model="selectedPerson">
       <div class="relative mt-1">
-        <span class="text-white">When : </span>
-        <ListboxButton class="relative p-2 text-left text-white rounded-lg">
+        <span class="text-black dark:text-white">When : </span>
+        <ListboxButton class="relative p-2 text-left text-black dark:text-white rounded-lg">
           <span class="block truncate underline decoration-[#FD9524] underline-offset-4">{{ selectedPerson.name }}</span>
           <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"/>
         </ListboxButton>

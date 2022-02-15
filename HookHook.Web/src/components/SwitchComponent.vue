@@ -3,7 +3,7 @@
     <Switch
         @click="this.$emit('ToggleDarkMode')"
       v-model="enabled"
-      class="bg-[#3B3F43] relative inline-flex flex-shrink-0 h-[38px] w-[90px] border-2 border-transparent rounded-xl cursor-pointer"
+      class="dark:bg-[#3B3F43] bg-[#F1F1F1] relative inline-flex flex-shrink-0 h-[38px] w-[90px] border-2 border-transparent rounded-xl cursor-pointer"
     >
       <span class="sr-only">Use setting</span>
       <span
@@ -11,8 +11,8 @@
         :class="enabled ? 'translate-x-12' : 'translate-x-1'"
         class="pointer-events-none h-[34px] w-[34px] text-white transition ease-in-out duration-200"
       >
-      <SunIcon v-if="!enabled" />
-      <MoonIcon v-else />
+      <SunIcon v-if="!enabled" class="text-[#F09113]" />
+      <MoonIcon v-else class="text-[#A3E7EE]" />
       </span>
     </Switch>
   </div>

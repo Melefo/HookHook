@@ -1,7 +1,9 @@
 <template>
   <Carousel :settings="settings" :breakpoints="breakpoints">
     <Slide v-for="slide in 10" :key="slide">
-      <div class="carousel__item">{{ slide }}</div>
+      <Bloc class="carousel__item dark:text-white text-black">
+        {{ slide }}
+      </Bloc>
     </Slide>
 
     <template #addons>
@@ -13,6 +15,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { Carousel, Navigation, Slide } from 'vue3-carousel';
+import Bloc from "@/components/BlocComponent.vue";
 
 import 'vue3-carousel/dist/carousel.css';
 
@@ -22,6 +25,7 @@ export default defineComponent({
     Carousel,
     Slide,
     Navigation,
+    Bloc
   },
   data: () => ({
     // carousel settings

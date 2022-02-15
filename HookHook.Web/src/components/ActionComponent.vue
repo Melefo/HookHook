@@ -2,7 +2,7 @@
   <div>
     <Listbox v-model="selectedService">
       <div class="relative mt-1">
-        <ListboxButton class="relative p-2 text-left text-white rounded-lg">
+        <ListboxButton class="relative p-2 text-left text-black dark:text-white rounded-lg">
           <span class="block truncate underline decoration-[#FD9524] underline-offset-4">{{ selectedService !== null ? selectedService.name : 'Select a service' }}<img v-if="serviceChose === null" class="w-10 h-10 m-auto" :src="require(`@/assets/img/${serviceChose.name}.svg`)"/></span>
           <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"/>
         </ListboxButton>

@@ -11,10 +11,10 @@
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
       <!--AREA CREATOR-->
-      <div class="creatorBG rounded-xl bg-[#3B3F43] text-black">
+      <Bloc class="creatorBG rounded-xl bg-[#3B3F43] text-black">
         <!-- TEST DROPDOWN HEADLESS UI-->
         <DropdownComponent/>
-      </div>
+      </Bloc>
       <!--MY AREA-->
       <CarouselComponent/>
     </div>
@@ -68,9 +68,10 @@ import { mapGetters } from "vuex";
 import CarouselComponent from "@/components/CarouselComponent.vue";
 import DropdownComponent from "@/components/DropdownComponent.vue";
 import OAuthButtonsComponent from "@/components/OAuthButtonsComponent.vue";
+import Bloc from "@/components/BlocComponent.vue";
 
 export default defineComponent({
-  components: { CarouselComponent, DropdownComponent, OAuthButtonsComponent },
+  components: { CarouselComponent, DropdownComponent, OAuthButtonsComponent, Bloc },
   methods: {
 
   },
