@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using HookHook.Backend.Actions;
 using HookHook.Backend.Reactions;
 using HookHook.Backend.Models;
+using HookHook.Backend.Attributes;
+using System.Reflection;
 
 namespace HookHook.Backend.Controllers
 {
@@ -38,7 +40,7 @@ namespace HookHook.Backend.Controllers
 
             reactionTypes.Add("DiscordWebhook", (string[] args) => new DiscordWebhook(args[0], args[1]));
             reactionTypes.Add("GithubCreateRepository", (string[] args) => new GithubCreateRepository(args[0], args[1]));
-            reactionTypes.Add("GithubCreateIssue", (string[] args) => new GithubCreateIssue(args[0], args[1], args[1], args[2]));
+            reactionTypes.Add("GithubCreateIssue", (string[] args) => new GithubCreateIssue(args[0], args[1], args[2], args[3]));
             reactionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
             reactionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
             reactionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
@@ -50,10 +52,8 @@ namespace HookHook.Backend.Controllers
 
         Entities.Area CreateEntityFromModel(AreaModel area)
         {
-            Console.WriteLine("OKAY HERE");
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments);
-            Console.WriteLine("OKAY HERE");
 
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
@@ -62,12 +62,48 @@ namespace HookHook.Backend.Controllers
 
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments));
             }
-            Console.WriteLine("OKAY HERE");
 
             // * create an area entity
             Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
             return (areaEntity);
         }
+
+        private class ServiceDescription
+        {
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public int parameterCount { get; set; }
+        }
+
+        [HttpGet("getServices")]
+        public async Task<ActionResult> getServices()
+        {
+            // * retrieve classes that have the Service attribute, get their constructor and argument list
+            var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
+
+            // * response is an array containing:
+            List<ServiceDescription> servicesResponse = new();
+
+            var stringType = typeof(string);
+
+            foreach (var service in services) {
+
+                // * get controller
+                // ! code bancal
+                var parameters = service.GetConstructors()[0].GetParameters();
+                var strParams = parameters.Where(x => x.ParameterType == stringType).ToArray();
+
+                var attr = service.GetCustomAttribute<ServiceAttribute>();
+                var newService = new ServiceDescription();
+                newService.Name = attr.Name;
+                newService.Description = attr.Description;
+                newService.parameterCount = strParams.Length;
+
+                servicesResponse.Add(newService);
+            }
+            return (Ok(servicesResponse));
+        }
+
 
         // * create a new area
         [HttpPost("create")]
