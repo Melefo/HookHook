@@ -40,6 +40,7 @@
         </transition>
       </div>
     </Listbox>
+    <!-- // todo action component needs to notify me when the action/service changes -->
     <ActionComponent/>
   </div>
 </template>
@@ -50,25 +51,31 @@ import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headless
 import ActionComponent from '@/components/ActionComponent.vue';
 
 export default defineComponent({
-  name: 'DropdownComponent',
-  components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, ActionComponent },
-  methods: {
-  },
-  computed: {
-  },
-  setup() {
-    const people = [
-      { id: 1, name: 'Durward Reynolds', unavailable: false },
-      { id: 2, name: 'Kenton Towne', unavailable: false },
-      { id: 3, name: 'Therese Wunsch', unavailable: false },
-      { id: 4, name: 'Benedict Kessler', unavailable: true },
-      { id: 5, name: 'Katelyn Rohan', unavailable: false },
-    ]
-    const selectedPerson = ref(people[0])
-    return {
-      people,
-      selectedPerson,
-    }
+    name: 'DropdownComponent',
+    components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, ActionComponent },
+    methods: {
     },
+    computed: {
+    },
+    setup() {
+        const people = [
+            { id: 1, name: 'Durward Reynolds', unavailable: false },
+            { id: 2, name: 'Kenton Towne', unavailable: false },
+            { id: 3, name: 'Therese Wunsch', unavailable: false },
+            { id: 4, name: 'Benedict Kessler', unavailable: true },
+            { id: 5, name: 'Katelyn Rohan', unavailable: false },
+        ]
+        const selectedPerson = ref(people[0])
+        return {
+            people,
+            selectedPerson,
+        }
+    },
+    created: async function() {
+        // * fetch the services with the actions
+        // const { server: { services } } = await this.get();
+        // this.service = services;
+    },
+    
 });
 </script>

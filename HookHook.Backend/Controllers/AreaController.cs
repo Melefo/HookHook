@@ -73,6 +73,8 @@ namespace HookHook.Backend.Controllers
             public string Name { get; set; }
             public string Description { get; set; }
             public int parameterCount { get; set; }
+
+            public string areaType { get; set; } // * ACTION or REACTION
         }
 
         [HttpGet("getServices")]
@@ -85,6 +87,8 @@ namespace HookHook.Backend.Controllers
             List<ServiceDescription> servicesResponse = new();
 
             var stringType = typeof(string);
+            var reactionType = typeof(IReaction);
+            var actionType = typeof(IAction);
 
             foreach (var service in services) {
 
@@ -98,6 +102,11 @@ namespace HookHook.Backend.Controllers
                 newService.Name = attr.Name;
                 newService.Description = attr.Description;
                 newService.parameterCount = strParams.Length;
+
+                if (actionType.IsAssignableFrom(service))
+                    newService.areaType = "Action";
+                else if (reactionType.IsAssignableFrom(service))
+                    newService.areaType = "Reaction";
 
                 servicesResponse.Add(newService);
             }
