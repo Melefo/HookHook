@@ -41,7 +41,7 @@
       </div>
     </Listbox>
     <!-- // todo action component needs to notify me when the action/service changes -->
-    <ActionComponent/>
+    <ActionComponent @actionChange="changeOptions"/>
   </div>
 </template>
 
@@ -54,6 +54,9 @@ export default defineComponent({
     name: 'DropdownComponent',
     components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, ActionComponent },
     methods: {
+        changeOptions(newAction) {
+            console.log(newAction.actions);
+        }
     },
     computed: {
     },
@@ -72,7 +75,7 @@ export default defineComponent({
         }
     },
     created: async function() {
-        // * fetch the services with the actions
+        // * fetch the services with the service arguments
         // const { server: { services } } = await this.get();
         // this.service = services;
     },
