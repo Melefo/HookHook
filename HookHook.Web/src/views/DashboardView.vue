@@ -1,13 +1,5 @@
 <template>
-    <div class="text-black text-2xl mt-8 dark:text-white text-left">
-      <p class="welcomingMessage">Hello <span class="userName">{{ firstName }}</span>, welcome back !</p>
-    </div>
-    <div class="text-black dark:text-white mt-8">
-      <p>Services</p>
-    </div>
-    <!-- // todo centrer et colorier les svg pliz -->
-    <OAuthButtonsComponent/>
-    <div class="gridCreator text-black dark:text-white">
+    <div class="mt-8 gridCreator text-black dark:text-white">
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
       <!--AREA CREATOR-->
@@ -21,14 +13,11 @@
 </template>
 
 <style>
-    .userName {
-      color: red;
-    }
     .button {
       border-radius: 10px;
-      width: 150px;
-      margin: 0 25px 10px 0;
-      padding: 35px 0;
+      width: 60px;
+      margin: 0px 10px 5px 10px;
+      padding: 10px 0;
       transition-duration: 1s;
     }
     .button:hover {
@@ -36,7 +25,7 @@
     }
     .gridCreator {
       display: grid;
-      height: 475px;
+      height: 775px;
       grid-template-columns: 40% 60%;
       grid-template-rows: 10% 45% 45%;
       gap: 1%;
@@ -62,24 +51,17 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { parseJwt } from "@/router";
-import { mapGetters } from "vuex";
 
 import CarouselComponent from "@/components/CarouselComponent.vue";
 import DropdownComponent from "@/components/DropdownComponent.vue";
-import OAuthButtonsComponent from "@/components/OAuthButtonsComponent.vue";
 import Bloc from "@/components/BlocComponent.vue";
 
 export default defineComponent({
-  components: { CarouselComponent, DropdownComponent, OAuthButtonsComponent, Bloc },
+  components: { CarouselComponent, DropdownComponent, Bloc },
   methods: {
 
   },
   computed: {
-    ...mapGetters("user", ["token"]),
-    firstName: function() {
-        return parseJwt(this.token).given_name;
-    }
   },
   data() {
     return {

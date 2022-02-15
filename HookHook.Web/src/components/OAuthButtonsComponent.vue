@@ -1,5 +1,5 @@
 <template>
-  <div class="text-black mt-2 justify-start">
+  <div>
     <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name + '.svg'" :bgColor="color(item.name)" />
   </div>
 </template>
