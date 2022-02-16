@@ -14,12 +14,12 @@
         <RouterLink to="/">
           <HookHook class="text-5xl whitespace-nowrap"/>
         </RouterLink>
-        <span class="text-black text-2xl mt-2 ml-8 lg:flex hidden dark:text-white text-left">
+        <span v-if="isLoggedIn" class="text-black text-2xl mt-2 ml-8 lg:flex hidden dark:text-white text-left">
           <p class="welcomingMessage">Hello <span class="dark:text-[#A3E7EE] text-[#F09113]">{{ firstName }}</span>, welcome back !</p>
         </span>
       </div>
       <div class="flex flex-col flex-col-reverse lg:flex-row">
-        <OAuthButtonsComponent/>
+        <OAuthButtonsComponent v-if="isLoggedIn" />
         <div class="mt-6 lg:mt-0 flex lg:flex-row gap-4 justify-around">
           <Switch @ToggleDarkMode="this.$emit('ToggleDarkMode')" />
           <div
