@@ -20,7 +20,7 @@
       </div>
       <div class="flex flex-col flex-col-reverse lg:flex-row">
         <OAuthButtonsComponent/>
-        <div class="mt-6 lg:mt-0 flex lg:flex-row gap-4 justify-around">
+        <div class="my-6 lg:my-0 flex lg:flex-row gap-4 justify-around">
           <Switch @ToggleDarkMode="this.$emit('ToggleDarkMode')" />
           <div
             v-if="isLoggedIn"
