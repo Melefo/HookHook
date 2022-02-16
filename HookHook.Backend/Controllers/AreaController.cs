@@ -69,7 +69,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> CreateArea([FromBody] AreaModel area)
+        public ActionResult CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
@@ -92,20 +92,18 @@ namespace HookHook.Backend.Controllers
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
-                return (BadRequest());
+                return BadRequest();
 
             // * find the AREA to modify and replace it...
-            for (int i = 0; i < user.Areas.Count; i++) {
-                if (user.Areas[i].Id == id) {
-                    Entities.Area areaEntity = CreateEntityFromModel(area);
+            var areaEntity = user.Areas.SingleOrDefault(x => x.Id == id);
+            if (areaEntity == null)
+                return BadRequest();
 
-                    user.Areas[i] = areaEntity;
-                    _db.SaveUser(user);
+            user.Areas.Remove(areaEntity);
+            user.Areas.Add(CreateEntityFromModel(area));
+            _db.SaveUser(user);
 
-                    return (Ok(areaEntity));
-                }
-            }
-            return (BadRequest());
+            return Ok(areaEntity);
         }
 
         // * delete -> rm area by ID
@@ -116,16 +114,16 @@ namespace HookHook.Backend.Controllers
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
-                return (NoContent());
+                return BadRequest();
 
-            // * il doit y avoir moyen plus stylé mais que vous voulez vous
-            for (int i = 0; i < user.Areas.Count; i++) {
-                if (user.Areas[i].Id == id) {
-                    user.Areas.RemoveAt(i);
-                    return(NoContent());
-                }
-            }
-            return (NoContent());
+            var area = user.Areas.SingleOrDefault(x => x.Id == id);
+            if (area == null)
+                return BadRequest();
+
+            user.Areas.Remove(area);
+            _db.SaveUser(user);
+
+            return NoContent();
         }
 
         // * trigger all areas
@@ -138,10 +136,10 @@ namespace HookHook.Backend.Controllers
             if (user == null)
                 return BadRequest();
 
-            for (int i = 0; i < user.Areas.Count; i++) {
-                // * bon pour le temps entre chaque lancement je sais pas si tu veux check ici ou dans Launch
-                await user.Areas[i].Launch(user);
-            }
+            foreach (var area in user.Areas)
+                await area.Launch(user);
+            _db.SaveUser(user);
+            
             return Ok();
         }
     }
