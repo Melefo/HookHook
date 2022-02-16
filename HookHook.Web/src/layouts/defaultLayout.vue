@@ -56,6 +56,7 @@
                 <MenuItems
                   class="
                     absolute
+                    z-[1]
                     right-[-49px]
                     w-52
                     bg-[#dedede]
