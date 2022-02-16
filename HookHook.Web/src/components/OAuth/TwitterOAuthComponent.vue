@@ -16,7 +16,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["twitter", "authorize"]),
+    ...mapActions("signIn", ["twitter", "authorize"]),
     async handleTwitter() {
       window.removeEventListener("message", this.receiveTwitter);
 

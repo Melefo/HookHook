@@ -108,7 +108,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["register"]),
+    ...mapActions("signIn", ["register"]),
     async send() {
       if (this.password !== this.confirm) {
         this.errors = {} as Errors;

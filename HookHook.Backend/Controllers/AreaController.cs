@@ -13,6 +13,7 @@ namespace HookHook.Backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class AreaController : ControllerBase
     {
         public MongoService _db;
@@ -41,21 +42,16 @@ namespace HookHook.Backend.Controllers
             reactionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
         }
 
-        Entities.Area CreateEntityFromModel(AreaModel area)
+        private Entities.Area CreateEntityFromModel(AreaModel area)
         {
-            Console.WriteLine("OKAY HERE");
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments);
-            Console.WriteLine("OKAY HERE");
 
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
-                Console.WriteLine($"Reaction {i} has {area.Reactions[i].Arguments.Length} args");
-
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments));
             }
-            Console.WriteLine("OKAY HERE");
 
             // * create an area entity
             Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
@@ -64,6 +60,8 @@ namespace HookHook.Backend.Controllers
 
         // * create a new area
         [HttpPost("create")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
@@ -81,6 +79,8 @@ namespace HookHook.Backend.Controllers
         // * modify -> add/remove reactions/action, so a new area ??
         // * PUT vu qu'on envoie un nouveau AREA je dirais
         [HttpPut("modify/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> ModifyArea([FromBody] AreaModel area, string id)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
@@ -103,54 +103,38 @@ namespace HookHook.Backend.Controllers
 
         // * delete -> rm area by ID
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> DeleteArea(string id)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
-                return (BadRequest());
+                return (NoContent());
 
             // * il doit y avoir moyen plus stylé mais que vous voulez vous
             for (int i = 0; i < user.Areas.Count; i++) {
                 if (user.Areas[i].Id == id) {
                     user.Areas.RemoveAt(i);
-                    return(Ok());
+                    return(NoContent());
                 }
             }
-            return (BadRequest());
+            return (NoContent());
         }
 
         // * trigger all areas
-        [HttpGet("TriggerAll")]
-        public async Task<ActionResult> TriggerAreas()
+        [HttpGet("Trigger/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> TriggerUserAreas(string id)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
                 return BadRequest();
-
-            Console.WriteLine("AFTER USER GET");
 
             for (int i = 0; i < user.Areas.Count; i++) {
                 // * bon pour le temps entre chaque lancement je sais pas si tu veux check ici ou dans Launch
                 await user.Areas[i].Launch(user);
             }
-            return Ok();
-        }
-
-
-        [Authorize]
-        [HttpPost("poc")]
-        public async Task<ActionResult> POC(string githubUsername, string repository, string discordWebhook)
-        {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
-            if (user == null)
-                return BadRequest();
-            var action = new GithubIssueCreated(githubUsername, repository);
-            (string? commit, bool res) = await action.Check(user);
-
-            if (!res)
-                BadRequest();
-            var reaction = new DiscordWebhook(discordWebhook, commit);
-            await reaction.Execute(user);
             return Ok();
         }
     }

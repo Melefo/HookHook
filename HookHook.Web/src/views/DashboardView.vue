@@ -82,9 +82,10 @@ export default defineComponent({
 
   },
   computed: {
-    ...mapGetters("user", ["token"]),
+    ...mapGetters("signIn", ["token"]),
     firstName: function() {
-        return parseJwt(this.token).given_name;
+        const jwt = parseJwt(this.token);
+        return jwt !== null ? jwt.given_name : "";
     }
   },
   data() {
