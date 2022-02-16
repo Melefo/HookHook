@@ -3,7 +3,7 @@
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
       <!--AREA CREATOR-->
-      <Bloc class="creatorBG rounded-xl bg-[#3B3F43] text-black">
+      <Bloc class="creatorBG rounded-xl text-black">
         <!-- TEST DROPDOWN HEADLESS UI-->
         <DropdownComponent/>
       </Bloc>
@@ -25,9 +25,9 @@
     }
     .gridCreator {
       display: grid;
-      height: 775px;
+      height: 750px;
       grid-template-columns: 40% 60%;
-      grid-template-rows: 10% 45% 45%;
+      grid-template-rows: 4% 47% 47%;
       gap: 1%;
     }
     .creatorTitle {

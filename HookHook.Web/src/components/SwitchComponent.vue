@@ -3,7 +3,7 @@
     <Switch
         @click="this.$emit('ToggleDarkMode')"
       v-model="enabled"
-      class="dark:bg-[#3B3F43] bg-[#F1F1F1] relative inline-flex flex-shrink-0 h-[38px] w-[90px] border-2 border-transparent rounded-xl cursor-pointer"
+      class="dark:bg-[#3B3F43] bg-[#dedede] relative inline-flex flex-shrink-0 h-[38px] w-[90px] border-2 border-transparent rounded-xl cursor-pointer"
     >
       <span class="sr-only">Use setting</span>
       <span

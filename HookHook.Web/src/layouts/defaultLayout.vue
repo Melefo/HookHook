@@ -25,7 +25,7 @@
           <div
             v-if="isLoggedIn"
             class="
-              bg-[#F1F1F1]
+              bg-[#dedede]
               dark:bg-[#3B3F43]
               relative
               inline-flex
@@ -58,7 +58,7 @@
                     absolute
                     right-[-49px]
                     w-52
-                    bg-[#F1F1F1]
+                    bg-[#dedede]
                     dark:bg-[#3B3F43]
                     rounded-xl
                     focus:outline-none
