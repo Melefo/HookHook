@@ -11,9 +11,9 @@
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
       <!--AREA CREATOR-->
-      <div class="creatorBG rounded-xl bg-[#3B3F43] text-black">
+      <div class="creatorBG rounded-xl bg-[#3B3F43] text-black overflow-y-scroll">
         <!-- TEST DROPDOWN HEADLESS UI-->
-        <DropdownComponent/>
+        <AreaCreatorComponent/>
       </div>
       <!--MY AREA-->
       <CarouselComponent/>
@@ -66,11 +66,11 @@ import { parseJwt } from "@/router";
 import { mapGetters } from "vuex";
 
 import CarouselComponent from "@/components/CarouselComponent.vue";
-import DropdownComponent from "@/components/DropdownComponent.vue";
+import AreaCreatorComponent from '@/components/AreaCreatorComponent.vue'
 import OAuthButtonsComponent from "@/components/OAuthButtonsComponent.vue";
 
 export default defineComponent({
-  components: { CarouselComponent, DropdownComponent, OAuthButtonsComponent },
+  components: { CarouselComponent, OAuthButtonsComponent, AreaCreatorComponent },
   methods: {
 
   },

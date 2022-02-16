@@ -19,10 +19,10 @@ namespace HookHook.Backend.Area.Actions
         [BsonIgnore]
         private DiscordRestClient _client = new();
 
-        public DiscordPinned(ulong guild, ulong channel)
+        public DiscordPinned(string guild, string channel)
         {
-            Guild = guild;
-            Channel = channel;
+            Guild = ulong.Parse(guild);
+            Channel = ulong.Parse(channel);
         }
 
         public async Task<(string?, bool)> Check(User user)

@@ -26,7 +26,7 @@ namespace HookHook.Backend.Controllers
         {
             _db = db;
 
-            actionTypes.Add("DiscordPinned", (string[] args) => new DiscordPinned(ulong.Parse(args[0]), ulong.Parse(args[1])));
+            actionTypes.Add("DiscordPinned", (string[] args) => new DiscordPinned(args[0], args[1]));
             actionTypes.Add("GithubIssueCreated", (string[] args) => new GithubIssueCreated(args[0], args[1]));
             actionTypes.Add("GithubNewCommit", (string[] args) => new GithubNewCommit(args[0], args[1]));
             actionTypes.Add("GithubNewRepository", (string[] args) => new GithubNewRepository(args[0]));
@@ -108,7 +108,9 @@ namespace HookHook.Backend.Controllers
                 newService.parameterNames = strParams.Select(x => x.Name).ToArray();
                 newService.ClassName = service.Name;
 
-                if (actionType.IsAssignableFrom(service))
+                if (actionType.IsAssignableFrom(service) && reactionType.IsAssignableFrom(service))
+                    newService.areaType = "Action/Reaction";
+                else if (actionType.IsAssignableFrom(service))
                     newService.areaType = "Action";
                 else if (reactionType.IsAssignableFrom(service))
                     newService.areaType = "Reaction";

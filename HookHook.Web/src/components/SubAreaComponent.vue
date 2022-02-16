@@ -1,12 +1,10 @@
 <template>
     <div>
-        <!-- // todo pour le nom du area, un input modelé à une variable -->
-        <p class="text-white p-2">AREA name : coucou</p>
         <Listbox>
         <div class="relative mt-1">
-            <span class="text-white">When : </span>
+            <span class="text-white">{{ verb }} : </span>
             <ListboxButton class="relative p-2 text-left text-white rounded-lg">
-            <span class="block truncate underline decoration-[#FD9524] underline-offset-4">{{ currentServiceDescription === "" ? "Action" : currentServiceDescription}}</span>
+            <span class="block truncate underline decoration-[#FD9524] underline-offset-4">{{ currentServiceDescription === "" ? areaType : currentServiceDescription}}</span>
             <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"/>
             </ListboxButton>
             <transition
@@ -49,7 +47,8 @@
                     {{parameter + ":"}}
                 </div>
                 <input
-                    v-model="paramsToSend[i]">
+                    v-model="paramsToSend[i]"
+                    @change='$emit("updateInfo", {type: currentServiceName, params: paramsToSend, index: reactionIndex})'>
             </div>
         </div>
         </Listbox>
@@ -64,14 +63,29 @@ import ActionComponent from '@/components/ActionComponent.vue';
 import { mapActions } from "vuex";
 
 export default defineComponent({
+    props: ['serviceDetails', 'verb', 'areaType', 'reactionIndex'],
     name: 'DropdownComponent',
     components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, ActionComponent },
     methods: {
         ...mapActions("about", ["getServices"]),
         changeOptions(newAction : any) {
-            console.log(newAction.actions);
 
-            this.possibleServices = newAction.actions;
+            let appropriateActions = this.areaType === "Action" ? newAction.actions : newAction.reactions;
+            console.log(appropriateActions);
+            this.possibleServices = [];
+
+            for (let i = 0; i < appropriateActions.length; i++) {
+                const action = appropriateActions[i];
+
+                // * find the service in the service details
+                const actionDetail = this.serviceDetails.find((x : any) => x['className'] === action.name);
+
+                // * if the types are the same, add to possibles
+
+                if (actionDetail.areaType === "Action/Reaction" || this.areaType.toLowerCase() === actionDetail.areaType.toLowerCase()) {
+                    this.possibleServices.push(action);
+                }
+            }
         },
         serviceSelected(service : any) {
             console.log(service);
@@ -93,7 +107,6 @@ export default defineComponent({
     },
     data: function() {
         return {
-            serviceDetails: [],
             possibleServices: [],
             currentParameters: [],
             paramsToSend: [],
@@ -105,10 +118,6 @@ export default defineComponent({
 
     },
     created: async function() {
-        // * fetch the services with the service arguments
-        const serviceDetails = await this.getServices();
-        this.serviceDetails = serviceDetails;
-        console.log("Got details = ", this.serviceDetails);
     },
 });
 </script>
