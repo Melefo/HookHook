@@ -101,6 +101,7 @@ export default defineComponent({
                     break;
                 }
             }
+            this.$emit("updateInfo", {type: this.currentServiceName, params: this.paramsToSend, index: this.reactionIndex});
         }
     },
     computed: {
