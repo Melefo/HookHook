@@ -120,6 +120,23 @@ const user = {
             }
             return {};
         },
+        async google({ commit }: any, code: String) {
+            const res = await fetch("/api/user/oauth/google?code=" + code, {
+                method: 'POST',
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                const { token, error, errors } = await res.json();
+                if (token) {
+                    commit('login', token);
+                }
+                return { error, errors };
+            }
+            return {};
+        },
         async twitter({ commit }: any, { token, verifier }: any) {
             const res = await fetch(`/api/user/oauth/twitter?code=${token}&verifier=${verifier}`, {
                 method: 'POST',
