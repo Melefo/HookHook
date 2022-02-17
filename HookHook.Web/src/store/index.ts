@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import createPersistedState from "vuex-persistedstate";
 import User from '@/store/user'
 import About from '@/store/about'
+import Area from '@/store/area'
 
 const store = createStore({
   plugins: [createPersistedState()],
@@ -15,7 +16,8 @@ const store = createStore({
   },
   modules: {
     'user': User,
-    'about': About
+    'about': About,
+    'area': Area
   }
 });
 

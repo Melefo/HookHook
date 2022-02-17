@@ -42,7 +42,7 @@ export default defineComponent({
     name: 'DropdownComponent',
     components: { SubAreaComponent },
     methods: {
-        ...mapActions("about", ["getServices", "createArea"]),
+        ...mapActions("area", ["getServices", "createAreaRequest"]),
         validateMinutes() {
             if (this.minutes < 0) {
                 this.minutes *= -1;
@@ -64,13 +64,12 @@ export default defineComponent({
             console.log("Action: ", this.action);
             console.log("Reactions: ", this.reactions);
 
-            // const { error } = await this.createArea({
-            //     "action": this.action,
-            //     "reactions": this.reactions,
-            //     "minutes": this.minutes
-            // });
-            // this.error = error || null;
-
+            const { error } = await this.createAreaRequest({
+                "action": this.action,
+                "reactions": this.reactions,
+                "minutes": this.minutes
+            });
+            this.error = error || null;
         },
         addReaction() {
             this.reactions.push({
@@ -89,7 +88,7 @@ export default defineComponent({
             serviceDetails: [] as any[],
             action: {} as any,
             reactions: [] as any[],
-            error: "" as string,
+            error: null as any,
             minutes: 1 as number
         }
     },

@@ -67,7 +67,7 @@ export default defineComponent({
     name: 'DropdownComponent',
     components: { Listbox, ListboxButton, ListboxOptions, ListboxOption, ActionComponent },
     methods: {
-        ...mapActions("about", ["getServices"]),
+        ...mapActions("area", ["getServices"]),
         changeOptions(newAction : any) {
 
             let appropriateActions = this.areaType === "Action" ? newAction.actions : newAction.reactions;
