@@ -2,7 +2,6 @@
     <div>
         <!-- // todo pour le nom du area, un input modelé à une variable -->
         <p class="text-white p-2">AREA name : coucou</p>
-        <!-- // todo bind (name, params) to variables -->
         <SubAreaComponent @updateInfo="updateAction" reaction-index="-1" :service-details="serviceDetails" verb="when" area-type="Action"/>
 
         <div
@@ -23,7 +22,12 @@
             Add Reaction
         </button>
         <br/>
-        <button class="text-white pt-6">
+        <div class="text-white pt-6">
+            Trigger every:
+            <input class="text-black" min="1" @keyup="validateMinutes()" v-model="minutes" type="number"/>
+            minute(s)
+        </div>
+        <button class="text-white pt-6" @click="createArea()">
             Create
         </button>
     </div>
@@ -38,25 +42,35 @@ export default defineComponent({
     name: 'DropdownComponent',
     components: { SubAreaComponent },
     methods: {
-        ...mapActions("about", ["getServices"]),
+        ...mapActions("about", ["getServices", "createArea"]),
+        validateMinutes() {
+            if (this.minutes < 0) {
+                this.minutes *= -1;
+            }
+            if (this.minutes < 1) {
+                this.minutes = 1;
+            }
+        },
         updateAction({type, params} : any) {
-            console.log("Got new action type: ", type);
-            console.log("Got new action params: ", params);
-
             this.action['type'] = type;
             this.action['arguments'] = [...params];
         },
         updateReaction({type, params, index} : any) {
-            console.log("Got new reaction type: ", type);
-            console.log("Got new reaction params: ", params);
-
-            console.log("Reaction index", index);
-
             this.reactions[index]['type'] = type;
             this.reactions[index]['arguments'] = [...params];
         },
-        createArea() {
+        async createArea() {
             // todo call the store, check for errors
+            console.log("Action: ", this.action);
+            console.log("Reactions: ", this.reactions);
+
+            // const { error } = await this.createArea({
+            //     "action": this.action,
+            //     "reactions": this.reactions,
+            //     "minutes": this.minutes
+            // });
+            // this.error = error || null;
+
         },
         addReaction() {
             this.reactions.push({
@@ -72,10 +86,11 @@ export default defineComponent({
     },
     data: function() {
         return {
-            serviceDetails: [],
-            action: {},
-            reactions: [],
-            paramsToSend: [],
+            serviceDetails: [] as any[],
+            action: {} as any,
+            reactions: [] as any[],
+            error: "" as string,
+            minutes: 1 as number
         }
     },
     setup() {
@@ -85,7 +100,8 @@ export default defineComponent({
         const serviceDetails = await this.getServices();
         this.serviceDetails = serviceDetails;
         console.log("Got details = ", this.serviceDetails);
-
+    },
+    mounted: function() {
         this.action.type = "";
         this.action.arguments = []
 
@@ -93,6 +109,6 @@ export default defineComponent({
             type: "",
             arguments: []
         }]
-    },
+    }
 });
 </script>

@@ -48,7 +48,7 @@
                 </div>
                 <input
                     v-model="paramsToSend[i]"
-                    @change='$emit("updateInfo", {type: currentServiceName, params: paramsToSend, index: reactionIndex})'>
+                    @keyup='$emit("updateInfo", {type: currentServiceName, params: paramsToSend, index: reactionIndex})'>
             </div>
         </div>
         </Listbox>
@@ -107,9 +107,9 @@ export default defineComponent({
     },
     data: function() {
         return {
-            possibleServices: [],
-            currentParameters: [],
-            paramsToSend: [],
+            possibleServices: [] as string[],
+            currentParameters: [] as string[],
+            paramsToSend: [] as string[],
             currentServiceName: "",
             currentServiceDescription: ""
         }
