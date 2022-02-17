@@ -3,10 +3,10 @@
       <p class="creatorTitle">Creator</p>
       <p class="urAreaTitle">Your AREAs</p>
       <div class="grid grid-cols-5 gap-4">
-        <Bloc class="creatorBG rounded-xl text-black col-span-2">
+        <Bloc class="creatorBG rounded-xl text-black col-span-2 min-h-[75vh]">
           <DropdownComponent/>
         </Bloc>
-        <CarouselComponent class="col-span-3 grid grid-cols-3 gap-4" />
+        <CarouselComponent class="col-span-3 grid grid-cols-4 gap-4 overflow-auto max-h-[75vh]" />
       </div>
     </div>
 </template>

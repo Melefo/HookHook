@@ -1,29 +1,36 @@
 <template>
   <div>
-    <Bloc v-for="(slide, key) in blocs" :key="key" class="dark:text-white text-black">
+    <Bloc v-for="(slide, key) in blocs" :key="key" class="dark:text-white text-black flex max-h-full flex-col justify-between">
       <div>{{ slide.name }}</div>
-      <div class="flex flex-row">
-        <img class="w-10 h-10 m-auto" :src="`@/assets/img/coloredsvg/${slide.from}.svg`"/>
-        <ArrowNarrowRightIcon class="h-8 text-white" />
-        <div class="flex flex-col">
-        <img v-for="(to, key) in slide.to" :key="key" class="w-10 h-10 m-auto" :src="`@/assets/img/coloredsvg/${to}.svg`"/>
+      <div class="flex flex-row items-center my-2">
+        <div class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(slide.from) }">
+          <img class="w-7 h-7 m-auto" :src="require(`@/assets/img/coloredsvg/${slide.from.toLowerCase()}.svg`)"/>
+        </div>
+        <ArrowNarrowRightIcon class="h-8 dark:text-white text-black mx-1" />
+        <div class="gap-2 grid grid-cols-4">
+          <div v-for="(to, key) in slide.to" :key="key" class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(to) }">
+            <img class="w-7 h-7 m-auto" :src="require(`@/assets/img/coloredsvg/${to.toLowerCase()}.svg`)"/>
+          </div>
         </div>
       </div>
-      <div>{{ slide.date }}</div>
-      <div class="flex flex-row">
-        <RefreshIcon class="h-8 text-white" />
-        <PencilIcon class="h-8 text-white" />
-        <TrashIcon class="h-8 text-white" />
+      <div>
+        <div>{{ formatDate(slide.date * 1000) }}</div>
+        <div class="flex flex-row justify-end">
+          <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
+          <PencilIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
+          <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
+        </div>
       </div>
     </Bloc>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
 import Bloc from "@/components/BlocComponent.vue";
 import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline"
 import { PencilIcon, TrashIcon } from "@heroicons/vue/solid"
+import dayjs from 'dayjs';
 
 export default defineComponent({
   name: 'CarouselComponent',
@@ -31,9 +38,31 @@ export default defineComponent({
     Bloc, RefreshIcon, PencilIcon, TrashIcon, ArrowNarrowRightIcon
   },
   data: () => ({
-      blocs: Array(100).fill(
-        { name: "Twitter on Push", from: "GitHub", to: [ "Twitter", "Twitter" ], date: "25 decembre 10h43" }
+      blocs: Array(Math.floor(Math.random() * 150)).fill(0).map(() => 
+        { return { name: "Twitter on Push", from: "GitHub", to: Array(Math.floor(Math.random() * 15) + 1).fill("Twitter"), date: 1645101544 } }
       )
   }),
+  methods: {
+    formatDate(time: number) {
+      return dayjs(time).format("D MMMM YYYY H:m");
+    },
+    color(name: string) {
+      name = name.toLowerCase();
+        switch (name) {
+          case 'twitter':
+            return "#A3E7EE";
+          case 'spotify':
+            return "#B4E1DC";
+          case 'discord':
+            return "#D9D1EA";
+          case 'github':
+            return "#F5CDCB";
+          case 'google':
+            return "#F8CBAA";
+          case 'twitch':
+            return "#FFFFC7";
+        }
+    }
+  }
 });
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="mx-[10px] mb-[5px] hover:scale-105 duration-500 px-[10px] w-[60px] h-[60px] button rounded-xl" :style="{ 'background-color': bgColor }" @click="openModal">
+  <button type="button" class="mx-[10px] mb-[5px] hover:scale-105 duration-500 w-[60px] h-[60px] button rounded-xl" :style="{ 'background-color': bgColor }" @click="openModal">
     <img class="w-10 h-10 m-auto" :src="require(`@/assets/img/coloredsvg/${src}`)"/>
   </button>
   <TransitionRoot appear :show="IsOpen" as="template">
