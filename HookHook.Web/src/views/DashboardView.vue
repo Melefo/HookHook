@@ -1,12 +1,12 @@
 <template>
     <div class="mt-8 gridCreator text-black dark:text-white">
-      <p class="creatorTitle">Creator</p>
-      <p class="urAreaTitle">Your AREAs</p>
-      <div class="grid grid-cols-5 gap-4">
-        <Bloc class="creatorBG rounded-xl text-black col-span-2 min-h-[75vh]">
+      <div class="sm:grid grid-cols-5 gap-4">
+        <p class="col-span-2">Creator</p>
+        <Bloc class="rounded-xl text-black col-span-2 min-h-[75vh] row-start-2">
           <DropdownComponent/>
         </Bloc>
-        <CarouselComponent class="col-span-3 grid grid-cols-4 gap-4 overflow-auto max-h-[75vh]" />
+        <p class="col-span-3">Your AREAs</p>
+        <CarouselComponent class="col-span-3 row-start-2 sm:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 overflow-auto sm:max-h-[75vh]" />
       </div>
     </div>
 </template>

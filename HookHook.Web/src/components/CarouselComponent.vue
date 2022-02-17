@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Bloc v-for="(slide, key) in blocs" :key="key" class="dark:text-white text-black flex max-h-full flex-col justify-between">
+    <Bloc v-for="(slide, key) in blocs" :key="key" class="dark:text-white text-black flex max-h-full flex-col justify-between my-2 sm:my-0">
       <div>{{ slide.name }}</div>
       <div class="flex flex-row items-center my-2">
         <div class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(slide.from) }">
