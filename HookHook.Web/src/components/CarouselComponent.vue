@@ -1,79 +1,68 @@
 <template>
-  <Carousel :settings="settings" :breakpoints="breakpoints">
-    <Slide v-for="slide in 10" :key="slide">
-      <div class="carousel__item">{{ slide }}</div>
-    </Slide>
-
-    <template #addons>
-      <Navigation />
-    </template>
-  </Carousel>
+  <div>
+    <Bloc v-for="(slide, key) in blocs" :key="key" class="dark:text-white text-black flex max-h-full flex-col justify-between my-2 sm:my-0">
+      <div>{{ slide.name }}</div>
+      <div class="flex flex-row items-center my-2">
+        <div class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(slide.from) }">
+          <img class="w-7 h-7 m-auto" :src="require(`@/assets/img/coloredsvg/${slide.from.toLowerCase()}.svg`)"/>
+        </div>
+        <ArrowNarrowRightIcon class="h-8 dark:text-white text-black mx-1" />
+        <div class="gap-2 grid grid-cols-4">
+          <div v-for="(to, key) in slide.to" :key="key" class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(to) }">
+            <img class="w-7 h-7 m-auto" :src="require(`@/assets/img/coloredsvg/${to.toLowerCase()}.svg`)"/>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div>{{ formatDate(slide.date * 1000) }}</div>
+        <div class="flex flex-row justify-end">
+          <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
+          <PencilIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
+          <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
+        </div>
+      </div>
+    </Bloc>
+  </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue';
-import { Carousel, Navigation, Slide } from 'vue3-carousel';
-
-import 'vue3-carousel/dist/carousel.css';
+import Bloc from "@/components/BlocComponent.vue";
+import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline"
+import { PencilIcon, TrashIcon } from "@heroicons/vue/solid"
+import dayjs from 'dayjs';
 
 export default defineComponent({
   name: 'CarouselComponent',
   components: {
-    Carousel,
-    Slide,
-    Navigation,
+    Bloc, RefreshIcon, PencilIcon, TrashIcon, ArrowNarrowRightIcon
   },
   data: () => ({
-    // carousel settings
-    settings: {
-      itemsToShow: 1,
-      snapAlign: 'center',
-    },
-    // breakpoints are mobile first
-    // any settings not specified will fallback to the carousel settings
-    breakpoints: {
-      // 700px and up
-      700: {
-        itemsToShow: 2,
-        snapAlign: 'center',
-      },
-      // 1024 and up
-      1024: {
-        itemsToShow: 4,
-        snapAlign: 'start',
-      },
-    },
+      blocs: Array(Math.floor(Math.random() * 150)).fill(0).map(() => 
+        { return { name: "Twitter on Push", from: "GitHub", to: Array(Math.floor(Math.random() * 15) + 1).fill("Twitter"), date: 1645101544 } }
+      )
   }),
+  methods: {
+    formatDate(time: number) {
+      return dayjs(time).format("D MMMM YYYY H:m");
+    },
+    color(name: string) {
+      name = name.toLowerCase();
+        switch (name) {
+          case 'twitter':
+            return "#A3E7EE";
+          case 'spotify':
+            return "#B4E1DC";
+          case 'discord':
+            return "#D9D1EA";
+          case 'github':
+            return "#F5CDCB";
+          case 'google':
+            return "#F8CBAA";
+          case 'twitch':
+            return "#FFFFC7";
+        }
+    }
+  }
 });
 </script>
-
-<style>
-.carousel__item {
-  min-height: 432.25px;
-  width: 100%;
-  background-color: #3B3F43;
-  color:  white;
-  font-size: 20px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.carousel__slide {
-  padding: 0px 5px 0px 5px;
-}
-
-.carousel__prev {
-  margin: 105px 0px 0px 30px;
-}
-.carousel__next {
-  margin: 105px 30px 0px 0px;
-}
-
-.carousel__prev,
-.carousel__next {
-  box-sizing: content-box;
-  border: 5px solid white;
-}
-</style>

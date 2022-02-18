@@ -9,12 +9,12 @@
       p-10
     "
   >
-    <header class="flex flex-col sm:flex-row justify-between">
-      <div class="w-[90px]"/>
+    <header class="flex flex-row justify-between">
+      <div class="w-[90px] sm:flex hidden"/>
       <RouterLink to="/">
-        <HookHook class="text-9xl" />
+        <HookHook class="lg:text-9xl md:text-7xl sm:text-6xl text-4xl" />
       </RouterLink>
-      <div class="mt-6 sm:mt-0">
+      <div class="mt-0">
         <Switch @ToggleDarkMode="this.$emit('ToggleDarkMode')" />
       </div>
     </header>

@@ -53,6 +53,13 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
+  if (store.getters["signIn/isLoggedIn"]) {
+    const jwt = parseJwt(store.getters["signIn/token"]);
+    if (jwt !== null && jwt.exp < Date.now() / 1000) {
+        store.dispatch("signIn/logout");
+    }
+  }
+
   if (to.meta && to.meta.onlyAdmin && !store.getters["signIn/isAdmin"]) {
     return next('/dashboard');
   }
@@ -70,9 +77,9 @@ declare interface Jwt {
   role: String,
   unique_name: String,
   given_name: String,
-  nbf: Date,
-  exp: Date,
-  iat: Date
+  nbf: Number,
+  exp: Number,
+  iat: Number
 }
 
 export function parseJwt(token: String): Jwt|null {
