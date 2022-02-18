@@ -126,7 +126,7 @@ export default defineComponent({
     ...mapGetters("signIn", ["isLoggedIn", "isAdmin", "token"]),
     firstName: function() {
       const that: any = this;
-      return parseJwt(that.token).given_name;
+      return parseJwt(that.token)?.given_name;
     }
   },
   methods: {

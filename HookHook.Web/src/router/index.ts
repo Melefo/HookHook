@@ -55,7 +55,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (store.getters["signIn/isLoggedIn"]) {
     const jwt = parseJwt(store.getters["signIn/token"]);
-    if (jwt.exp < Date.now() / 1000) {
+    if (jwt !== null && jwt.exp < Date.now() / 1000) {
         store.dispatch("signIn/logout");
     }
   }
