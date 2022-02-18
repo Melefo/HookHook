@@ -53,13 +53,13 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-  if (to.meta && to.meta.onlyAdmin && !store.getters["user/isAdmin"]) {
+  if (to.meta && to.meta.onlyAdmin && !store.getters["signIn/isAdmin"]) {
     return next('/dashboard');
   }
-  if (to.meta && to.meta.onlyUser && !store.getters["user/isLoggedIn"]) {
+  if (to.meta && to.meta.onlyUser && !store.getters["signIn/isLoggedIn"]) {
     return next('/login');
   }
-  if (to.meta && to.meta.onlyGuest && store.getters["user/isLoggedIn"]) {
+  if (to.meta && to.meta.onlyGuest && store.getters["signIn/isLoggedIn"]) {
     return next('/');
   }
   next();
@@ -75,7 +75,9 @@ declare interface Jwt {
   iat: Date
 }
 
-export function parseJwt(token: String): Jwt {
+export function parseJwt(token: String): Jwt|null {
+  if (token === null)
+    return null;
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const jsonPayload = decodeURIComponent(atob(base64).split("").map(function (c) {

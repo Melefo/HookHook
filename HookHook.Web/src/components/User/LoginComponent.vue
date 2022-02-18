@@ -43,7 +43,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["login"]),
+    ...mapActions("signIn", ["login"]),
     async send() {
       const { errors, error } = await this.login({
         username: this.username,
