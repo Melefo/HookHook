@@ -25,11 +25,9 @@ import { defineComponent } from "vue";
 import CarouselComponent from "@/components/CarouselComponent.vue";
 import AreaCreatorComponent from '@/components/AreaCreatorComponent.vue'
 import OAuthButtonsComponent from "@/components/OAuthButtonsComponent.vue";
-import DropdownComponent from "@/components/DropdownComponent.vue";
-import Bloc from "@/components/BlocComponent.vue";
 
 export default defineComponent({
-  components: { CarouselComponent, OAuthButtonsComponent, Bloc, AreaCreatorComponent },
+  components: { CarouselComponent, OAuthButtonsComponent, AreaCreatorComponent },
   methods: {
 
   },
