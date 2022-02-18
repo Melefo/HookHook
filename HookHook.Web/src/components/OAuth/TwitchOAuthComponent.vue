@@ -16,21 +16,22 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["twitch"]),
+    ...mapActions("signIn", ["twitch"]),
     async handleTwitch() {
       window.removeEventListener("message", this.receiveTwitch);
 
-      var scopes = "";
-      scopes += "channel:read:subscriptions";
-      scopes += " user:edit";
-      scopes += " user:read:email";
-      scopes += " user:read:follows"
+      var scopes = [
+        "channel:read:subscriptions",
+        "user:edit",
+        "user:read:email",
+        "user:read:follows"
+      ];
 
       const url = `https://id.twitch.tv/oauth2/authorize?client_id=${
         process.env.VUE_APP_TWITCH_CLIENTID
       }&redirect_uri=${
         process.env.VUE_APP_TWITCH_REDIRECT
-      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes}`;
+      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes.join(' ')}`;
       let popup = window.open(
         url,
         "_blank",

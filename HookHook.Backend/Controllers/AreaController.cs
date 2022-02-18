@@ -15,6 +15,7 @@ namespace HookHook.Backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class AreaController : ControllerBase
     {
         public MongoService _db;
@@ -50,7 +51,7 @@ namespace HookHook.Backend.Controllers
 
         }
 
-        Entities.Area CreateEntityFromModel(AreaModel area)
+        private Entities.Area CreateEntityFromModel(AreaModel area)
         {
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments);
@@ -58,8 +59,6 @@ namespace HookHook.Backend.Controllers
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
-                Console.WriteLine($"Reaction {i} has {area.Reactions[i].Arguments.Length} args");
-
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments));
             }
 
@@ -123,7 +122,9 @@ namespace HookHook.Backend.Controllers
 
         // * create a new area
         [HttpPost("create")]
-        public async Task<ActionResult> CreateArea([FromBody] AreaModel area)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
@@ -140,76 +141,60 @@ namespace HookHook.Backend.Controllers
         // * modify -> add/remove reactions/action, so a new area ??
         // * PUT vu qu'on envoie un nouveau AREA je dirais
         [HttpPut("modify/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> ModifyArea([FromBody] AreaModel area, string id)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
-                return (BadRequest());
+                return BadRequest();
 
             // * find the AREA to modify and replace it...
-            for (int i = 0; i < user.Areas.Count; i++) {
-                if (user.Areas[i].Id == id) {
-                    Entities.Area areaEntity = CreateEntityFromModel(area);
+            var areaEntity = user.Areas.SingleOrDefault(x => x.Id == id);
+            if (areaEntity == null)
+                return BadRequest();
 
-                    user.Areas[i] = areaEntity;
-                    _db.SaveUser(user);
+            user.Areas.Remove(areaEntity);
+            user.Areas.Add(CreateEntityFromModel(area));
+            _db.SaveUser(user);
 
-                    return (Ok(areaEntity));
-                }
-            }
-            return (BadRequest());
+            return Ok(areaEntity);
         }
 
         // * delete -> rm area by ID
         [HttpDelete("delete/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> DeleteArea(string id)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
-                return (BadRequest());
+                return BadRequest();
 
-            // * il doit y avoir moyen plus stylé mais que vous voulez vous
-            for (int i = 0; i < user.Areas.Count; i++) {
-                if (user.Areas[i].Id == id) {
-                    user.Areas.RemoveAt(i);
-                    return(Ok());
-                }
-            }
-            return (BadRequest());
+            var area = user.Areas.SingleOrDefault(x => x.Id == id);
+            if (area == null)
+                return BadRequest();
+
+            user.Areas.Remove(area);
+            _db.SaveUser(user);
+
+            return NoContent();
         }
 
         // * trigger all areas
-        [HttpGet("TriggerAll")]
-        public async Task<ActionResult> TriggerAreas()
+        [HttpGet("Trigger/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> TriggerUserAreas(string id)
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
                 return BadRequest();
 
-            Console.WriteLine("AFTER USER GET");
-
-            for (int i = 0; i < user.Areas.Count; i++) {
-                // * bon pour le temps entre chaque lancement je sais pas si tu veux check ici ou dans Launch
-                await user.Areas[i].Launch(user);
-            }
-            return Ok();
-        }
-
-
-        [Authorize]
-        [HttpPost("poc")]
-        public async Task<ActionResult> POC(string githubUsername, string repository, string discordWebhook)
-        {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
-            if (user == null)
-                return BadRequest();
-            var action = new GithubIssueCreated(githubUsername, repository);
-            (string? commit, bool res) = await action.Check(user);
-
-            if (!res)
-                BadRequest();
-            var reaction = new DiscordWebhook(discordWebhook, commit);
-            await reaction.Execute(user);
+            foreach (var area in user.Areas)
+                await area.Launch(user);
+            _db.SaveUser(user);
+            
             return Ok();
         }
     }

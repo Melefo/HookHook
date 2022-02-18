@@ -1,84 +1,39 @@
 <template>
-    <div class="text-black text-2xl mt-8 dark:text-white text-left">
-      <p class="welcomingMessage">Hello <span class="userName">{{ firstName }}</span>, welcome back !</p>
-    </div>
-    <div class="text-black dark:text-white mt-8">
-      <p>Services</p>
-    </div>
-    <!-- // todo centrer et colorier les svg pliz -->
-    <OAuthButtonsComponent/>
-    <div class="gridCreator text-black dark:text-white">
-      <p class="creatorTitle">Creator</p>
-      <p class="urAreaTitle">Your AREAs</p>
-      <!--AREA CREATOR-->
-      <div class="creatorBG rounded-xl bg-[#3B3F43] text-black overflow-y-scroll">
-        <!-- TEST DROPDOWN HEADLESS UI-->
-        <AreaCreatorComponent/>
-      </div>
-      <!--MY AREA-->
-      <CarouselComponent/>
+    <div>
+        <div class="text-black text-2xl mt-8 dark:text-white text-left">
+            <p class="welcomingMessage">Hello <span class="userName">{{ firstName }}</span>, welcome back !</p>
+        </div>
+        <div class="text-black dark:text-white mt-8">
+            <p>Services</p>
+        </div>
+        <!-- // todo centrer et colorier les svg pliz -->
+        <OAuthButtonsComponent/>
+        <p class="creatorTitle">Creator</p>
+        <p class="urAreaTitle">Your AREAs</p>
+        <!--AREA CREATOR-->
+        <div class="creatorBG rounded-xl bg-[#3B3F43] text-black overflow-y-scroll">
+            <!-- TEST DROPDOWN HEADLESS UI-->
+            <AreaCreatorComponent/>
+            <CarouselComponent class="col-span-3 row-start-2 sm:grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 overflow-auto sm:max-h-[75vh]" />
+        </div>
     </div>
 </template>
 
-<style>
-    .userName {
-      color: red;
-    }
-    .button {
-      border-radius: 10px;
-      width: 150px;
-      margin: 0 25px 10px 0;
-      padding: 35px 0;
-      transition-duration: 1s;
-    }
-    .button:hover {
-      transform: scale(1.05);
-    }
-    .gridCreator {
-      display: grid;
-      height: 475px;
-      grid-template-columns: 40% 60%;
-      grid-template-rows: 10% 45% 45%;
-      gap: 1%;
-    }
-    .creatorTitle {
-      grid-column: 1 / span 1;
-      grid-row: 1 / span 1;
-    }
-    .urAreaTitle {
-      grid-column: 2 / span 1;
-      grid-row: 1 / span 1;
-    }
-    .creatorBG {
-      grid-column: 1 / span 1;
-      grid-row: 2 / span 2;
-    }
-    .urAreaBG {
-      grid-column: 2 / span 1;
-      grid-row: 2 / span 2;
-      flex-flow: column wrap;
-    }
-</style>
-
 <script lang="ts">
 import { defineComponent } from "vue";
-import { parseJwt } from "@/router";
-import { mapGetters } from "vuex";
 
 import CarouselComponent from "@/components/CarouselComponent.vue";
 import AreaCreatorComponent from '@/components/AreaCreatorComponent.vue'
 import OAuthButtonsComponent from "@/components/OAuthButtonsComponent.vue";
+import DropdownComponent from "@/components/DropdownComponent.vue";
+import Bloc from "@/components/BlocComponent.vue";
 
 export default defineComponent({
-  components: { CarouselComponent, OAuthButtonsComponent, AreaCreatorComponent },
+  components: { CarouselComponent, OAuthButtonsComponent, Bloc, AreaCreatorComponent },
   methods: {
 
   },
   computed: {
-    ...mapGetters("user", ["token"]),
-    firstName: function() {
-        return parseJwt(this.token).given_name;
-    }
   },
   data() {
     return {

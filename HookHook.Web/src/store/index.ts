@@ -3,6 +3,7 @@ import createPersistedState from "vuex-persistedstate";
 import User from '@/store/user'
 import About from '@/store/about'
 import Area from '@/store/area'
+import SignIn from '@/store/signIn'
 
 const store = createStore({
   plugins: [createPersistedState()],
@@ -17,14 +18,15 @@ const store = createStore({
   modules: {
     'user': User,
     'about': About,
-    'area': Area
+    'area': Area,
+    'signIn': SignIn
   }
 });
 
 export default store;
 
 export function authHeader() : HeadersInit {
-  if (store.getters["user/isLoggedIn"])
-    return { 'Authorization': 'Bearer ' + store.getters["user/token"] };
+  if (store.getters["signIn/isLoggedIn"])
+    return { 'Authorization': 'Bearer ' + store.getters["signIn/token"] };
   return {};
 }

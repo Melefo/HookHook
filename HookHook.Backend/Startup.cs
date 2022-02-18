@@ -33,7 +33,6 @@ namespace HookHook.Backend
             services.AddSingleton<TwitterService>();
             services.AddSingleton<YouTubeService>();
             services.AddScoped<UserService>();
-            // services.AddSingleton<GithubService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

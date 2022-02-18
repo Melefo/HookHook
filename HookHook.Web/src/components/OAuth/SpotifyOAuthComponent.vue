@@ -16,24 +16,25 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["spotify"]),
+    ...mapActions("signIn", ["spotify"]),
     async handleSpotify() {
       window.removeEventListener("message", this.receiveSpotify);
 
-      var scopes = "";
-      scopes += "user-read-email";
-      scopes += " user-read-private";
-      scopes += " user-library-modify";
-      scopes += " user-library-read";
-      scopes += " playlist-modify-private";
-      scopes += " playlist-read-private";
-      scopes += " playlist-modify-public";
+      var scopes = [
+        "user-read-email",
+        "user-read-private",
+        "user-library-modify",
+        "user-library-read",
+        "playlist-modify-private",
+        "playlist-read-private",
+        "playlist-modify-public"
+      ];
 
       const url = `https://accounts.spotify.com/authorize?client_id=${
         process.env.VUE_APP_SPOTIFY_CLIENTID
       }&redirect_uri=${
         process.env.VUE_APP_SPOTIFY_REDIRECT
-      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes}`;
+      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes.join(' ')}`;
       let popup = window.open(
         url,
         "_blank",
