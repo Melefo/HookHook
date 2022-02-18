@@ -19,6 +19,7 @@
               :value="serviceChose"
               as="template"
               class="bg-black"
+              @click='$emit("actionChange", serviceChose)'
             >
               <li
                 :class="[
@@ -61,6 +62,9 @@ export default defineComponent({
         case 'twitch':
           return "#FFFFC7";
       }
+    },
+    test() {
+        console.log("testttt");
     }
   },
   computed: {
@@ -68,6 +72,7 @@ export default defineComponent({
   data: function() {
     return {
         service: [],
+        serviceChose: "",
         selectedService: null,
     }
   },

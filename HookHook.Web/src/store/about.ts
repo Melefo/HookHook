@@ -14,7 +14,7 @@ const about = {
 
                 return json;
             }
-            if (contentType && contentType.indexOf("applicatoin/problem+json") !== 1) {
+            if (contentType && contentType.indexOf("application/problem+json") !== 1) {
                 const { error, errors } = await res.json();
                 return { error, errors };
             }
