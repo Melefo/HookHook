@@ -123,14 +123,14 @@ export default defineComponent({
     OAuthButtonsComponent,
   },
   computed: {
-    ...mapGetters("user", ["isLoggedIn", "isAdmin", "token"]),
+    ...mapGetters("signIn", ["isLoggedIn", "isAdmin", "token"]),
     firstName: function() {
       const that: any = this;
       return parseJwt(that.token).given_name;
     }
   },
   methods: {
-    ...mapActions('user', ["logout"]),
+    ...mapActions('signIn', ["logout"]),
     preventLogout() {
       this.logout();
       this.$router.push('/');

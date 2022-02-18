@@ -16,7 +16,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["github"]),
+    ...mapActions("signIn", ["github"]),
     async handleGithub() {
       window.removeEventListener("message", this.receiveGitHub);
 

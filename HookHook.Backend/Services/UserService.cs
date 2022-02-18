@@ -111,13 +111,6 @@ namespace HookHook.Backend.Services
             return _db.SaveUser(user);
         }
 
-        public async Task Refresh(string id)
-        {
-            User user = _db.GetUser(id);
-            foreach (var area in user.Areas)
-                await area.Launch(user);
-        }
-
         public void Register(User user)
         {
             var existing = _db.GetUserByIdentifier(user.Email);

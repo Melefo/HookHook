@@ -25,8 +25,7 @@
     <Bloc class="flex flex-col justify-center items-center">
       <Login />
       <div class="grid grid-cols-3 sm:grid-cols-6 gap-4 mt-8">
-        <img class="h-10" alt="google" src="@/assets/img/google.svg" />
-        <component v-for="(item, key) in services" :key="key" :is="item.name + 'Oauth'" />
+        <component v-for="(item, key) in services" :key="key" :is="(item.name === 'youtube' ? 'google' : item.name) + 'Oauth'" />
       </div>
     </Bloc>
     <Bloc class="flex justify-center items-center">
@@ -57,12 +56,13 @@ import GithubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
 import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
 import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
 import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
+import GoogleOauth from "@/components/OAuth/GoogleOAuthComponent.vue"
 
 import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
 export default defineComponent({
-  components: { Bloc, HookHook, Register, Login, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth },
+  components: { Bloc, HookHook, Register, Login, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
   methods: {
     ...mapActions("about", ["get"])
   },

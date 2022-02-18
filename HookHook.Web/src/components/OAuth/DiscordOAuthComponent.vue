@@ -18,7 +18,7 @@ export default defineComponent({
       }
   },
   methods: {
-    ...mapActions("user", ["discord"]),
+    ...mapActions("signIn", ["discord"]),
     async handleDiscord() {
       window.removeEventListener("message", this.receiveDiscord);
 

@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name + '.svg'" :bgColor="color(item.name)" />
+  <div class="text-black mt-2 justify-start">
+    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="(item.name === 'youtube' ? 'google' : item.name) + '.svg'" :bgColor="color(item.name)" />
   </div>
 </template>
 
@@ -26,6 +26,7 @@
           case 'github':
             return "#F5CDCB";
           case 'google':
+          case 'youtube':
             return "#F8CBAA";
           case 'twitch':
             return "#FFFFC7";
