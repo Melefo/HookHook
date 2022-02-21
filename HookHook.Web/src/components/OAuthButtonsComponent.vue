@@ -1,6 +1,16 @@
 <template>
-  <div class="text-black mt-2 justify-start">
-    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="(item.name === 'youtube' ? 'google' : item.name) + '.svg'" :bgColor="color(item.name)" />
+  <div class="text-black justify-start">
+    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="(item.name === 'youtube' ? 'google' : item.name) + '.svg'" :bgColor="color(item.name)">
+      <div v-for="account in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
+        <p>{{ account.username }}</p>
+        <button @click.prevent="async () => await deleteService(item.name, account.userId)">
+          <XIcon class="h-8" />
+        </button>
+      </div>
+      <component :is="(item.name === 'youtube' ? 'google' : item.name) + 'Oauth'" :oauth="false">
+        ADD
+      </component>
+    </DialogComponent>
   </div>
 </template>
 
@@ -8,13 +18,24 @@
   import { defineComponent } from "vue";
   import DialogComponent from "@/components/DialogComponent.vue";
   import { mapActions } from "vuex";
+  import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
+  import GithubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+  import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
+  import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
+  import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
+  import GoogleOauth from "@/components/OAuth/GoogleOAuthComponent.vue";
+  import { XIcon } from "@heroicons/vue/solid";
 
   export default defineComponent ({
     name: 'OAuthButtonsComponent',
-    components: { DialogComponent },
+    components: { DialogComponent, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth, XIcon },
     props: ['text', 'bgColor', 'src'],
     methods: {
       ...mapActions("about", ["get"]),
+      ...mapActions("service", ["getAccounts", "deleteAccount"]),
+      async deleteService(provider: String, id: String) {
+        await this.deleteAccount({provider: provider, id: id});
+      },
       color(name: string) {
         switch (name) {
           case 'twitter':
@@ -40,7 +61,11 @@
     },
     created: async function() {
       const { server: { services } } = await this.get();
-      this.services = services;
+      this.services = await Promise.all(services.map(async (s: any) => {
+        const accounts = await this.getAccounts(s.name);
+
+        return {...s, accounts: accounts };
+      }));
     }
   });
 </script>

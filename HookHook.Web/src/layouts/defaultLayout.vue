@@ -14,7 +14,7 @@
         <RouterLink to="/">
           <HookHook class="text-5xl whitespace-nowrap"/>
         </RouterLink>
-        <span v-if="isLoggedIn" class="text-black text-2xl mt-2 ml-8 lg:flex hidden dark:text-white text-left">
+        <span v-if="isLoggedIn" class="text-black text-2xl self-end ml-8 lg:flex hidden dark:text-white text-left">
           <p class="welcomingMessage">Hello <span class="dark:text-[#A3E7EE] text-[#F09113]">{{ firstName }}</span>, welcome back !</p>
         </span>
       </div>

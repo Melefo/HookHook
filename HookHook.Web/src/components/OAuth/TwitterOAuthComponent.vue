@@ -44,7 +44,6 @@ export default defineComponent({
         return;
       }
       let data = Object.fromEntries(new URLSearchParams(event.data));
-      console.log(data);
       if (!data.oauth_token || !data.oauth_verifier) {
         return;
       }

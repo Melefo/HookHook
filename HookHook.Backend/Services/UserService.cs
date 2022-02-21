@@ -10,10 +10,9 @@ using Discord.Rest;
 using Octokit;
 using SpotifyAPI.Web;
 using TwitchLib.Api;
-using TwitchLib.Client;
-using TwitchLib.Api.Helix.Models.Users;
 using ApiException = HookHook.Backend.Exceptions.ApiException;
 using User = HookHook.Backend.Entities.User;
+using HookHook.Backend.Entities;
 
 namespace HookHook.Backend.Services
 {
@@ -27,15 +26,12 @@ namespace HookHook.Backend.Services
         /// </summary>
         private readonly MongoService _db;
         private readonly TwitterService _twitter;
+        private readonly DiscordService _discord;
 
         /// <summary>
         /// JWT key
         /// </summary>
         private readonly string _key;
-
-        private readonly string _discordId;
-        private readonly string _discordSecret;
-        private readonly string _discordRedirect;
 
         private readonly string _gitHubId;
         private readonly string _gitHubSecret;
@@ -49,17 +45,17 @@ namespace HookHook.Backend.Services
         private readonly string _googleId;
         private readonly string _googleSecret;
 
+        private readonly string _discordRedirect = "http://localhost/oauth";
+
         private readonly HttpClient _client = new();
 
-        public UserService(MongoService db, TwitterService twitter, IConfiguration config)
+        public UserService(MongoService db, TwitterService twitter, DiscordService discord, IConfiguration config)
         {
             _db = db;
             _twitter = twitter;
-            _key = config["JwtKey"];
+            _discord = discord;
 
-            _discordId = config["Discord:ClientId"];
-            _discordSecret = config["Discord:ClientSecret"];
-            _discordRedirect = config["Discord:Redirect"];
+            _key = config["JwtKey"];
 
             _gitHubId = config["GitHub:ClientId"];
             _gitHubSecret = config["GitHub:ClientSecret"];
@@ -178,19 +174,6 @@ namespace HookHook.Backend.Services
             return tokenHandler.WriteToken(token);
         }
 
-        private class DiscordToken
-        {
-            [JsonPropertyName("access_token")] public string AccessToken { get; set; }
-
-            [JsonPropertyName("expires_in")] public int ExpiresIn { get; set; }
-
-            [JsonPropertyName("refresh_token")] public string RefreshToken { get; set; }
-
-            [JsonPropertyName("scope")] public string Scope { get; set; }
-
-            [JsonPropertyName("token_type")] public string TokenType { get; set; }
-        }
-
         // * exact same as the discordtoken except scope is an array
         private class TwitchToken
         {
@@ -273,41 +256,6 @@ namespace HookHook.Backend.Services
 
             user.SpotifyOAuth = new(spotifyUser.Id.ToString(), response.AccessToken, TimeSpan.FromSeconds(response.ExpiresIn),
                 response.RefreshToken);
-            _db.SaveUser(user);
-
-            return CreateJwt(user);
-        }
-
-        public async Task<string> DiscordOAuth(string code, HttpContext ctx)
-        {
-            var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
-            {
-                new("client_id", _discordId),
-                new("client_secret", _discordSecret),
-                new("grant_type", "authorization_code"),
-                new("code", code),
-                new("redirect_uri", _discordRedirect),
-            });
-            var res = await _client.PostAsync<DiscordToken>("https://discord.com/api/oauth2/token", content);
-
-            if (res == null)
-                throw new ApiException("Failed to call API");
-            var client = new DiscordRestClient();
-            await client.LoginAsync(TokenType.Bearer, res.AccessToken);
-
-            User? user = null;
-            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
-                user = _db.GetUser(ctx.User.Identity.Name);
-            user ??= _db.GetUserByDiscord(client.CurrentUser.Id.ToString());
-            user ??= _db.GetUserByIdentifier(client.CurrentUser.Email);
-            if (user == null)
-            {
-                user = new(client.CurrentUser.Email);
-                Create(user);
-            }
-
-            user.DiscordOAuth = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
-                res.RefreshToken);
             _db.SaveUser(user);
 
             return CreateJwt(user);
@@ -427,5 +375,30 @@ namespace HookHook.Backend.Services
             _db.SaveUser(user);
             return CreateJwt(user);
         }
+
+        public async Task<string> DiscordOAuth(string code, HttpContext ctx)
+        {
+            (DiscordRestClient client, DiscordToken res) = await _discord.OAuth(code);
+
+            User? user = null;
+            if (ctx.User.Identity is { IsAuthenticated: true, Name: { } })
+                user = _db.GetUser(ctx.User.Identity.Name);
+            user ??= _db.GetUserByDiscord(client.CurrentUser.Id.ToString());
+            user ??= _db.GetUserByIdentifier(client.CurrentUser.Email);
+            if (user == null)
+            {
+                user = new(client.CurrentUser.Email);
+                Create(user);
+            }
+
+            user.DiscordOAuth = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn),
+                res.RefreshToken);
+            _db.SaveUser(user);
+
+            return CreateJwt(user);
+        }
+
+        public async Task DiscordRefresh(OAuthAccount account) =>
+            await _discord.Refresh(account);
     }
 }

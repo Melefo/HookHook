@@ -71,7 +71,6 @@ export default defineComponent({
         changeOptions(newAction : any) {
 
             let appropriateActions = this.areaType === "Action" ? newAction.actions : newAction.reactions;
-            console.log(appropriateActions);
             this.possibleServices = [];
 
             for (let i = 0; i < appropriateActions.length; i++) {
@@ -88,7 +87,6 @@ export default defineComponent({
             }
         },
         serviceSelected(service : any) {
-            console.log(service);
             this.currentServiceName = service.name;
             this.currentServiceDescription = service.description;
 
