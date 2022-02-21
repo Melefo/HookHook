@@ -22,7 +22,10 @@
         :reverse="true"
         v-model="password"
       />
-      <Input type="submit" value="Login" :reverse="true" />
+      <Input type="submit" class="pb-5" value="Login" :reverse="true" />
+      <RouterLink to="/register">
+        <Input type="submit" value="Register"/>
+      </RouterLink>
     </form>
   </div>
 </template>

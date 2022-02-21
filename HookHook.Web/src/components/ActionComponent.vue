@@ -11,20 +11,19 @@
           leave-from-class="opacity-100"
           leave-to-class="opacity-0"
         >
-          <ListboxOptions class="absolute py-1 mt-1 ml-[8%] overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <ListboxOptions class="absolute mt-1 ml-[8%] overflow-auto z-10 text-base rounded-md max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
             <ListboxOption
               v-slot="{ active }"
               v-for="serviceChose in service"
               :key="serviceChose.name"
               :value="serviceChose"
               as="template"
-              class="bg-black"
               @click='$emit("actionChange", serviceChose)'
             >
               <li
                 :class="[
-                  active ? 'text-black bg-[#FD9524]' : 'text-gray-900',
-                  'cursor-default select-none relative py-2 pl-4 pr-4 bg-black',
+                  active ? 'text-black' : 'text-gray-900',
+                  'cursor-default select-none relative shadow-xl py-2 pl-4 pr-4 bg-[#181A1E] hover:bg-[#F09113] hover:dark:bg-[#A3E7EE]',
                 ]"
               >
                 <img class="w-10 h-10 m-auto" :src="require(`@/assets/img/${serviceChose.name}.svg`)"/>
