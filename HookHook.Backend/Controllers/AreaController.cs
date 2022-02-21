@@ -194,8 +194,27 @@ namespace HookHook.Backend.Controllers
             foreach (var area in user.Areas)
                 await area.Launch(user);
             _db.SaveUser(user);
-            
             return Ok();
         }
+
+        // * get all the areas
+        [HttpGet("GetAll")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> GetAllUserAreas()
+        {
+            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            if (user == null)
+                return BadRequest();
+
+            List<Entities.Area> areas = new();
+
+            foreach (var area in user.Areas) {
+                areas.Append(area);
+            }
+
+            return Ok(areas);
+        }
+
     }
 }
