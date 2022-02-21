@@ -33,6 +33,8 @@ namespace HookHook.Backend
             services.AddSingleton<TwitterService>();
             services.AddSingleton<DiscordService>();
             services.AddSingleton<YouTubeService>();
+            services.AddSingleton<TwitchService>();
+            services.AddSingleton<SpotifyService>();
             services.AddScoped<UserService>();
 
             services.AddControllers();

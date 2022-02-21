@@ -45,6 +45,48 @@ const service = {
             }
             return {};
         },
+        async addTwitter({ commit }: any, { token, verifier }: any) {
+            const res = await fetch(`/api/service/twitter?code=${token}&verifier=${verifier}`, {
+                method: 'POST',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                return await res.json();
+            }
+            return {};
+        },
+        async addTwitch({ commit }: any, code: String) {
+            const res = await fetch("/api/service/twitch?code=" + code, {
+                method: 'POST',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                return await res.json();
+            }
+            return {};
+        },
+        async addSpotify({ commit }: any, code: String) {
+            const res = await fetch("/api/service/spotify?code=" + code, {
+                method: 'POST',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                return await res.json();
+            }
+            return {};
+        },
     }
 }
 

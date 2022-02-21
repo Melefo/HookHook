@@ -1,6 +1,9 @@
 <template>
   <a href="/login" @click.prevent="handleTwitch">
-    <img class="h-10" alt="twitch" src="@/assets/img/twitch.svg" />
+    <img v-if="oauth" class="h-10" alt="twitch" src="@/assets/img/twitch.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -15,8 +18,15 @@ export default defineComponent({
       errors: null,
     };
   },
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
     ...mapActions("signIn", ["twitch"]),
+    ...mapActions("service", ["addTwitch"]),
     async handleTwitch() {
       window.removeEventListener("message", this.receiveTwitch);
 
@@ -48,18 +58,18 @@ export default defineComponent({
         return;
       }
 
-      // * on devrait cross check le state ?
-
       let data = Object.fromEntries(new URLSearchParams(event.data));
       if (!data.code) {
         return;
       }
       window.removeEventListener("message", this.receiveTwitch);
-      const { errors, error } = await this.twitch(data.code);
+      const { errors, error } = this.oauth ? await this.twitch(data.code) : this.addTwitch(data.code);
       this.errors = errors || null;
       this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },
