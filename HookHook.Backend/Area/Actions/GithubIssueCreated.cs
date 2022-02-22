@@ -12,6 +12,7 @@ namespace HookHook.Backend.Actions
 {
     [Service("github", "new issue is created")]
     [BsonIgnoreExtraElements]
+    [BsonDiscriminator("GithubIssueCreated")]
     public class GithubIssueCreated : IAction
     {
         public string UserName {get; private init;}
@@ -24,7 +25,7 @@ namespace HookHook.Backend.Actions
 
         public List<int> StoredIssues { get; private init; } = new();
 
-        private string _serviceAccountId;
+        public string _serviceAccountId {get; private init;}
 
         public GithubIssueCreated(string user, string repository, string serviceAccountId)
         {
@@ -36,6 +37,8 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
+            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
@@ -47,6 +50,9 @@ namespace HookHook.Backend.Actions
 
                 // await reaction.Execute();
                 StoredIssues.Add(issue.Id);
+                Console.WriteLine("Found a new issue");
+
+                // todo save your storedIssues
 
                 return (issue.Title, true);
             }

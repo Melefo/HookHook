@@ -35,6 +35,9 @@ namespace HookHook.Backend.Services
         /// <param name="config">Host configuration</param>
         public MongoService(IConfiguration config)
         {
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateIssue>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubIssueCreated>(cm => cm.AutoMap());
+
             BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));
             _client = new MongoClient(config["Mongo:Client"]);
             _db = _client.GetDatabase(config["Mongo:Database"]);

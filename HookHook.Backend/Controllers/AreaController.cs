@@ -53,17 +53,26 @@ namespace HookHook.Backend.Controllers
 
         private Entities.Area CreateEntityFromModel(AreaModel area)
         {
+            Console.WriteLine("GOT IN HERE");
+            Console.WriteLine(area.Action.AccountID);
+
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments, area.Action.AccountID);
 
+            Console.WriteLine("Here 2");
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
+                Console.WriteLine(area.Reactions[i].AccountID);
+
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountID));
             }
+            Console.WriteLine("Here 3");
 
             // * create an area entity
             Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
+            Console.WriteLine("Here 4");
+
             return (areaEntity);
         }
 
@@ -97,7 +106,8 @@ namespace HookHook.Backend.Controllers
                 // * get controller
                 // ! code bancal
                 var parameters = service.GetConstructors()[0].GetParameters();
-                var strParams = parameters.Where(x => x.ParameterType == stringType).ToArray();
+                // * on esquive le serviceAccountId, c'est pas au user de le rentrer
+                var strParams = parameters.Where(x => x.ParameterType == stringType && x.Name != "serviceAccountId").ToArray();
 
                 var attr = service.GetCustomAttribute<ServiceAttribute>();
                 var newService = new ServiceDescription();
@@ -132,9 +142,12 @@ namespace HookHook.Backend.Controllers
 
             Entities.Area areaEntity = CreateEntityFromModel(area);
 
+            Console.WriteLine("About to add areaEntity");
             user.Areas.Add(areaEntity);
+            Console.WriteLine("About to save");
             _db.SaveUser(user);
 
+            Console.WriteLine("Done");
             return Ok(areaEntity);
         }
 
@@ -187,7 +200,7 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> TriggerUserAreas(string id)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(id);
             if (user == null)
                 return BadRequest();
 

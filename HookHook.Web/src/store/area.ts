@@ -27,7 +27,10 @@ const area = {
             const res = await fetch("/api/area/create", {
                 method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    ...authHeader(),
+                    ... {
+                        "Content-Type": "application/json"
+                    }
                 },
                 body: JSON.stringify(json)
             })
