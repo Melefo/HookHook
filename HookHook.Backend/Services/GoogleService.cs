@@ -1,16 +1,16 @@
-using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
 using static Google.Apis.YouTube.v3.YouTubeService;
+using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Services
 {
-
-    public class YouTubeService
+    public class GoogleService
     {
         private readonly string _googleId;
         private readonly string _googleSecret;
@@ -20,7 +20,7 @@ namespace HookHook.Backend.Services
         /// Youtube Service Constructor
         /// </summary>
         /// <param name="config"></param>
-        public YouTubeService(IConfiguration config)
+        public GoogleService(IConfiguration config)
         {
             _googleId = config["Google:ClientId"];
             _googleSecret = config["Google:ClientSecret"];
@@ -32,9 +32,9 @@ namespace HookHook.Backend.Services
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
-        public Google.Apis.YouTube.v3.YouTubeService CreateYouTube(User user)
+        public YouTubeService CreateYouTube(User user)
         {
-            if (user.GoogleOAuth == null) {
+            if (!user.OAuthAccounts.TryGetValue(Providers.Google, out var oauth)) {
                 throw (new ApiException("Not authenticated with google"));
             }
             return new(new BaseClientService.Initializer()
@@ -49,9 +49,9 @@ namespace HookHook.Backend.Services
                     },
                     // ! jsp quel scope permet de commenter quelque chose
                     Scopes = new[] { Scope.YoutubeReadonly, Scope.Youtube, Scope.Youtubepartner, Scope.YoutubeUpload, Scope.YoutubeForceSsl }
-                }), user.GoogleOAuth.UserId, new TokenResponse()
+                }), oauth.UserId, new TokenResponse()
                 {
-                    RefreshToken = user.GoogleOAuth.RefreshToken,
+                    RefreshToken = oauth.RefreshToken,
                 })
             });
         }

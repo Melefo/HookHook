@@ -3,6 +3,7 @@ using Discord.Rest;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -38,205 +39,113 @@ namespace HookHook.Backend.Controllers
 		}
 
         [HttpGet("{provider}")]
-		public async Task<ActionResult<List<ServiceAccount>>> Get(string provider)
-        {
-			var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
-
-            if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
-            {
-				List<ServiceAccount> list = new();
-				foreach (var account in user.DiscordServices)
-                {
-                    await _discord.Refresh(account);
-
-                    var client = new DiscordRestClient();
-                    await client.LoginAsync(Discord.TokenType.Bearer, account.AccessToken);
-
-                    list.Add(new(account.UserId, client.CurrentUser.ToString()));
-                }
-                _mongo.SaveUser(user);
-				return list;
-            }
-            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase))
-            {
-                List<ServiceAccount> list = new();
-                foreach (var account in user.TwitterServices)
-                {
-                    var client = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], account.AccessToken, account.OAuthSecret, long.Parse(account.UserId));
-                    var currentUser = await client.Users.ShowAsync(client.UserId);
-
-
-                    list.Add(new(account.UserId, $"@{currentUser.ScreenName}"));
-                }
-                _mongo.SaveUser(user);
-                return list;
-            }
-            if (string.Equals(provider, "Twitch", StringComparison.InvariantCultureIgnoreCase))
-            {
-                List<ServiceAccount> list = new();
-                foreach (var account in user.TwitchServices)
-                {
-                    await _twitch.Refresh(account);
-
-                    var api = new TwitchAPI();
-                    api.Settings.ClientId = _twitchId;
-                    api.Settings.AccessToken = account.AccessToken;
-
-                    var users = await api.Helix.Users.GetUsersAsync(null, null, account.AccessToken);
-
-                    if (users == null)
-                        throw new ApiException("Failed to call API");
-
-                    var client = users.Users[0];
-
-                    list.Add(new(account.UserId, client.Login));
-                }
-                _mongo.SaveUser(user);
-                return list;
-            }
-            if (string.Equals(provider, "Spotify", StringComparison.InvariantCultureIgnoreCase))
-            {
-                List<ServiceAccount> list = new();
-                foreach (var account in user.SpotifyServices)
-                {
-                    await _spotify.Refresh(account);
-
-                    var client = new SpotifyClient(account.AccessToken);
-                    var profile = await client.UserProfile.Current();
-
-
-                    list.Add(new(account.UserId, profile.DisplayName));
-                }
-                _mongo.SaveUser(user);
-                return list;
-            }
-
-            return BadRequest();
-        }
-
-		[HttpPost("{provider}")]
-		public async Task<ActionResult> Add(string provider, [BindRequired] [FromQuery] string code, [FromQuery] string? verifier = null)
+        public async Task<ActionResult<List<ServiceAccount>>> Get(Providers provider)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
+            List<ServiceAccount> list = new();
 
-            if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
+            if (!user.ServicesAccounts.TryGetValue(provider, out var accounts))
+                return list;
+            foreach (var account in accounts)
             {
-                try
+                ServiceAccount acc;
+                switch (provider)
                 {
-                    await _discord.AddAccount(user, code);
-                    return NoContent();
+                    case Providers.Discord:
+                        await _discord.Refresh(account);
+
+                        var discord = new DiscordRestClient();
+                        await discord.LoginAsync(Discord.TokenType.Bearer, account.AccessToken);
+
+                        acc = new(account.UserId, discord.CurrentUser.ToString());
+                        break;
+                    case Providers.Twitter:
+                        var twitter = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], account.AccessToken, account.Secret, long.Parse(account.UserId));
+                        var currentUser = await twitter.Users.ShowAsync(twitter.UserId);
+
+                        acc = new(account.UserId, $"@{currentUser.ScreenName}");
+                        break;
+                    case Providers.Twitch:
+                        await _twitch.Refresh(account);
+
+                        var api = new TwitchAPI();
+                        api.Settings.ClientId = _twitchId;
+                        api.Settings.AccessToken = account.AccessToken;
+
+                        var res = await api.Helix.Users.GetUsersAsync(null, null, account.AccessToken);
+
+                        if (res == null)
+                            throw new ApiException("Failed to call API");
+
+                        acc = new(account.UserId, res.Users.SingleOrDefault()!.Login);
+                        break;
+                    case Providers.Spotify:
+                        await _spotify.Refresh(account);
+
+                        var spotify = new SpotifyClient(account.AccessToken);
+                        var profile = await spotify.UserProfile.Current();
+
+                        acc = new(account.UserId, profile.DisplayName);
+                        break;
+                    case Providers.Google:
+                    case Providers.GitHub:
+                    default:
+                        return BadRequest();
                 }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
-                }
+                list.Add(acc);
             }
-            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase))
+            _mongo.SaveUser(user);
+            return list;
+        }
+
+        [HttpPost("{provider}")]
+        public async Task<ActionResult> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
+        {
+            var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
+            try
             {
-                try
+                switch (provider)
                 {
-                    await _twitter.AddAccount(user, code, verifier);
-                    return NoContent();
+                    case Providers.Discord:
+                        await _discord.AddAccount(user, code);
+                        break;
+                    case Providers.Twitter:
+                        await _twitter.AddAccount(user, code, verifier);
+                        break;
+                    case Providers.Twitch:
+                        await _twitch.AddAccount(user, code);
+                        break;
+                    case Providers.Spotify:
+                        await _spotify.AddAccount(user, code);
+                        break;
+                    case Providers.Google:
+                        break;
+                    case Providers.GitHub:
+                        break;
+                    default:
+                        return BadRequest();
                 }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
-                }
+                return NoContent();
             }
-            if (string.Equals(provider, "Twitch", StringComparison.InvariantCultureIgnoreCase))
+            catch (ApiException ex)
             {
-                try
-                {
-                    await _twitch.AddAccount(user, code);
-                    return NoContent();
-                }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
-                }
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
             }
-            if (string.Equals(provider, "Spotify", StringComparison.InvariantCultureIgnoreCase))
-            {
-                try
-                {
-                    await _spotify.AddAccount(user, code);
-                    return NoContent();
-                }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
-                }
-            }
-            return BadRequest();
         }
 
         [HttpDelete("{provider}")]
-        public async Task<ActionResult> Delete(string provider, [BindRequired] [FromQuery] string id)
+        public ActionResult Delete(Providers provider, [BindRequired] [FromQuery] string id)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
-
-            if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var service = user.DiscordServices.SingleOrDefault(x => x.UserId == id);
-
-                if (service != null)
-                    user.DiscordServices.Remove(service);
-                _mongo.SaveUser(user);
-
+            if (!user.ServicesAccounts.TryGetValue(provider, out var accounts))
                 return NoContent();
-            }
-            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var service = user.TwitterServices.SingleOrDefault(x => x.UserId == id);
+            var account = accounts.SingleOrDefault(x => x.UserId == id);
 
-                if (service != null)
-                    user.TwitterServices.Remove(service);
-                _mongo.SaveUser(user);
+            accounts.Remove(account);
+            _mongo.SaveUser(user);
 
-                return NoContent();
-            }
-            if (string.Equals(provider, "Twitch", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var service = user.TwitchServices.SingleOrDefault(x => x.UserId == id);
-
-                if (service != null)
-                    user.TwitchServices.Remove(service);
-                _mongo.SaveUser(user);
-
-                return NoContent();
-            }
-            if (string.Equals(provider, "Spotify", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var service = user.SpotifyServices.SingleOrDefault(x => x.UserId == id);
-
-                if (service != null)
-                    user.SpotifyServices.Remove(service);
-                _mongo.SaveUser(user);
-
-                return NoContent();
-            }
-            if (string.Equals(provider, "Google", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var service = user.GoogleServices.SingleOrDefault(x => x.UserId == id);
-
-                if (service != null)
-                    user.GoogleServices.Remove(service);
-                _mongo.SaveUser(user);
-
-                return NoContent();
-            }
-            if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
-            {
-                var service = user.GitHubServices.SingleOrDefault(x => x.UserId == id);
-
-                if (service != null)
-                    user.GitHubServices.Remove(service);
-                _mongo.SaveUser(user);
-
-                return NoContent();
-            }
-            return BadRequest();
+            return NoContent();
         }
-	}
+    }
 }
 

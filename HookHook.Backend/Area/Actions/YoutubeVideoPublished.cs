@@ -7,28 +7,28 @@ using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
-    [Service("youtube", "Video is published")]
+    [Service("google", "Video is published")]
     [BsonIgnoreExtraElements]
     public class YoutubeVideoPublished: IAction
     {
         public string Channel {get; set;}
 
         [BsonIgnore]
-        public YouTubeService _youtubeService;
+        public GoogleService _googleService;
 
         public List<string> Videos { get; private init; } = new();
 
         private IConfiguration _config;
 
-        public YoutubeVideoPublished(string channel, YouTubeService youtubeService)
+        public YoutubeVideoPublished(string channel, GoogleService googleService)
         {
             Channel = channel;
-            _youtubeService = youtubeService;
+            _googleService = googleService;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var youtubeClient = _youtubeService.CreateYouTube(user);
+            var youtubeClient = _googleService.CreateYouTube(user);
 
             var channelsRequest = youtubeClient.Channels.List(Channel);
             channelsRequest.ForUsername = Channel;

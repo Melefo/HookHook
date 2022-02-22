@@ -68,11 +68,11 @@ namespace HookHook.Backend.Services
             (DiscordRestClient client, DiscordToken token) = await OAuth(code);
             var id = client.CurrentUser.Id.ToString();
 
-            user.DiscordServices ??= new();
-            if (user.DiscordServices.Any(x => x.UserId == id))
+            user.ServicesAccounts.TryAdd(Providers.Discord, new());
+            if (user.ServicesAccounts[Providers.Discord].Any(x => x.UserId == id))
                 return;
 
-            user.DiscordServices.Add(new(id, token.AccessToken, TimeSpan.FromSeconds(token.ExpiresIn), token.RefreshToken));
+            user.ServicesAccounts[Providers.Discord].Add(new(id, token.AccessToken, TimeSpan.FromSeconds(token.ExpiresIn), token.RefreshToken));
             _db.SaveUser(user);
         }
 

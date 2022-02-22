@@ -1,13 +1,13 @@
 <template>
   <div class="text-black justify-start">
-    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="(item.name === 'youtube' ? 'google' : item.name) + '.svg'" :bgColor="color(item.name)">
+    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name + '.svg'" :bgColor="color(item.name)">
       <div v-for="account in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
         <p>{{ account.username }}</p>
         <button @click.prevent="async () => await deleteService(item.name, account.userId)">
           <XIcon class="h-8" />
         </button>
       </div>
-      <component :is="(item.name === 'youtube' ? 'google' : item.name) + 'Oauth'" :oauth="false">
+      <component :is="item.name + 'Oauth'" :oauth="false">
         ADD
       </component>
     </DialogComponent>

@@ -25,7 +25,7 @@
     <Bloc class="flex flex-col justify-center items-center">
       <Login />
       <div class="grid grid-cols-3 sm:grid-cols-6 gap-4 mt-8">
-        <component v-for="(item, key) in services" :key="key" :is="(item.name === 'youtube' ? 'google' : item.name) + 'Oauth'" />
+        <component v-for="(item, key) in services" :key="key" :is="item.name + 'Oauth'" />
       </div>
     </Bloc>
     <Bloc class="flex justify-center items-center">

@@ -40,7 +40,7 @@ namespace HookHook.Backend.Reactions
         {
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
-            _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
+            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
 
             var createIssue = new NewIssue(Title);
             createIssue.Body = Body;

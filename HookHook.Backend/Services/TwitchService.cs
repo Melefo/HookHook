@@ -79,11 +79,11 @@ namespace HookHook.Backend.Services
             (var client, TwitchToken res) = await OAuth(code);
             var id = client.Id;
 
-            user.TwitchServices ??= new();
-            if (user.TwitchServices.Any(x => x.UserId == id))
+            user.ServicesAccounts.TryAdd(Providers.Twitch, new());
+            if (user.ServicesAccounts[Providers.Twitch].Any(x => x.UserId == id))
                 return;
 
-            user.TwitchServices.Add(new(client.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken));
+            user.ServicesAccounts[Providers.Twitch].Add(new(client.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken));
             _db.SaveUser(user);
         }
 

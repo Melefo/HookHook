@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using HookHook.Backend.Services;
+using System.Text.Json.Serialization;
 
 namespace HookHook.Backend
 {
@@ -32,12 +33,15 @@ namespace HookHook.Backend
             services.AddSingleton<MongoService>();
             services.AddSingleton<TwitterService>();
             services.AddSingleton<DiscordService>();
-            services.AddSingleton<YouTubeService>();
+            services.AddSingleton<GoogleService>();
             services.AddSingleton<TwitchService>();
             services.AddSingleton<SpotifyService>();
             services.AddScoped<UserService>();
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HookHook", Version = "v1" });
