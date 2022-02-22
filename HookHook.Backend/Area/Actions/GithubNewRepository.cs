@@ -4,6 +4,7 @@ using HookHook.Backend.Entities;
 using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
+using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Actions
 {
@@ -29,7 +30,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
+            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
 
             var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);
 

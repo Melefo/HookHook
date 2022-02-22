@@ -11,24 +11,24 @@ namespace HookHook.Backend.Models
         /// Action
         /// </summary>
         [Required(ErrorMessage = "Action is required")]
-        public AreaComponent Action {get; set;}
+        public AreaComponent Action { get; set; }
         /// <summary>
         /// Reactions
         /// </summary>
         [Required(ErrorMessage = "Reactions are required")]
-        public AreaComponent[] Reactions {get; set;}
+        public AreaComponent[] Reactions { get; set; }
 
         /// <summary>
         /// Reactions
         /// </summary>
-        public int Minutes {get; set;}
+        public int Minutes { get; set; }
 
         /// <summary>
         /// Area constructor
         /// </summary>
         /// <param name="action">Action</param>
         /// <param name="reactions">Reactions</param>
-        public AreaModel(AreaComponent action, AreaComponent[] reactions, int minutes=1)
+        public AreaModel(AreaComponent action, AreaComponent[] reactions, int minutes = 1)
         {
             Action = action;
             Reactions = reactions;

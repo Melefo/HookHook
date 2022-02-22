@@ -4,6 +4,7 @@ using HookHook.Backend.Entities;
 using TwitchLib.Api;
 using MongoDB.Bson.Serialization.Attributes;
 using HookHook.Backend.Attributes;
+using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Area.Actions
 {
@@ -28,7 +29,7 @@ namespace HookHook.Backend.Area.Actions
         public async Task<(string?, bool)> Check(Entities.User user)
         {
             // * can we use the api with just access token ?
-            _twitchClient.Settings.AccessToken = user.TwitchOAuth.AccessToken;
+            _twitchClient.Settings.AccessToken = user.OAuthAccounts[Providers.Twitch].AccessToken;
 
             var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userIds: new List<string>(){ UserName });
 

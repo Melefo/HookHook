@@ -1,6 +1,8 @@
 using CoreTweet;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
+using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using User = HookHook.Backend.Entities.User;
 
@@ -30,7 +32,9 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
+            var oauth = user.OAuthAccounts[Providers.Twitter];
+
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             // * you might want to search for a hashtag, and get the latest one
             // * jsp ce que c'est product et label
@@ -50,7 +54,8 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
+            var oauth = user.OAuthAccounts[Providers.Twitter];
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{Hashtag}");
         }

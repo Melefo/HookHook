@@ -2,6 +2,7 @@ using CoreTweet;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using User = HookHook.Backend.Entities.User;
 
@@ -28,7 +29,8 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
+            var oauth = user.OAuthAccounts[Providers.Twitter];
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);
 
@@ -48,7 +50,8 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], user.TwitterOAuth.AccessToken, user.TwitterOAuth.OAuthSecret, long.Parse(user.TwitterOAuth.UserId));
+            var oauth = user.OAuthAccounts[Providers.Twitter];
+            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var currentUser = await _twitterClient.Users.ShowAsync(_twitterClient.UserId);
             await _twitterClient.Friendships.CreateAsync(UserName);

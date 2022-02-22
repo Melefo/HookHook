@@ -33,7 +33,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
+            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 

@@ -62,9 +62,6 @@ export default defineComponent({
         case 'twitch':
           return "#FFFFC7";
       }
-    },
-    test() {
-        console.log("testttt");
     }
   },
   computed: {

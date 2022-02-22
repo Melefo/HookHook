@@ -37,7 +37,7 @@ namespace HookHook.Backend.Reactions
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
             // ! j'ai besoin du token quand meme, passé en constructeur ?
-            _githubClient.Credentials = new Credentials(user.GitHubOAuth.AccessToken);
+            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
 
             var createRepository = new NewRepository(RepositoryName);
             createRepository.Description = Description;

@@ -1,9 +1,12 @@
+import { authHeader } from ".";
+
 const area = {
     namespaced: true,
     actions: {
         async getServices(_: any) {
             const res = await fetch("/api/area/getservices", {
-                method: 'GET'
+                method: 'GET',
+                headers: authHeader()
             })
             if (res.status === 500) {
                 return { error: "Backend unavailable" };

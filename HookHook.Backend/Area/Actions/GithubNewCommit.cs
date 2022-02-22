@@ -4,6 +4,7 @@ using HookHook.Backend.Entities;
 using Octokit;
 using MongoDB.Bson.Serialization.Attributes;
 using HookHook.Backend.Attributes;
+using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Area.Actions
 {
@@ -49,7 +50,7 @@ namespace HookHook.Backend.Area.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.GitHubOAuth.AccessToken}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.OAuthAccounts[Providers.GitHub].AccessToken}");
 
             CommitJson[] ?response = await _httpClient.GetAsync<CommitJson[]>($"https://api.github.com/repos/{UserName}/{Repository}/commits");
             if (response == null)
