@@ -36,6 +36,7 @@ namespace HookHook.Backend
             services.AddSingleton<GoogleService>();
             services.AddSingleton<TwitchService>();
             services.AddSingleton<SpotifyService>();
+            services.AddSingleton<GitHubService>();
             services.AddScoped<UserService>();
 
             services.AddControllers().AddJsonOptions(x =>

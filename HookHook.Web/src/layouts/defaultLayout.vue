@@ -69,7 +69,7 @@
                 >
                   <MenuItem><RouterLink to="/dashboard" class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><ViewGridAddIcon class="h-8" /><span class="col-span-2 self-center">Dashboard</span></RouterLink></MenuItem>
                   <MenuItem><a class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><PencilIcon class="h-8" /><span class="col-span-2 self-center">Edit Profile</span></a></MenuItem>
-                  <MenuItem><RouterLink to="/admin" class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><CogIcon class="h-8" /><span class="col-span-2 self-center">Admin</span></RouterLink></MenuItem>
+                  <MenuItem v-if="isAdmin"><RouterLink to="/admin" class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><CogIcon class="h-8" /><span class="col-span-2 self-center">Admin</span></RouterLink></MenuItem>
                   <MenuItem><a href="/" @click.prevent="preventLogout" class="text-black dark:text-white grid grid-cols-3 p-1 text-xl dark:hover:bg-[#181A1E] dark:hover:text-white hover:bg-white rounded-xl"><LogoutIcon class="h-8" /><span class="col-span-2 self-center">Logout</span></a></MenuItem>
                 </MenuItems>
               </transition>

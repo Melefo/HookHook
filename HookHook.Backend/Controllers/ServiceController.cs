@@ -7,6 +7,7 @@ using HookHook.Backend.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Octokit;
 using SpotifyAPI.Web;
 using TwitchLib.Api;
 
@@ -22,11 +23,13 @@ namespace HookHook.Backend.Controllers
         private readonly TwitterService _twitter;
         private readonly TwitchService _twitch;
         private readonly SpotifyService _spotify;
+        private readonly GitHubService _gitHub;
+        private readonly GoogleService _google;
         private readonly IConfiguration _config;
 
         private readonly string _twitchId;
 
-		public ServiceController(MongoService mongo, DiscordService discord, TwitterService twitter, TwitchService twitch, SpotifyService spotify, IConfiguration config)
+		public ServiceController(MongoService mongo, DiscordService discord, TwitterService twitter, TwitchService twitch, SpotifyService spotify, GitHubService gitHub, GoogleService google, IConfiguration config)
 		{
 			_mongo = mongo;
             _discord = discord;
@@ -34,6 +37,8 @@ namespace HookHook.Backend.Controllers
             _twitch = twitch;
             _config = config;
             _spotify = spotify;
+            _gitHub = gitHub;
+            _google = google;
 
             _twitchId = config["Twitch:ClientId"];
 		}
@@ -75,7 +80,7 @@ namespace HookHook.Backend.Controllers
                         var res = await api.Helix.Users.GetUsersAsync(null, null, account.AccessToken);
 
                         if (res == null)
-                            throw new ApiException("Failed to call API");
+                            throw new Exceptions.ApiException("Failed to call API");
 
                         acc = new(account.UserId, res.Users.SingleOrDefault()!.Login);
                         break;
@@ -88,7 +93,22 @@ namespace HookHook.Backend.Controllers
                         acc = new(account.UserId, profile.DisplayName);
                         break;
                     case Providers.Google:
+                        await _google.Refresh(account);
+
+                        var youtube = _google.CreateYouTube(account);
+                        var req = youtube.Channels.List("snippet");
+                        req.Mine = true;
+                        var search = req.Execute();
+
+                        acc = new(account.UserId, search.Items[0].Snippet.Title);
+                        break;
                     case Providers.GitHub:
+                        var github = new GitHubClient(new ProductHeaderValue("HookHook")); 
+                        github.Credentials = new Credentials(account.AccessToken);
+                        var current = await github.User.Current();
+
+                        acc = new(current.Id.ToString(), current.Login);
+                        break;
                     default:
                         return BadRequest();
                 }
@@ -119,15 +139,18 @@ namespace HookHook.Backend.Controllers
                         await _spotify.AddAccount(user, code);
                         break;
                     case Providers.Google:
+                        await _google.AddAccount(user, code);
                         break;
                     case Providers.GitHub:
+                        await _gitHub.AddAccount(user, code);
                         break;
                     default:
                         return BadRequest();
                 }
+                _mongo.SaveUser(user);
                 return NoContent();
             }
-            catch (ApiException ex)
+            catch (Exceptions.ApiException ex)
             {
                 return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
             }

@@ -2,6 +2,7 @@ using CoreTweet;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using User = HookHook.Backend.Entities.User;
 
@@ -28,7 +29,7 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var youtubeClient = _googleService.CreateYouTube(user);
+            var youtubeClient = _googleService.CreateYouTube(user.OAuthAccounts[Providers.Google]);
 
             var channelsRequest = youtubeClient.Channels.List(Channel);
             channelsRequest.ForUsername = Channel;

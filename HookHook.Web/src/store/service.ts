@@ -87,6 +87,34 @@ const service = {
             }
             return {};
         },
+        async addGitHub({ commit }: any, code: String) {
+            const res = await fetch("/api/service/github?code=" + code, {
+                method: 'POST',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                return await res.json();
+            }
+            return {};
+        },
+        async addGoogle({ commit }: any, code: String) {
+            const res = await fetch("/api/service/google?code=" + code, {
+                method: 'POST',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                return await res.json();
+            }
+            return {};
+        },
     }
 }
 

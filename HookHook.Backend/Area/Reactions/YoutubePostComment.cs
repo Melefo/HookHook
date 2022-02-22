@@ -30,7 +30,7 @@ namespace HookHook.Backend.Reactions
 
         public async Task Execute(Entities.User user)
         {
-            var youtubeClient = _googleService.CreateYouTube(user);
+            var youtubeClient = _googleService.CreateYouTube(user.OAuthAccounts[Providers.Google]);
 
             var searchRequest = youtubeClient.Search.List(VideoName);
             var search = searchRequest.Execute();
