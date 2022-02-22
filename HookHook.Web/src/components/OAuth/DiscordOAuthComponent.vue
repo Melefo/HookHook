@@ -1,6 +1,9 @@
 <template>
   <a href="/" @click.prevent="handleDiscord">
-    <img class="h-10" alt="discord" src="@/assets/img/discord.svg" />
+    <img v-if="oauth" class="h-10" alt="discord" src="@/assets/img/discord.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -11,6 +14,12 @@ import DiscordOauth2 from "discord-oauth2";
 
 export default defineComponent({
   components: {},
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
       return {
           error: null,
@@ -19,6 +28,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("signIn", ["discord"]),
+    ...mapActions("service", ["addDiscord"]),
     async handleDiscord() {
       window.removeEventListener("message", this.receiveDiscord);
 
@@ -53,11 +63,13 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveDiscord);
-      const { errors, error } = await this.discord(data.code);
+      const { errors, error } = this.oauth ? await this.discord(data.code) : await this.addDiscord(data.code);
       this.errors = errors || null;
       this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },

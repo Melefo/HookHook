@@ -61,9 +61,6 @@ export default defineComponent({
         },
         async createArea() {
             // todo call the store, check for errors
-            console.log("Action: ", this.action);
-            console.log("Reactions: ", this.reactions);
-
             const { error } = await this.createAreaRequest({
                 "action": this.action,
                 "reactions": this.reactions,
@@ -98,7 +95,6 @@ export default defineComponent({
         // * fetch the services with the service arguments
         const serviceDetails = await this.getServices();
         this.serviceDetails = serviceDetails;
-        console.log("Got details = ", this.serviceDetails);
     },
     mounted: function() {
         this.action.type = "";

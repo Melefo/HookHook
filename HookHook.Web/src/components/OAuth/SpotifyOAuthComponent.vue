@@ -1,6 +1,9 @@
 <template>
   <a href="/login" @click.prevent="handleSpotify">
-    <img class="h-10" alt="spotify" src="@/assets/img/spotify.svg" />
+    <img v-if="oauth" class="h-10" alt="spotify" src="@/assets/img/spotify.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -15,8 +18,15 @@ export default defineComponent({
       errors: null,
     };
   },
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
     ...mapActions("signIn", ["spotify"]),
+    ...mapActions("service", ["addSpotify"]),
     async handleSpotify() {
       window.removeEventListener("message", this.receiveSpotify);
 
@@ -55,11 +65,13 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveSpotify);
-      const { errors, error } = await this.spotify(data.code);
+      const { errors, error } = this.oauth ? await this.spotify(data.code) : await this.addSpotify(data.code);
       this.errors = errors || null;
       this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },

@@ -16,9 +16,7 @@
                 {{ text }}
               </DialogTitle>
               <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                  lorem ipsum
-                </p>
+                <slot />
               </div>
 
                 <div class="mt-4">

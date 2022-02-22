@@ -1,3 +1,5 @@
+using HookHook.Backend.Models;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
@@ -49,19 +51,9 @@ namespace HookHook.Backend.Entities
         /// </summary>
         public string Role { get; set; } = "User";
 
-        public OAuthAccount? GoogleOAuth { get; set; }
-        public OAuthAccount? DiscordOAuth { get; set; }
-        public OAuthAccount? SpotifyOAuth { get; set; }
-        public TwitterAccount? TwitterOAuth { get; set; }
-        public OAuthAccount? TwitchOAuth { get; set; }
-        public OAuthAccount? GitHubOAuth { get; set; }
+        public Dictionary<Providers, OAuthAccount> OAuthAccounts { get; set; } = new();
 
-        public List<OAuthAccount> GoogleServices { get; set; } = new();
-        public List<OAuthAccount> DiscordServices { get; set; } = new();
-        public List<OAuthAccount> SpotifyServices { get; set; } = new();
-        public List<TwitterAccount> TwitterServices { get; set; } = new();
-        public List<OAuthAccount> TwitchServices { get; set; } = new();
-        public List<OAuthAccount> GitHubServices { get; set; } = new();
+        public Dictionary<Providers, List<OAuthAccount>> ServicesAccounts { get; set; } = new();
 
         [BsonIgnore]
         public List<Area> Areas {get; set;} = new();
@@ -72,6 +64,14 @@ namespace HookHook.Backend.Entities
         /// <param name="email">Email</param>
         public User(string email) => 
             Email = email;
+
+        public User(RegisterForm form) : this(form.Email)
+        {
+            Username = form.Username;
+            FirstName = form.FirstName;
+            LastName = form.LastName;
+            Password = form.Password;
+        }
     }
 
     public class OAuthAccount
@@ -79,25 +79,17 @@ namespace HookHook.Backend.Entities
         public string UserId { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? ExpiresIn { get; set; }
+        public string? Secret { get; set; }
         public string AccessToken { get; set; }
 
-        public OAuthAccount(string id, string access, TimeSpan? date = null, string? refresh = null)
+        public OAuthAccount(string id, string access, TimeSpan? date = null, string? refresh = null, string? secret = null)
         {
             UserId = id;
             RefreshToken = refresh;
             if (date.HasValue)
                 ExpiresIn = DateTime.UtcNow.Add(date.Value);
             AccessToken = access;
-        }
-    }
-
-    public class TwitterAccount : OAuthAccount
-    {
-        public string OAuthSecret { get; set; }
-
-        public TwitterAccount(string id, string access, string accessSecret, TimeSpan? date = null, string? refresh = null) : base(id, access, date, refresh)
-        {
-            OAuthSecret = accessSecret;
+            Secret = secret;
         }
     }
 }

@@ -5,6 +5,8 @@ using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using IReaction = HookHook.Backend.Entities.IReaction;
 using MongoDB.Bson.Serialization.Attributes;
+using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Area.Actions
 {
@@ -27,7 +29,7 @@ namespace HookHook.Backend.Area.Actions
 
         public async Task<(string?, bool)> Check(User user)
         {
-            await _client.LoginAsync(TokenType.Bot, user.DiscordOAuth.AccessToken);
+            await _client.LoginAsync(TokenType.Bot, user.OAuthAccounts[Providers.Discord].AccessToken);
 
             var guild = await _client.GetGuildAsync(Guild);
             var channel = await guild.GetTextChannelAsync(Channel);

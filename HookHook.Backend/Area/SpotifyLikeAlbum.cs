@@ -1,5 +1,7 @@
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
+using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using SpotifyAPI.Web;
 
@@ -25,7 +27,7 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.OAuthAccounts[Providers.Spotify].AccessToken);
 
             var albums = await _spotifyClient.Library.GetAlbums();
 
@@ -49,7 +51,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.OAuthAccounts[Providers.Spotify].AccessToken);
 
             // * search album
             // * add album to library

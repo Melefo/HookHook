@@ -2,6 +2,7 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -30,11 +31,7 @@ namespace HookHook.Backend.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(form);
-            var user = new User(form.Email);
-            user.Username = form.Username;
-            user.FirstName = form.FirstName;
-            user.LastName = form.LastName;
-            user.Password = form.Password;
+            User user = new(form);
             if (_service.GetUsers().Count == 0)
                 user.Role = "Admin";
             try
@@ -64,86 +61,39 @@ namespace HookHook.Backend.Controllers
         [HttpPost("oauth/{provider}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> OAuth(string provider, [BindRequired] [FromQuery] string code, [FromQuery] string? verifier)
+        public async Task<ActionResult> OAuth(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier)
         {
-            if (string.Equals(provider, "Discord", StringComparison.InvariantCultureIgnoreCase))
+            try
             {
-                try
+                string token = provider switch
                 {
-                    string token = await _service.DiscordOAuth(code, HttpContext);
+                    Providers.Discord => await _service.DiscordOAuth(code, HttpContext),
+                    Providers.Spotify => await _service.SpotifyOAuth(code, HttpContext),
+                    Providers.Twitch => await _service.TwitchOAuth(code, HttpContext),
+                    Providers.GitHub => await _service.GitHubOAuth(code, HttpContext),
+                    Providers.Twitter => await _service.TwitterOAuth(code, verifier!, HttpContext),
+                    Providers.Google => await _service.GoogleOAuth(code, HttpContext),
+                    _ => throw new ArgumentException("Unknown type", nameof(provider))
+                };
+                return Ok(new { token });
 
-                    return Ok(new {token});
-                }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
-                }
             }
-
-            if (string.Equals(provider, "Spotify", StringComparison.InvariantCultureIgnoreCase)) {
-                try {
-                    string token = await _service.SpotifyOAuth(code, HttpContext);
-
-                    return Ok(new {token});
-                } catch (ApiException ex) {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
-                }
-            }
-
-            if (string.Equals(provider, "Twitch", StringComparison.InvariantCultureIgnoreCase)) {
-                try {
-                    string token = await _service.TwitchOAuth(code, HttpContext);
-
-                    return (Ok(new {token}));
-                } catch (ApiException e) {
-                    return (StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = e.Message}));
-                }
-            }
-            if (string.Equals(provider, "GitHub", StringComparison.InvariantCultureIgnoreCase))
+            catch (ApiException ex)
             {
-                try
-                {
-                    string token = await _service.GitHubOAuth(code, HttpContext);
-
-                    return Ok(new {token});
-                }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
-                }
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, new { error = ex.Message });
             }
-            if (string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase) && verifier != null) {
-                try {
-                    string token = await _service.TwitterOAuth(code, verifier!, HttpContext);
-
-                    return Ok(new {token});
-                }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
-                }
+            catch (ArgumentException)
+            {
+                return BadRequest();
             }
-            if (string.Equals(provider, "Google", StringComparison.InvariantCultureIgnoreCase)) {
-                try {
-                    string token = await _service.GoogleOAuth(code, HttpContext);
-
-                    return Ok(new {token});
-                }
-                catch (ApiException ex)
-                {
-                    return StatusCode(StatusCodes.Status503ServiceUnavailable, new {error = ex.Message});
-                }
-            }
-
-            return BadRequest();
         }
 
         [HttpGet("authorize/{provider}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> Authorize(string provider = "Twitter")
+        public ActionResult<string> Authorize(Providers provider = Providers.Twitter)
         {
-            if (!string.Equals(provider, "Twitter", StringComparison.InvariantCultureIgnoreCase))
+            if (provider != Providers.Twitter)
                 return BadRequest();
             return _service.TwitterAuthorize();
         }

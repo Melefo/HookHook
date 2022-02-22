@@ -1,6 +1,9 @@
 <template>
   <a href="/login" @click.prevent="handleGoogle">
-    <img class="h-10" alt="google" src="@/assets/img/google.svg" />
+    <img v-if="oauth" class="h-10" alt="google" src="@/assets/img/google.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -15,14 +18,24 @@ export default defineComponent({
       errors: null,
     };
   },
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
-    ...mapActions("user", ["google"]),
+    ...mapActions("signIn", ["google"]),
+    ...mapActions("service", ["addGoogle"]),
     async handleGoogle() {
       window.removeEventListener("message", this.receiveGoogle);
 
       let scopes = "openid";
       scopes += " email";
       scopes += " profile";
+      scopes += " https://www.googleapis.com/auth/youtube";
+      scopes += " https://www.googleapis.com/auth/youtube.readonly";
+      scopes += " https://www.googleapis.com/auth/youtube.force-ssl";
 
       const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${
         process.env.VUE_APP_GOOGLE_CLIENTID
@@ -52,11 +65,13 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveGoogle);
-      const { errors, error } = await this.google(data.code);
+      const { errors, error } = this.oauth ? await this.google(data.code) : await this.addGoogle(data.code);
       this.errors = errors || null;
       this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },
