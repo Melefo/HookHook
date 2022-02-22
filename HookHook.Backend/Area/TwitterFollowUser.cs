@@ -21,15 +21,18 @@ namespace HookHook.Backend.Area
 
         private IConfiguration _config;
 
-        public TwitterFollowUser(string user, TwitterService service, IConfiguration config)
+        private string _serviceAccountId;
+
+        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string serviceAccountId)
         {
             UserName = user;
             _config = config;
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.OAuthAccounts[Providers.Twitter];
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId);
             _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);

@@ -19,15 +19,18 @@ namespace HookHook.Backend.Area
 
         public List<string> StoredLibrary { get; private init; } = new();
 
-        public SpotifyLikeAlbum(string albumTitle, string artistName)
+        private string _serviceAccountId;
+
+        public SpotifyLikeAlbum(string albumTitle, string artistName, string serviceAccountId)
         {
             AlbumTitle = albumTitle;
             ArtistName = artistName;
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.OAuthAccounts[Providers.Spotify].AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var albums = await _spotifyClient.Library.GetAlbums();
 

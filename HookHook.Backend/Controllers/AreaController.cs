@@ -20,46 +20,46 @@ namespace HookHook.Backend.Controllers
     {
         public MongoService _db;
 
-        public Dictionary<string, Func<string[], IAction>> actionTypes = new();
-        public Dictionary<string, Func<string[], IReaction>> reactionTypes = new();
+        public Dictionary<string, Func<string[], string, IAction>> actionTypes = new();
+        public Dictionary<string, Func<string[], string, IReaction>> reactionTypes = new();
 
         public AreaController(MongoService db, TwitterService twitterService, GoogleService googleService, IConfiguration config)
         {
             _db = db;
 
-            actionTypes.Add("DiscordPinned", (string[] args) => new DiscordPinned(args[0], args[1]));
-            actionTypes.Add("GithubIssueCreated", (string[] args) => new GithubIssueCreated(args[0], args[1]));
-            actionTypes.Add("GithubNewCommit", (string[] args) => new GithubNewCommit(args[0], args[1]));
-            actionTypes.Add("GithubNewRepository", (string[] args) => new GithubNewRepository(args[0]));
-            actionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
-            actionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
-            actionTypes.Add("TwitchLiveStarted", (string[] args) => new TwitchLiveStarted(args[0]));
-            actionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
-            actionTypes.Add("TwitterFollowUser", (string[] args) => new TwitterFollowUser(args[0], twitterService, config));
-            actionTypes.Add("TwitterTweetHashtag", (string[] args) => new TwitterTweetHashtag(args[0], config));
-            actionTypes.Add("YoutubeVideoPublished", (string[] args) => new YoutubeVideoPublished(args[0], googleService));
+            actionTypes.Add("DiscordPinned", (string[] args, string accountId) => new DiscordPinned(args[0], args[1], accountId));
+            actionTypes.Add("GithubIssueCreated", (string[] args, string accountId) => new GithubIssueCreated(args[0], args[1], accountId));
+            actionTypes.Add("GithubNewCommit", (string[] args, string accountId) => new GithubNewCommit(args[0], args[1], accountId));
+            actionTypes.Add("GithubNewRepository", (string[] args, string accountId) => new GithubNewRepository(args[0], accountId));
+            actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId) => new SpotifyLikeAlbum(args[0], args[1], accountId));
+            actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId) => new SpotifyLikeMusic(args[0], args[1], accountId));
+            actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId) => new TwitchLiveStarted(args[0], accountId));
+            actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId) => new TwitchFollowChannel(args[0], accountId));
+            actionTypes.Add("TwitterFollowUser", (string[] args, string accountId) => new TwitterFollowUser(args[0], twitterService, config, accountId));
+            actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId) => new TwitterTweetHashtag(args[0], config, accountId));
+            actionTypes.Add("YoutubeVideoPublished", (string[] args, string accountId) => new YoutubeVideoPublished(args[0], googleService, accountId));
 
-            reactionTypes.Add("DiscordWebhook", (string[] args) => new DiscordWebhook(args[0], args[1]));
-            reactionTypes.Add("GithubCreateRepository", (string[] args) => new GithubCreateRepository(args[0], args[1]));
-            reactionTypes.Add("GithubCreateIssue", (string[] args) => new GithubCreateIssue(args[0], args[1], args[2], args[3]));
-            reactionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
-            reactionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
-            reactionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
-            reactionTypes.Add("TwitterFollowUser", (string[] args) => new TwitterFollowUser(args[0], twitterService, config));
-            reactionTypes.Add("TwitterTweetHashtag", (string[] args) => new TwitterTweetHashtag(args[0], config, args[1]));
-            reactionTypes.Add("YoutubePostComment", (string[] args) => new YoutubePostComment(args[0], args[1], googleService));
+            reactionTypes.Add("DiscordWebhook", (string[] args, string accountId) => new DiscordWebhook(args[0], args[1]));
+            reactionTypes.Add("GithubCreateRepository", (string[] args, string accountId) => new GithubCreateRepository(args[0], args[1], accountId));
+            reactionTypes.Add("GithubCreateIssue", (string[] args, string accountId) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId));
+            reactionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId) => new SpotifyLikeAlbum(args[0], args[1], accountId));
+            reactionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId) => new SpotifyLikeMusic(args[0], args[1], accountId));
+            reactionTypes.Add("TwitchFollowChannel", (string[] args, string accountId) => new TwitchFollowChannel(args[0], accountId));
+            reactionTypes.Add("TwitterFollowUser", (string[] args, string accountId) => new TwitterFollowUser(args[0], twitterService, config, accountId));
+            reactionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId) => new TwitterTweetHashtag(args[0], config, args[1], accountId));
+            reactionTypes.Add("YoutubePostComment", (string[] args, string accountId) => new YoutubePostComment(args[0], args[1], googleService, accountId));
 
         }
 
         private Entities.Area CreateEntityFromModel(AreaModel area)
         {
             // * create an IAction from area.Action.type
-            IAction action = actionTypes[area.Action.Type](area.Action.Arguments);
+            IAction action = actionTypes[area.Action.Type](area.Action.Arguments, area.Action.AccountID);
 
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
-                reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments));
+                reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountID));
             }
 
             // * create an area entity

@@ -27,20 +27,23 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
-        public GithubCreateIssue(string user, string repository, string title, string body)
+        private string _serviceAccountId;
+
+        public GithubCreateIssue(string user, string repository, string title, string body, string serviceAccountId)
         {
             UserName = user;
             Repository = repository;
             Title = title;
             Body = body;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task Execute(Entities.User user)
         {
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
-            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var createIssue = new NewIssue(Title);
             createIssue.Body = Body;

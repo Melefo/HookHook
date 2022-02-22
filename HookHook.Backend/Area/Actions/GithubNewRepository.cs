@@ -22,15 +22,18 @@ namespace HookHook.Backend.Actions
 
         public List<long> StoredRepositories { get; private init; } = new();
 
-        public GithubNewRepository(string user)
+        private string _serviceAccountId;
+
+        public GithubNewRepository(string user, string serviceAccountId)
         {
             UserName = user;
             // _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);
 

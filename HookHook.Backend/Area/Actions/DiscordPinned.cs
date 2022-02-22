@@ -18,18 +18,21 @@ namespace HookHook.Backend.Area.Actions
         public ulong Channel { get; private init; }
         public List<ulong> PinnedMessages { get; private init; } = new();
 
+        private string _serviceAccountId;
+
         [BsonIgnore]
         private DiscordRestClient _client = new();
 
-        public DiscordPinned(string guild, string channel)
+        public DiscordPinned(string guild, string channel, string serviceAccountId)
         {
             Guild = ulong.Parse(guild);
             Channel = ulong.Parse(channel);
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            await _client.LoginAsync(TokenType.Bot, user.OAuthAccounts[Providers.Discord].AccessToken);
+            await _client.LoginAsync(TokenType.Bot, user.ServicesAccounts[Providers.Discord].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var guild = await _client.GetGuildAsync(Guild);
             var channel = await guild.GetTextChannelAsync(Channel);

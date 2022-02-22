@@ -19,17 +19,18 @@ namespace HookHook.Backend.Area.Actions
 
         public bool isLive { get; private set; }
 
-        public TwitchLiveStarted(string user)
+        private string _serviceAccountId;
+
+        public TwitchLiveStarted(string user, string serviceAccountId)
         {
             UserName = user;
             isLive = false;
-            // _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            // * can we use the api with just access token ?
-            _twitchClient.Settings.AccessToken = user.OAuthAccounts[Providers.Twitch].AccessToken;
+            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken;
 
             var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userIds: new List<string>(){ UserName });
 

@@ -24,16 +24,19 @@ namespace HookHook.Backend.Actions
 
         public List<int> StoredIssues { get; private init; } = new();
 
-        public GithubIssueCreated(string user, string repository)
+        private string _serviceAccountId;
+
+        public GithubIssueCreated(string user, string repository, string serviceAccountId)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 

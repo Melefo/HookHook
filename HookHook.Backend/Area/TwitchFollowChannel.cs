@@ -18,16 +18,18 @@ namespace HookHook.Backend.Area
 
         public List<string> FollowedUsers { get; private init; } = new();
 
-        public TwitchFollowChannel(string user)
+        private string _serviceAccountId;
+
+        public TwitchFollowChannel(string user, string serviceAccountId)
         {
             UserName = user;
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.OAuthAccounts[Providers.Twitch];
-            // * can we use the api with just access token ?
-            _twitchClient.Settings.AccessToken = oauth.AccessToken;
+            // var oauth = user.OAuthAccounts[Providers.Twitch];
+            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken;
 
             var userToCheck = await _twitchClient.Helix.Users.GetUsersAsync(logins: new List<string>() { UserName }, accessToken: oauth.AccessToken);
 

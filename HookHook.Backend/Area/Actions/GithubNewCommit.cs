@@ -41,16 +41,19 @@ namespace HookHook.Backend.Area.Actions
 
         public List<string> StoredCommitHashes { get; private init; } = new();
 
-        public GithubNewCommit(string user, string repository)
+        private string _serviceAccountId;
+
+        public GithubNewCommit(string user, string repository, string serviceAccountId)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.OAuthAccounts[Providers.GitHub].AccessToken}");
+            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken}");
 
             CommitJson[] ?response = await _httpClient.GetAsync<CommitJson[]>($"https://api.github.com/repos/{UserName}/{Repository}/commits");
             if (response == null)

@@ -23,16 +23,19 @@ namespace HookHook.Backend.Area
 
         private IConfiguration _config;
 
-        public TwitterTweetHashtag(string hashtag, IConfiguration config, string tweetContent = "")
+        private string _serviceAccountId;
+
+        public TwitterTweetHashtag(string hashtag, IConfiguration config, string serviceAccountId, string tweetContent = "")
         {
             Hashtag = hashtag;
             TweetContent = tweetContent;
             _config = config;
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.OAuthAccounts[Providers.Twitter];
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId);
 
             _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 

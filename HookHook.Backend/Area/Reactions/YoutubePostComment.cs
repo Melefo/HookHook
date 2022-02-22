@@ -20,17 +20,21 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         private GoogleService _googleService;
 
+        private string _serviceAccountId;
+
         // * faudrait prendre le channelName aussi pour être sûr
-        public YoutubePostComment(string videoName, string comment, GoogleService googleService)
+        // * ou le lien plutôt... et à la limite on parse l'id dessus
+        public YoutubePostComment(string videoName, string comment, GoogleService googleService, string serviceAccountId)
         {
             VideoName = videoName;
             Comment = comment;
             _googleService = googleService;
+            _serviceAccountId = serviceAccountId;
         }
 
         public async Task Execute(Entities.User user)
         {
-            var youtubeClient = _googleService.CreateYouTube(user.OAuthAccounts[Providers.Google]);
+            var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == _serviceAccountId));
 
             var searchRequest = youtubeClient.Search.List(VideoName);
             var search = searchRequest.Execute();

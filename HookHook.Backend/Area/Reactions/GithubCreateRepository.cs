@@ -23,11 +23,14 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
-        public GithubCreateRepository(string repositoryName, string description)
+        private string _serviceAccountId;
+
+        public GithubCreateRepository(string repositoryName, string description, string serviceAccountId)
         {
             RepositoryName = repositoryName;
             Description = description;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _serviceAccountId = serviceAccountId;
         }
 
 
@@ -37,7 +40,7 @@ namespace HookHook.Backend.Reactions
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
             // ! j'ai besoin du token quand meme, passé en constructeur ?
-            _githubClient.Credentials = new Credentials(user.OAuthAccounts[Providers.GitHub].AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var createRepository = new NewRepository(RepositoryName);
             createRepository.Description = Description;
