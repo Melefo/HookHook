@@ -74,9 +74,18 @@ namespace HookHook.Backend.Controllers
             public string Description { get; set; }
             // public int parameterCount { get; set; }
 
-            public string[] parameterNames { get; set; }
+            public string[] ParameterNames { get; set; }
 
-            public string areaType { get; set; } // * ACTION or REACTION
+            public string AreaType { get; set; } // * ACTION or REACTION
+
+            public ServiceDescription(string name, string className, string description, string type, params string[] parameters)
+            {
+                Name = name;
+                ClassName = className;
+                Description = description;
+                AreaType = type;
+                ParameterNames = parameters;
+            }
         }
 
         [HttpGet("getServices")]
@@ -94,29 +103,17 @@ namespace HookHook.Backend.Controllers
 
             foreach (var service in services) {
 
-                // * get controller
-                // ! code bancal
                 var parameters = service.GetConstructors()[0].GetParameters();
                 var strParams = parameters.Where(x => x.ParameterType == stringType).ToArray();
 
                 var attr = service.GetCustomAttribute<ServiceAttribute>();
-                var newService = new ServiceDescription();
-                newService.Name = attr.Name;
-                newService.Description = attr.Description;
-                // newService.parameterCount = strParams.Length;
-                newService.parameterNames = strParams.Select(x => x.Name).ToArray();
-                newService.ClassName = service.Name;
 
-                if (actionType.IsAssignableFrom(service) && reactionType.IsAssignableFrom(service))
-                    newService.areaType = "Action/Reaction";
-                else if (actionType.IsAssignableFrom(service))
-                    newService.areaType = "Action";
-                else if (reactionType.IsAssignableFrom(service))
-                    newService.areaType = "Reaction";
-
-                servicesResponse.Add(newService);
+                if (actionType.IsAssignableFrom(service))
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", strParams.Select(x => x.Name).ToArray()));
+                if (reactionType.IsAssignableFrom(service))
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", strParams.Select(x => x.Name).ToArray()));
             }
-            return (Ok(servicesResponse));
+            return Ok(servicesResponse);
         }
 
 

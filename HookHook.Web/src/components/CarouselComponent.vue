@@ -48,20 +48,20 @@ export default defineComponent({
     },
     color(name: string) {
       name = name.toLowerCase();
-        switch (name) {
-          case 'twitter':
-            return "#A3E7EE";
-          case 'spotify':
-            return "#B4E1DC";
-          case 'discord':
-            return "#D9D1EA";
-          case 'github':
-            return "#F5CDCB";
-          case 'google':
-            return "#F8CBAA";
-          case 'twitch':
-            return "#FFFFC7";
-        }
+      switch (name) {
+        case 'twitter':
+          return "#A3E7EE";
+        case 'spotify':
+          return "#B4E1DC";
+        case 'discord':
+          return "#D9D1EA";
+        case 'github':
+          return "#F5CDCB";
+        case 'google':
+          return "#F8CBAA";
+        case 'twitch':
+          return "#FFFFC7";
+      }
     }
   }
 });

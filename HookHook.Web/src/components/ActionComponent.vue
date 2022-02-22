@@ -2,36 +2,56 @@
   <div>
     <Listbox v-model="selectedService">
       <div class="relative mt-1">
-        <ListboxButton class="relative p-2 text-left text-black dark:text-white rounded-lg">
-          <span class="block truncate underline decoration-[#FD9524] underline-offset-4">{{ selectedService !== null ? selectedService.name : 'Select a service' }}<img v-if="serviceChose === null" class="w-10 h-10 m-auto" :src="require(`@/assets/img/${serviceChose.name}.svg`)"/></span>
-          <span class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none"/>
-        </ListboxButton>
-        <transition
-          leave-active-class="transition duration-100 ease-in"
-          leave-from-class="opacity-100"
-          leave-to-class="opacity-0"
+        <ListboxButton
+          class="relative p-2 text-left text-black dark:text-white"
         >
-          <ListboxOptions class="absolute py-1 mt-1 ml-[8%] overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            <ListboxOption
-              v-slot="{ active }"
-              v-for="serviceChose in service"
-              :key="serviceChose.name"
-              :value="serviceChose"
-              as="template"
-              class="bg-black"
-              @click='$emit("actionChange", serviceChose)'
-            >
-              <li
-                :class="[
-                  active ? 'text-black bg-[#FD9524]' : 'text-gray-900',
-                  'cursor-default select-none relative py-2 pl-4 pr-4 bg-black',
-                ]"
-              >
-                <img class="w-10 h-10 m-auto" :src="require(`@/assets/img/${serviceChose.name}.svg`)"/>
-              </li>
-            </ListboxOption>
-          </ListboxOptions>
-        </transition>
+          <span
+            v-if="selectedService === null"
+            class="block border-0 border-b-2 border-[#FD9524]"
+          >
+            Select a service
+          </span>
+        <div v-else class="flex w-[50px] h-[50px] rounded-xl" :style="{ 'background-color': color(selectedService.name.toLowerCase()) }">
+          <img
+            class="w-8 h-8 m-auto"
+            :src="require(`@/assets/img/coloredsvg/${selectedService.name.toLowerCase()}.svg`)"
+          />
+        </div>
+        </ListboxButton>
+        <ListboxOptions
+          class="
+            z-10
+            absolute
+            py-1
+            overflow-auto
+            text-base
+            bg-white
+            rounded-md
+            shadow-lg
+            max-h-60
+            ring-1 ring-black ring-opacity-5
+            focus:outline-none
+            sm:text-sm
+            min-w-[80px]
+            max-w-[80px]
+          "
+        >
+          <ListboxOption
+            v-slot="{ active }"
+            v-for="serviceChose in service"
+            :key="serviceChose.name"
+            :value="serviceChose"
+            as="template"
+            @click="$emit('actionChange', serviceChose)"
+          >
+              <li class="cursor-pointer select-none relative py-2 pl-4 pr-4 hover:bg-[#A3E7EE]" :class="[active ? 'bg-[#F09113]' : '']" >
+              <img
+                class="w-10 h-10 m-auto"
+                :src="require(`@/assets/img/${serviceChose.name}.svg`)"
+              />
+            </li>
+          </ListboxOption>
+        </ListboxOptions>
       </div>
     </Listbox>
   </div>
@@ -39,42 +59,47 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue';
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOptions,
+  ListboxOption,
+} from "@headlessui/vue";
 import { mapActions } from "vuex";
 
 export default defineComponent({
   name: "ActionComponent",
   components: { Listbox, ListboxButton, ListboxOptions, ListboxOption },
   methods: {
-  ...mapActions("about", ["get"]),
+    ...mapActions("about", ["get"]),
     color(name: string) {
       switch (name) {
-        case 'twitter':
+        case "twitter":
           return "#A3E7EE";
-        case 'spotify':
+        case "spotify":
           return "#B4E1DC";
-        case 'discord':
+        case "discord":
           return "#D9D1EA";
-        case 'github':
+        case "github":
           return "#F5CDCB";
-        case 'google':
+        case "google":
           return "#F8CBAA";
-        case 'twitch':
+        case "twitch":
           return "#FFFFC7";
       }
-    }
+    },
   },
-  computed: {
-  },
-  data: function() {
+  computed: {},
+  data: function () {
     return {
-        service: [],
-        serviceChose: "",
-        selectedService: null,
-    }
+      service: [],
+      selectedService: null,
+    };
   },
-  created: async function() {
-    const { server: { services } } = await this.get();
+  created: async function () {
+    const {
+      server: { services },
+    } = await this.get();
     this.service = services;
   },
 });

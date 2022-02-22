@@ -1,18 +1,21 @@
 <template>
-    <div>
-        <!-- // todo pour le nom du area, un input modelé à une variable -->
-        <p class="text-white p-2">AREA name : coucou</p>
-        <SubAreaComponent @updateInfo="updateAction" reaction-index="-1" :service-details="serviceDetails" verb="when" area-type="Action"/>
+    <div class="p-2">
+        <div>
+            <label for="name" class="dark:text-white text-black">AREA name :</label>
+            <input id="name" class="dark:text-white text-black appearance-none bg-transparent border-0 border-b-2 border-[#FD9524] w-1/2 py-1 px-2 focus:outline-none" type="text" placeholder="My new area" />
+        </div>
+        <SubAreaComponent @updateInfo="updateAction" reaction-index="-1" :service-details="serviceDetails" verb="When" area-type="Action"/>
 
         <div
             v-for="(reaction, index) in reactions"
             :key="index"
+            class="mt-4"
             >
             <SubAreaComponent
                 :service-details="serviceDetails"
                 @updateInfo="updateReaction"
                 :reaction-index="index"
-                verb="do"
+                verb="Do"
                 area-type="Reaction"/>
             <button class="text-white pt-2" @click="removeReaction(index)">
                 Remove
