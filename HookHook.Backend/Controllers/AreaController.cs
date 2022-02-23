@@ -227,7 +227,7 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<List<Test>> GetAllUserAreas()
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
 

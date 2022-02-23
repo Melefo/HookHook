@@ -28,7 +28,7 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId);
+            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
             _twitchClient.Settings.AccessToken = oauth.AccessToken;
 
             var userToCheck = await _twitchClient.Helix.Users.GetUsersAsync(logins: new List<string>() { UserName }, accessToken: oauth.AccessToken);

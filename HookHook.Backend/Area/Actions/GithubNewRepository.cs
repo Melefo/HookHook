@@ -33,7 +33,7 @@ namespace HookHook.Backend.Actions
         {
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
 
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
 
             var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);
 

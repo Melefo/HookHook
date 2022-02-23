@@ -29,7 +29,7 @@ namespace HookHook.Backend.Area.Actions
 
         public async Task<(string?, bool)> Check(User user)
         {
-            await _client.LoginAsync(TokenType.Bot, user.ServicesAccounts[Providers.Discord].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+            await _client.LoginAsync(TokenType.Bot, user.ServicesAccounts[Providers.Discord].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
 
             var guild = await _client.GetGuildAsync(Guild);
             var channel = await guild.GetTextChannelAsync(Channel);

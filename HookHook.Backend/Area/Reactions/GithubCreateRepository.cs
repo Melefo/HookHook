@@ -35,7 +35,7 @@ namespace HookHook.Backend.Reactions
 
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
 
             var createRepository = new NewRepository(RepositoryName);
             createRepository.Description = Description;

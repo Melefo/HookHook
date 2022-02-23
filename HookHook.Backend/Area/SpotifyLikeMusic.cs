@@ -30,7 +30,7 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
 
             var tracks = await _spotifyClient.Library.GetTracks();
 

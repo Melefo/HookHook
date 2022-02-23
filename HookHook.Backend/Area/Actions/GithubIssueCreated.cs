@@ -17,8 +17,6 @@ namespace HookHook.Backend.Actions
 
         [BsonIgnore]
         public GitHubClient _githubClient;
-        [BsonIgnore]
-        private readonly HttpClient _httpClient = new();
 
         [BsonIgnore]
         public MongoService _db;
@@ -31,7 +29,7 @@ namespace HookHook.Backend.Actions
         {
             UserName = user;
             Repository = repository;
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
             ServiceAccountId = serviceAccountId;
 
             _db = db;
@@ -46,8 +44,8 @@ namespace HookHook.Backend.Actions
 
         private async Task<IReadOnlyList<Issue>> GetIssues(Entities.User user)
         {
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId).AccessToken);
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 
@@ -56,9 +54,9 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
 
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId).AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 

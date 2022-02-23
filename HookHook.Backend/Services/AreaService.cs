@@ -19,7 +19,7 @@ namespace HookHook.Backend.Services
 
             foreach (var user in users)
                 foreach (var area in user.Areas)
-                    await area.Launch(user);
+                    await area.Launch(user, _mongo);
         }
 	}
 }

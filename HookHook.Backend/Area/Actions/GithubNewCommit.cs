@@ -50,7 +50,7 @@ namespace HookHook.Backend.Area.Actions
         public async Task<(string?, bool)> Check(Entities.User user)
         {
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
 
             var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);
 

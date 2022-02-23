@@ -28,7 +28,7 @@ namespace HookHook.Backend.Area.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken;
+            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken;
 
             var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userIds: new List<string>(){ UserName });
 

@@ -32,7 +32,7 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId);
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
             _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);

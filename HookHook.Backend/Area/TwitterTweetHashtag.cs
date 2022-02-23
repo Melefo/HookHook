@@ -40,7 +40,7 @@ namespace HookHook.Backend.Area
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId);
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
 
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
@@ -62,7 +62,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId);
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
 
             Console.WriteLine(oauth);
             Console.WriteLine(oauth.AccessToken);
