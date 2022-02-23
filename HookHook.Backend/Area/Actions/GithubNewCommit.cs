@@ -37,11 +37,11 @@ namespace HookHook.Backend.Area.Actions
         [BsonIgnore]
         public GitHubClient _githubClient;
         [BsonIgnore]
-        private readonly HttpClient _httpClient = new();
+        private HttpClient _httpClient = new();
 
         public List<string> StoredCommitHashes { get; private init; } = new();
 
-        private string _serviceAccountId;
+        public string _serviceAccountId;
 
         public GithubNewCommit(string user, string repository, string serviceAccountId)
         {
@@ -53,13 +53,12 @@ namespace HookHook.Backend.Area.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken}");
+            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
-            CommitJson[] ?response = await _httpClient.GetAsync<CommitJson[]>($"https://api.github.com/repos/{UserName}/{Repository}/commits");
-            if (response == null)
-                throw new Exceptions.ApiException("Failed to call API");
+            var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);
 
-            foreach (var commit in response)
+            foreach (var commit in commits)
             {
                 if (StoredCommitHashes.Contains(commit.Commit.Sha))
                     continue;

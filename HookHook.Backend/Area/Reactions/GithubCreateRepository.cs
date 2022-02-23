@@ -23,7 +23,7 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
-        private string _serviceAccountId;
+        public string _serviceAccountId { get; set; }
 
         public GithubCreateRepository(string repositoryName, string description, string serviceAccountId)
         {
@@ -33,13 +33,12 @@ namespace HookHook.Backend.Reactions
             _serviceAccountId = serviceAccountId;
         }
 
-
         public async Task Execute(Entities.User user)
         {
+            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
 
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
 
-            // ! j'ai besoin du token quand meme, passé en constructeur ?
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var createRepository = new NewRepository(RepositoryName);
@@ -52,19 +51,6 @@ namespace HookHook.Backend.Reactions
             if (repository == null) {
                 throw new Exceptions.ApiException("Failed to call API");
             }
-
-            // * title is required, the rest is optional (check for null values)
-            // HttpRequestMessage requestMessage = new HttpRequestMessage();
-            // requestMessage.Content = JsonContent.Create(new {
-            //     Title,
-            //     Body,
-            //     Labels,
-            //     Assignees
-            // });
-
-            // IssueJson ?response = await _httpClient.PostAsync<IssueJson>($"https://api.github.com/repos/{UserName}/{Repository}/issues", requestMessage);
-            // if (response == null)
-            //     throw new Exceptions.ApiException("Failed to call API");
         }
     }
 }

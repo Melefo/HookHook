@@ -37,8 +37,21 @@ namespace HookHook.Backend.Services
         /// <param name="config">Host configuration</param>
         public MongoService(IConfiguration config)
         {
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Entities.IAction>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Entities.IReaction>(cm => cm.AutoMap());
+            // var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
+
+            // foreach (var service in services)
+            // {
+            //     Type serviceType = service.GetType();
+            //     TODO BsonClassMap.RegisterClassMap<serviceType>(cm => cm.AutoMap());
+            // }
+
+            // * solution temporaire, j'ai cherché je trouve pas comment convertir un type var à un type générique
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateIssue>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubIssueCreated>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubNewRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Actions.GithubNewCommit>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Reactions.DiscordWebhook>(cm => cm.AutoMap());
 
             BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));
             _client = new MongoClient(config["Mongo:Client"]);

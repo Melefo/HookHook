@@ -38,12 +38,12 @@ namespace HookHook.Backend.Actions
             _serviceAccountId = serviceAccountId;
 
             _db = db;
-
-            // todo: je ne sais comment mais il faut qu'on récupère le USER et qu'on prenne la liste déja existante pour alimenter
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
+            // todo peupler notre liste avec la data dans l'AREA id
+
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
 
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);

@@ -45,6 +45,7 @@ namespace HookHook.Backend.Entities
 
         public async Task Launch(User user)
         {
+            // ? pass area ID here so the action can modify it in the db
             (string? actionInfo, bool actionValue) = await Action.Check(user);
 
             if (!actionValue)
