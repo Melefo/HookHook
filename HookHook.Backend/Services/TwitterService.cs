@@ -1,6 +1,7 @@
 ﻿using System;
 using CoreTweet;
 using HookHook.Backend.Exceptions;
+using HookHook.Backend.Models;
 using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Services
@@ -49,17 +50,19 @@ namespace HookHook.Backend.Services
 			return (twitter, tokens);
 		}
 
-		public async Task AddAccount(Entities.User user, string code, string verifier)
+		public async Task<ServiceAccount?> AddAccount(Entities.User user, string code, string verifier)
         {
 			(UserResponse twitter, Tokens tokens) = await OAuth(code, verifier);
 			var id = twitter.Id.ToString();
 
 			user.ServicesAccounts.TryAdd(Providers.Twitter, new());
 			if (user.ServicesAccounts[Providers.Twitter].Any(x => x.UserId == id))
-				return;
+				return null;
 
 			user.ServicesAccounts[Providers.Twitter].Add(new(id, tokens.AccessToken, secret: tokens.AccessTokenSecret));
 			_db.SaveUser(user);
+			var current = await tokens.Users.ShowAsync(twitter.Id!.Value);
+			return new(id, $"@{current.ScreenName}");
 			
 		}
 	}

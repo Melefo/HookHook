@@ -2,6 +2,7 @@
 using Discord.Rest;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
+using HookHook.Backend.Models;
 using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Services
@@ -63,17 +64,18 @@ namespace HookHook.Backend.Services
             return (client, res);
         }
 
-        public async Task AddAccount(User user, string code)
+        public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
             (DiscordRestClient client, DiscordToken token) = await OAuth(code);
             var id = client.CurrentUser.Id.ToString();
 
             user.ServicesAccounts.TryAdd(Providers.Discord, new());
             if (user.ServicesAccounts[Providers.Discord].Any(x => x.UserId == id))
-                return;
+                return null;
 
             user.ServicesAccounts[Providers.Discord].Add(new(id, token.AccessToken, TimeSpan.FromSeconds(token.ExpiresIn), token.RefreshToken));
             _db.SaveUser(user);
+            return new(id, client.CurrentUser.ToString());
         }
 
         public async Task Refresh(OAuthAccount account)

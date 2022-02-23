@@ -9,6 +9,7 @@ using static Google.Apis.YouTube.v3.YouTubeService;
 using HookHook.Backend.Utilities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json.Serialization;
+using HookHook.Backend.Models;
 
 namespace HookHook.Backend.Services
 {
@@ -107,16 +108,24 @@ namespace HookHook.Backend.Services
             return (new GoogleProfile(id, email), res);
         }
 
-        public async Task AddAccount(User user, string code)
+        public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
             (var profile, var res) = await OAuth(code);
 
             user.ServicesAccounts.TryAdd(Providers.Google, new());
             if (user.ServicesAccounts[Providers.Google].Any(x => x.UserId == profile.Id))
-                return;
+                return null;
 
-            user.ServicesAccounts[Providers.Google].Add(new(profile.Id, res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken));
+            OAuthAccount oauth = new(profile.Id, res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken);
+            user.ServicesAccounts[Providers.Google].Add(oauth);
             _db.SaveUser(user);
+
+            var youtube = CreateYouTube(oauth);
+            var req = youtube.Channels.List("snippet");
+            req.Mine = true;
+            var search = req.Execute();
+
+            return new(profile.Id, search.Items[0].Snippet.Title);
         }
 
         public async Task Refresh(OAuthAccount account)

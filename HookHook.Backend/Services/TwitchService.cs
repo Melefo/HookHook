@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
+using HookHook.Backend.Models;
 using HookHook.Backend.Utilities;
 using TwitchLib.Api;
 
@@ -74,17 +75,18 @@ namespace HookHook.Backend.Services
             return (client, res);
         }
 
-        public async Task AddAccount(User user, string code)
+        public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
             (var client, TwitchToken res) = await OAuth(code);
             var id = client.Id;
 
             user.ServicesAccounts.TryAdd(Providers.Twitch, new());
             if (user.ServicesAccounts[Providers.Twitch].Any(x => x.UserId == id))
-                return;
+                return null;
 
             user.ServicesAccounts[Providers.Twitch].Add(new(client.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken));
             _db.SaveUser(user);
+            return new(id, client.Login);
         }
 
 		public async Task Refresh(OAuthAccount account)
