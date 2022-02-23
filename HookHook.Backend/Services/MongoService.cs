@@ -47,7 +47,9 @@ namespace HookHook.Backend.Services
 
             // * solution temporaire, j'ai cherché je trouve pas comment convertir un type var à un type générique
             BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateIssue>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubIssueCreated>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubIssueCreated>(cm => {
+                cm.AutoMap();
+            });
             BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubNewRepository>(cm => cm.AutoMap());
             BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateRepository>(cm => cm.AutoMap());
             BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Actions.GithubNewCommit>(cm => cm.AutoMap());

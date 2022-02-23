@@ -127,6 +127,7 @@
             type: currentService.name,
             params: paramsToSend,
             index: reactionIndex,
+            accountId: selectedPerson.userId
           })
         "
       />
@@ -172,10 +173,13 @@ export default defineComponent({
 
         // * find the service in the service details
         const actionDetail = this.serviceDetails.find(
-          (x: any) => x["className"] === action.name
+          (x: any) => {
+              return (x.className === action.name && x.areaType.toLowerCase() === this.areaType.toLowerCase());
+          }
         );
 
         // * if the types are the same, add to possibles
+        console.log("Detail: ", actionDetail.areaType.toLowerCase());
 
         if (
           this.areaType.toLowerCase() === actionDetail.areaType.toLowerCase()
@@ -202,6 +206,7 @@ export default defineComponent({
         type: service.name,
         params: this.paramsToSend,
         index: this.reactionIndex,
+        accountId: this.selectedPerson.userId
       });
     },
   },

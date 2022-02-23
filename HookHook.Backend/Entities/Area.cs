@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Entities
 {
@@ -43,15 +44,17 @@ namespace HookHook.Backend.Entities
             MinutesBetween = minutes;
         }
 
-        public async Task Launch(User user)
+        public async Task Launch(User user, MongoService _db)
         {
             // ? pass area ID here so the action can modify it in the db
             (string? actionInfo, bool actionValue) = await Action.Check(user);
 
             if (!actionValue)
                 return;
+
             foreach (var reaction in Reactions)
                 await reaction.Execute(user);
+            _db.SaveUser(user);
         }
     }
 }

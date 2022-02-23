@@ -1,4 +1,6 @@
-﻿namespace HookHook.Backend.Entities
+﻿using HookHook.Backend.Services;
+
+namespace HookHook.Backend.Entities
 {
     public interface IAction
     {

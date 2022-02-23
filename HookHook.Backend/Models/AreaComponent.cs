@@ -22,18 +22,18 @@ namespace HookHook.Backend.Models
        /// <summary>
         /// AccountID
         /// </summary>
-        public string AccountID { get; set; }
+        public string AccountId { get; set; }
 
         /// <summary>
         /// AreaComponent constructor
         /// </summary>
         /// <param name="type">Type</param>
         /// <param name="arguments">Arguments</param>
-        public AreaComponent(string type, string[] arguments, string accountID)
+        public AreaComponent(string type, string[] arguments, string accountId)
         {
             Type = type;
             Arguments = arguments;
-            AccountID = accountID;
+            AccountId = accountId;
         }
 
     }

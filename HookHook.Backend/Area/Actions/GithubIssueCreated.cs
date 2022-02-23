@@ -24,18 +24,18 @@ namespace HookHook.Backend.Actions
         private readonly HttpClient _httpClient = new();
 
         [BsonIgnore]
-        private MongoService _db;
+        public MongoService _db;
 
         public List<int> StoredIssues { get; private init; } = new();
 
-        public string _serviceAccountId {get; private init;}
+        public string ServiceAccountId { get; private init; }
 
         public GithubIssueCreated(string user, string repository, string serviceAccountId, MongoService db, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
-            _serviceAccountId = serviceAccountId;
+            ServiceAccountId = serviceAccountId;
 
             _db = db;
 
@@ -50,7 +50,7 @@ namespace HookHook.Backend.Actions
         private async Task<IReadOnlyList<Issue>> GetIssues(Entities.User user)
         {
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId).AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 
@@ -61,7 +61,7 @@ namespace HookHook.Backend.Actions
         {
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
 
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId).AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 
@@ -73,12 +73,6 @@ namespace HookHook.Backend.Actions
                 // await reaction.Execute();
                 StoredIssues.Add(issue.Id);
                 Console.WriteLine("Found a new issue");
-
-                // todo save your storedIssues
-                var dbUser = _db.GetUser(user.Id);
-                // * find the area with the area ID
-                // * add to action.storedIssues all that you found
-                // _db.SaveUser(dbUser);
 
                 return (issue.Title, true);
             }

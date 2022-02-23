@@ -155,11 +155,11 @@ export default defineComponent({
         this.minutes = 1440;
       }
     },
-    updateAction({ type, params }: any) {
-      this.action = { type: type, arguments: [...params] };
+    updateAction({ type, params, accountId }: any) {
+      this.action = { type: type, arguments: [...params], accountId };
     },
-    updateReaction({ type, params, index }: any) {
-      this.reactions[index] = { type: type, arguments: [...params] };
+    updateReaction({ type, params, index, accountId }: any) {
+      this.reactions[index] = { type: type, arguments: [...params], accountId };
     },
     async createArea() {
       // todo call the store, check for errors

@@ -46,7 +46,7 @@ namespace HookHook.Backend.Controllers
             reactionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId) => new SpotifyLikeMusic(args[0], args[1], accountId));
             reactionTypes.Add("TwitchFollowChannel", (string[] args, string accountId) => new TwitchFollowChannel(args[0], accountId));
             reactionTypes.Add("TwitterFollowUser", (string[] args, string accountId) => new TwitterFollowUser(args[0], twitterService, config, accountId));
-            reactionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId) => new TwitterTweetHashtag(args[0], config, args[1], accountId));
+            reactionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId) => new TwitterTweetHashtag(args[0], config, accountId, args[1]));
             reactionTypes.Add("YoutubePostComment", (string[] args, string accountId) => new YoutubePostComment(args[0], args[1], googleService, accountId));
 
         }
@@ -54,14 +54,14 @@ namespace HookHook.Backend.Controllers
         private Entities.Area CreateEntityFromModel(AreaModel area, Entities.User user)
         {
             // * create an IAction from area.Action.type
-            IAction action = actionTypes[area.Action.Type](area.Action.Arguments, area.Action.AccountID, user);
+            IAction action = actionTypes[area.Action.Type](area.Action.Arguments, area.Action.AccountId, user);
 
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
-                Console.WriteLine(area.Reactions[i].AccountID);
+                Console.WriteLine(area.Reactions[i].AccountId);
 
-                reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountID));
+                reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountId));
             }
 
             // * create an area entity
@@ -196,7 +196,7 @@ namespace HookHook.Backend.Controllers
                 return BadRequest();
 
             foreach (var area in user.Areas)
-                await area.Launch(user);
+                await area.Launch(user, _db);
             _db.SaveUser(user);
             return Ok();
         }
