@@ -8,7 +8,7 @@ using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
-    [Service("twitter", "Tweet containing an #hashtag")]
+    [Service(Providers.Twitter, "Tweet containing an #hashtag")]
     [BsonIgnoreExtraElements]
     public class TwitterTweetHashtag: IAction, IReaction
     {

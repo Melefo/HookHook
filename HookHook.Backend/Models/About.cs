@@ -1,6 +1,7 @@
 ﻿
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
+using HookHook.Backend.Utilities;
 using System.Reflection;
 
 namespace HookHook.Backend.Models
@@ -86,7 +87,7 @@ namespace HookHook.Backend.Models
         /// Service class constructore
         /// </summary>
         /// <param name="name"></param>
-        public Service(string name, List<Type> areas)
+        public Service(Providers name, List<Type> areas)
         {
             Name = name;
             var iaction = typeof(IAction).GetTypeInfo();
@@ -108,7 +109,7 @@ namespace HookHook.Backend.Models
         /// <summary>
         /// Service Name
         /// </summary>
-        public string Name { get; set; }
+        public Providers Name { get; set; }
 
         /// <summary>
         /// Service List of Actions

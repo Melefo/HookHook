@@ -167,6 +167,7 @@ export default defineComponent({
         action: this.action,
         reactions: this.reactions,
         minutes: this.minutes,
+        name: this.name
       });
       this.error = error || null;
     },

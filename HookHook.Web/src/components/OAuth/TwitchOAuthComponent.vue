@@ -72,7 +72,6 @@ export default defineComponent({
         }
       }
       else {
-        console.log(info);
         this.$emit('addAccount', info);
       }
     },

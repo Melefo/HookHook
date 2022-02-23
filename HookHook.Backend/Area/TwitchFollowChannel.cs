@@ -7,7 +7,7 @@ using TwitchLib.Api;
 
 namespace HookHook.Backend.Area
 {
-    [Service("twitch", "Follow a twitch channel")]
+    [Service(Providers.Twitch, "Follow a twitch channel")]
     [BsonIgnoreExtraElements]
     public class TwitchFollowChannel: IAction, IReaction
     {

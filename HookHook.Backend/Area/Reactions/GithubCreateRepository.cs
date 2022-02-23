@@ -1,9 +1,5 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Models.Github;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Services;
-using System.Net.Http.Headers;
 using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
@@ -11,7 +7,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace HookHook.Backend.Reactions
 {
     [BsonIgnoreExtraElements]
-    [Service("github", "create a new repository")]
+    [Service(Providers.GitHub, "create a new repository")]
     public class GithubCreateRepository : IReaction
     {
         public string RepositoryName {get; private init;}

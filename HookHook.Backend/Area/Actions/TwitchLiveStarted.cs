@@ -1,14 +1,12 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using TwitchLib.Api;
 using MongoDB.Bson.Serialization.Attributes;
 using HookHook.Backend.Attributes;
-using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Area.Actions
 {
-    [Service("twitch", "Check if a live started on twitch")]
+    [Service(Providers.Twitch, "Check if a live started on twitch")]
     [BsonIgnoreExtraElements]
     public class TwitchLiveStarted : IAction
     {

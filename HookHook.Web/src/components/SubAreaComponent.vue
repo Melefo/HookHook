@@ -179,8 +179,6 @@ export default defineComponent({
         );
 
         // * if the types are the same, add to possibles
-        console.log("Detail: ", actionDetail.areaType.toLowerCase());
-
         if (
           this.areaType.toLowerCase() === actionDetail.areaType.toLowerCase()
         ) {

@@ -1,4 +1,3 @@
-using CoreTweet;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
@@ -8,7 +7,7 @@ using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
-    [Service("google", "Video is published")]
+    [Service(Providers.Google, "Video is published")]
     [BsonIgnoreExtraElements]
     public class YoutubeVideoPublished: IAction
     {

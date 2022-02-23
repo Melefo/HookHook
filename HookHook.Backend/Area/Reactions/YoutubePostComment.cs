@@ -1,17 +1,13 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Models.Github;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
-using System.Net.Http.Headers;
-using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Reactions
 {
     [BsonIgnoreExtraElements]
-    [Service("google", "post a comment")]
+    [Service(Providers.Google, "post a comment")]
     public class YoutubePostComment : IReaction
     {
         public string VideoName {get; private init;}

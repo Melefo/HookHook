@@ -7,7 +7,7 @@ using SpotifyAPI.Web;
 
 namespace HookHook.Backend.Area
 {
-    [Service("spotify", "Like a spotify album")]
+    [Service(Providers.Spotify, "Like a spotify album")]
     [BsonIgnoreExtraElements]
     public class SpotifyLikeAlbum: IAction, IReaction
     {

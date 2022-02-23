@@ -17,10 +17,12 @@ namespace HookHook.Backend.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; private init; } = ObjectId.GenerateNewId().ToString();
 
+        public string Name { get; private init; }
+
         /// <summary>
         /// Last successful Area update
         /// </summary>
-        public DateTime LastUpdate { get; set; }
+        public DateTime LastUpdate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// Number of minutes between updates
@@ -37,8 +39,9 @@ namespace HookHook.Backend.Entities
         /// </summary>
         public List<IReaction> Reactions { get; private init; }
 
-        public Area(IAction action, IEnumerable<IReaction> reactions, int minutes)
+        public Area(string name, IAction action, IEnumerable<IReaction> reactions, int minutes)
         {
+            Name = name;
             Action = action;
             Reactions = new(reactions);
             MinutesBetween = minutes;

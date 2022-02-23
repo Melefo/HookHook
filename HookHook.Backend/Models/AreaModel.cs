@@ -7,6 +7,8 @@ namespace HookHook.Backend.Models
     /// </summary>
     public class AreaModel
     {
+        public string Name { get; set; }
+
         /// <summary>
         /// Action
         /// </summary>
@@ -28,8 +30,9 @@ namespace HookHook.Backend.Models
         /// </summary>
         /// <param name="action">Action</param>
         /// <param name="reactions">Reactions</param>
-        public AreaModel(AreaComponent action, AreaComponent[] reactions, int minutes = 1)
+        public AreaModel(string name, AreaComponent action, AreaComponent[] reactions, int minutes = 1)
         {
+            Name = name;
             Action = action;
             Reactions = reactions;
             Minutes = minutes;

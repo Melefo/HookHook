@@ -1,14 +1,12 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
-using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Actions
 {
-    [Service("github", "new repository is created")]
+    [Service(Providers.GitHub, "new repository is created")]
     [BsonIgnoreExtraElements]
     public class GithubNewRepository : IAction
     {

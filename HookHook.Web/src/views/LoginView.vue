@@ -52,7 +52,7 @@ import HookHook from "@/components/HookHookComponent.vue";
 import Register from "@/components/User/RegisterComponent.vue";
 import Login from "@/components/User/LoginComponent.vue";
 import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
-import GithubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
 import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
 import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
 import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
@@ -62,7 +62,7 @@ import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
 export default defineComponent({
-  components: { Bloc, HookHook, Register, Login, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
+  components: { Bloc, HookHook, Register, Login, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
   methods: {
     ...mapActions("about", ["get"])
   },

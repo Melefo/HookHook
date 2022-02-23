@@ -47,7 +47,7 @@
               <li class="cursor-pointer select-none relative py-2 pl-4 pr-4 hover:bg-[#A3E7EE]" :class="[active ? 'bg-[#F09113]' : '']" >
               <img
                 class="w-10 h-10 m-auto"
-                :src="require(`@/assets/img/${serviceChose.name}.svg`)"
+                :src="require(`@/assets/img/${serviceChose.name.toLowerCase()}.svg`)"
               />
             </li>
           </ListboxOption>
@@ -73,6 +73,7 @@ export default defineComponent({
   methods: {
     ...mapActions("about", ["get"]),
     color(name: string) {
+      name = name.toLowerCase();
       switch (name) {
         case "twitter":
           return "#A3E7EE";

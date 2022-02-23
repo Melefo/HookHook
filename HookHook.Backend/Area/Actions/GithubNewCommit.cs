@@ -1,10 +1,8 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
 using MongoDB.Bson.Serialization.Attributes;
 using HookHook.Backend.Attributes;
-using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Area.Actions
 {
@@ -27,7 +25,7 @@ namespace HookHook.Backend.Area.Actions
         public CommitObject ?Commit {get; set;}
     }
 
-    [Service("github", "new commit is done")]
+    [Service(Providers.GitHub, "new commit is done")]
     [BsonIgnoreExtraElements]
     public class GithubNewCommit : IAction
     {
@@ -36,8 +34,6 @@ namespace HookHook.Backend.Area.Actions
 
         [BsonIgnore]
         public GitHubClient _githubClient;
-        [BsonIgnore]
-        private HttpClient _httpClient = new();
 
         public List<string> StoredCommitHashes { get; private init; } = new();
 
@@ -47,13 +43,13 @@ namespace HookHook.Backend.Area.Actions
         {
             UserName = user;
             Repository = repository;
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
             _serviceAccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
             var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);

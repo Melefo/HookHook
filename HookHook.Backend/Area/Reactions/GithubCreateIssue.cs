@@ -1,9 +1,5 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Models.Github;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Services;
-using System.Net.Http.Headers;
 using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
@@ -11,7 +7,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace HookHook.Backend.Reactions
 {
     [BsonIgnoreExtraElements]
-    [Service("github", "create a new issue")]
+    [Service(Providers.GitHub, "create a new issue")]
     [BsonDiscriminator("GithubCreateIssue")]
     public class GithubCreateIssue : IReaction
     {
@@ -25,8 +21,6 @@ namespace HookHook.Backend.Reactions
 
         [BsonIgnore]
         public GitHubClient _githubClient;
-        [BsonIgnore]
-        private readonly HttpClient _httpClient = new();
 
         public string _serviceAccountId { get; set; }
 

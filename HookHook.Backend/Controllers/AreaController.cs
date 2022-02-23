@@ -9,7 +9,9 @@ using HookHook.Backend.Actions;
 using HookHook.Backend.Reactions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Attributes;
+using HookHook.Backend.Exceptions;
 using System.Reflection;
+using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Controllers
 {
@@ -20,24 +22,24 @@ namespace HookHook.Backend.Controllers
     {
         public MongoService _db;
 
-        public Dictionary<string, Func<string[], string, Entities.User, IAction>> actionTypes = new();
+        public Dictionary<string, Func<string[], string, User, IAction>> actionTypes = new();
         public Dictionary<string, Func<string[], string, IReaction>> reactionTypes = new();
 
         public AreaController(MongoService db, TwitterService twitterService, GoogleService googleService, IConfiguration config)
         {
             _db = db;
 
-            actionTypes.Add("DiscordPinned", (string[] args, string accountId, Entities.User user) => new DiscordPinned(args[0], args[1], accountId));
-            actionTypes.Add("GithubIssueCreated", (string[] args, string accountId, Entities.User user) => new GithubIssueCreated(args[0], args[1], accountId, _db, user));
-            actionTypes.Add("GithubNewCommit", (string[] args, string accountId, Entities.User user) => new GithubNewCommit(args[0], args[1], accountId));
-            actionTypes.Add("GithubNewRepository", (string[] args, string accountId, Entities.User user) => new GithubNewRepository(args[0], accountId));
-            actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, Entities.User user) => new SpotifyLikeAlbum(args[0], args[1], accountId));
-            actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, Entities.User user) => new SpotifyLikeMusic(args[0], args[1], accountId));
-            actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, Entities.User user) => new TwitchLiveStarted(args[0], accountId));
-            actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, Entities.User user) => new TwitchFollowChannel(args[0], accountId));
-            actionTypes.Add("TwitterFollowUser", (string[] args, string accountId, Entities.User user) => new TwitterFollowUser(args[0], twitterService, config, accountId));
-            actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, Entities.User user) => new TwitterTweetHashtag(args[0], config, accountId));
-            actionTypes.Add("YoutubeVideoPublished", (string[] args, string accountId, Entities.User user) => new YoutubeVideoPublished(args[0], googleService, accountId));
+            actionTypes.Add("DiscordPinned", (string[] args, string accountId, User user) => new DiscordPinned(args[0], args[1], accountId));
+            actionTypes.Add("GithubIssueCreated", (string[] args, string accountId, User user) => new GithubIssueCreated(args[0], args[1], accountId, _db, user));
+            actionTypes.Add("GithubNewCommit", (string[] args, string accountId, User user) => new GithubNewCommit(args[0], args[1], accountId));
+            actionTypes.Add("GithubNewRepository", (string[] args, string accountId, User user) => new GithubNewRepository(args[0], accountId));
+            actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId));
+            actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId));
+            actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId));
+            actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId));
+            actionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId));
+            actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId));
+            actionTypes.Add("YoutubeVideoPublished", (string[] args, string accountId, User user) => new YoutubeVideoPublished(args[0], googleService, accountId));
 
             reactionTypes.Add("DiscordWebhook", (string[] args, string accountId) => new DiscordWebhook(args[0], args[1]));
             reactionTypes.Add("GithubCreateRepository", (string[] args, string accountId) => new GithubCreateRepository(args[0], args[1], accountId));
@@ -65,14 +67,14 @@ namespace HookHook.Backend.Controllers
             }
 
             // * create an area entity
-            Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
+            Entities.Area areaEntity = new Entities.Area(area.Name, action, reactions, area.Minutes);
 
             return (areaEntity);
         }
 
         private class ServiceDescription
         {
-            public string Name { get; set; }
+            public Providers Name { get; set; }
             public string ClassName { get; set; }
             public string Description { get; set; }
             // public int parameterCount { get; set; }
@@ -81,7 +83,7 @@ namespace HookHook.Backend.Controllers
 
             public string AreaType { get; set; } // * ACTION or REACTION
 
-            public ServiceDescription(string name, string className, string description, string type, params string[] parameters)
+            public ServiceDescription(Providers name, string className, string description, string type, params string[] parameters)
             {
                 Name = name;
                 ClassName = className;
@@ -201,23 +203,39 @@ namespace HookHook.Backend.Controllers
             return Ok();
         }
 
+        public class Test
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public Providers From { get; set; }
+            public Providers[] To { get; set; }
+            public long Date { get; set; }
+
+            public Test(string id, string name, Providers from, Providers[] to, DateTime date)
+            {
+                Id = id;
+                Name = name;
+                From = from;
+                To = to;
+                Date = (long)(date - DateTime.UnixEpoch).TotalSeconds;
+            }
+        }
+
         // * get all the areas
-        [HttpGet("GetAll")]
+        [HttpGet("All")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> GetAllUserAreas()
+        public ActionResult<List<Test>> GetAllUserAreas()
         {
             var user = _db.GetUser(HttpContext.User.Identity.Name);
             if (user == null)
                 return BadRequest();
 
-            List<Entities.Area> areas = new();
+            List<Test> list = new();
+            foreach (var area in user.Areas)
+                list.Add(new(area.Id, area.Name, area.Action.GetProvider(), area.Reactions.Select(x => x.GetProvider()).ToArray(), area.LastUpdate));
 
-            foreach (var area in user.Areas) {
-                areas.Append(area);
-            }
-
-            return Ok(areas);
+            return list;
         }
 
     }

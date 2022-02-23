@@ -1,5 +1,5 @@
 <template>
-  <a href="/" @click.prevent="handleDiscord">
+  <a href="/login" @click.prevent="handleDiscord">
     <img v-if="oauth" class="h-10" alt="discord" src="@/assets/img/discord.svg" />
     <div v-else>
       <slot />

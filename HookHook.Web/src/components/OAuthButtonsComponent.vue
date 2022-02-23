@@ -1,6 +1,6 @@
 <template>
   <div class="text-black justify-start">
-    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name + '.svg'" :bgColor="color(item.name)">
+    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name.toLowerCase() + '.svg'" :bgColor="color(item.name)">
       <div v-for="(account, keyy) in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
         <p>{{ account.username }}</p>
         <button @click.prevent="async () => await deleteService(item.name, account.userId, key, keyy)">
@@ -44,6 +44,7 @@
         this.services[serviceKey].accounts.splice(accountKey, 1);
       },
       color(name: string) {
+        name = name.toLowerCase();
         switch (name) {
           case 'twitter':
             return "#A3E7EE";

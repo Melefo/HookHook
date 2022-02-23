@@ -1,16 +1,13 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Models.Github;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
-using System.Net.Http.Headers;
 using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Actions
 {
-    [Service("github", "new issue is created")]
+    [Service(Providers.GitHub, "new issue is created")]
     [BsonIgnoreExtraElements]
     [BsonDiscriminator("GithubIssueCreated")]
     public class GithubIssueCreated : IAction
