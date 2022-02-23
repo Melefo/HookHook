@@ -96,12 +96,12 @@ namespace HookHook.Backend.Models
 
             foreach (var action in actionList)
             {
-                Actions.Add(new Action(action.Name, action.GetCustomAttribute<ServiceAttribute>().Description));
+                Actions.Add(new Action(action.Name, action.GetCustomAttribute<ServiceAttribute>()!.Description));
             }
 
             foreach (var reaction in reactionList)
             {
-                Reactions.Add(new Reaction(reaction.Name, reaction.GetCustomAttribute<ServiceAttribute>().Description));
+                Reactions.Add(new Reaction(reaction.Name, reaction.GetCustomAttribute<ServiceAttribute>()!.Description));
             }
         }
 
@@ -134,7 +134,7 @@ namespace HookHook.Backend.Models
             CurrentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
-            var groupedServices = services.GroupBy(x => x.GetCustomAttribute<ServiceAttribute>().Name).ToDictionary(x => x.Key, x => x.ToList());
+            var groupedServices = services.GroupBy(x => x.GetCustomAttribute<ServiceAttribute>()!.Name).ToDictionary(x => x.Key, x => x.ToList());
             foreach (var service in groupedServices)
             {
                 Services.Add(new Service(service.Key, service.Value));

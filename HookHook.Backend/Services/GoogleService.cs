@@ -17,15 +17,30 @@ namespace HookHook.Backend.Services
     {
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
+
         [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
+
         [JsonPropertyName("expire_in")]
         public int ExpiresIn { get; set; }
+
         public string Scope { get; set; }
+
         [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
+
         [JsonPropertyName("id_token")]
         public string IdToken { get; set; }
+
+        public GoogleAuth(string access, string refresh, int expires, string scope, string type, string id)
+        {
+            AccessToken = access;
+            RefreshToken = refresh;
+            ExpiresIn = expires;
+            Scope = scope;
+            TokenType = type;
+            IdToken = id;
+        }
     }
 
     public class GoogleProfile
@@ -144,7 +159,7 @@ namespace HookHook.Backend.Services
             });
 
             var res = await _client.PostAsync<GoogleAuth>($"https://oauth2.googleapis.com/token", content);
-            account.AccessToken = res.AccessToken;
+            account.AccessToken = res!.AccessToken;
             account.ExpiresIn = DateTime.UtcNow.Add(TimeSpan.FromSeconds(res.ExpiresIn));
         }
     }

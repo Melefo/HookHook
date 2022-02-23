@@ -19,8 +19,8 @@ namespace HookHook.Backend.Reactions
 
         public string Title { get; private init; }
         public string Body { get; private init; }
-        public string[] Labels { get; private init; }
-        public string[] Assignees { get; private init; }
+        public List<string> Labels { get; private init; } = new();
+        public List<string> Assignees { get; private init; } = new();
 
         [BsonIgnore]
         public GitHubClient _githubClient;

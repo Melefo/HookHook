@@ -17,7 +17,7 @@ namespace HookHook.Backend.Area
         public string TweetContent { get; set; }
 
         [BsonIgnore]
-        public Tokens _twitterClient;
+        public Tokens? _twitterClient;
 
         public List<long> Tweets { get; private init; } = new();
 

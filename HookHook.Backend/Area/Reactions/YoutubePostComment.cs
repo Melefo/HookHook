@@ -28,7 +28,7 @@ namespace HookHook.Backend.Reactions
             _googleService = googleService;
         }
 
-        public async Task Execute(Entities.User user)
+        public Task Execute(Entities.User user)
         {
             var youtubeClient = _googleService.CreateYouTube(user.OAuthAccounts[Providers.Google]);
 
@@ -40,6 +40,8 @@ namespace HookHook.Backend.Reactions
             // ! vraiment pas sûr que ceci fonctionne
             var commentRequest = youtubeClient.Comments.Update(commentObject, search.Items[0].Id.ToString());
             var commentResult = commentRequest.Execute();
+
+            return Task.CompletedTask;
         }
     }
 }

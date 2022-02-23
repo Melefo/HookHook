@@ -45,12 +45,16 @@ namespace HookHook.Backend.Entities
 
         public async Task Launch(User user)
         {
+            if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
+                return;
+            LastUpdate = DateTime.UtcNow.AddMinutes(MinutesBetween);
             (string? actionInfo, bool actionValue) = await Action.Check(user);
 
             if (!actionValue)
                 return;
             foreach (var reaction in Reactions)
                 await reaction.Execute(user);
+
         }
     }
 }

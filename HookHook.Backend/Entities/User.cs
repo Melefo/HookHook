@@ -55,7 +55,6 @@ namespace HookHook.Backend.Entities
 
         public Dictionary<Providers, List<OAuthAccount>> ServicesAccounts { get; set; } = new();
 
-        [BsonIgnore]
         public List<Area> Areas {get; set;} = new();
 
         /// <summary>
