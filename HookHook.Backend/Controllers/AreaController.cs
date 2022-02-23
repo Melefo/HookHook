@@ -28,7 +28,7 @@ namespace HookHook.Backend.Controllers
             _db = db;
 
             actionTypes.Add("DiscordPinned", (string[] args, string accountId) => new DiscordPinned(args[0], args[1], accountId));
-            actionTypes.Add("GithubIssueCreated", (string[] args, string accountId) => new GithubIssueCreated(args[0], args[1], accountId));
+            actionTypes.Add("GithubIssueCreated", (string[] args, string accountId) => new GithubIssueCreated(args[0], args[1], accountId, _db));
             actionTypes.Add("GithubNewCommit", (string[] args, string accountId) => new GithubNewCommit(args[0], args[1], accountId));
             actionTypes.Add("GithubNewRepository", (string[] args, string accountId) => new GithubNewRepository(args[0], accountId));
             actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId) => new SpotifyLikeAlbum(args[0], args[1], accountId));
@@ -53,13 +53,9 @@ namespace HookHook.Backend.Controllers
 
         private Entities.Area CreateEntityFromModel(AreaModel area)
         {
-            Console.WriteLine("GOT IN HERE");
-            Console.WriteLine(area.Action.AccountID);
-
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments, area.Action.AccountID);
 
-            Console.WriteLine("Here 2");
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
@@ -67,11 +63,9 @@ namespace HookHook.Backend.Controllers
 
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountID));
             }
-            Console.WriteLine("Here 3");
 
             // * create an area entity
             Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
-            Console.WriteLine("Here 4");
 
             return (areaEntity);
         }

@@ -23,16 +23,23 @@ namespace HookHook.Backend.Actions
         [BsonIgnore]
         private readonly HttpClient _httpClient = new();
 
+        [BsonIgnore]
+        private MongoService _db;
+
         public List<int> StoredIssues { get; private init; } = new();
 
         public string _serviceAccountId {get; private init;}
 
-        public GithubIssueCreated(string user, string repository, string serviceAccountId)
+        public GithubIssueCreated(string user, string repository, string serviceAccountId, MongoService db)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
             _serviceAccountId = serviceAccountId;
+
+            _db = db;
+
+            // todo: je ne sais comment mais il faut qu'on récupère le USER et qu'on prenne la liste déja existante pour alimenter
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
@@ -53,6 +60,10 @@ namespace HookHook.Backend.Actions
                 Console.WriteLine("Found a new issue");
 
                 // todo save your storedIssues
+                var dbUser = _db.GetUser(user.Id);
+                // * find the area with the area ID
+                // * add to action.storedIssues all that you found
+                // _db.SaveUser(dbUser);
 
                 return (issue.Title, true);
             }

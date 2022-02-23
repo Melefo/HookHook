@@ -7,6 +7,8 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using HookHook.Backend.Attributes;
 
 namespace HookHook.Backend.Services
 {
@@ -35,8 +37,8 @@ namespace HookHook.Backend.Services
         /// <param name="config">Host configuration</param>
         public MongoService(IConfiguration config)
         {
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateIssue>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubIssueCreated>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Entities.IAction>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Entities.IReaction>(cm => cm.AutoMap());
 
             BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));
             _client = new MongoClient(config["Mongo:Client"]);
@@ -75,7 +77,7 @@ namespace HookHook.Backend.Services
         /// Create and insert user inside database
         /// </summary>
         /// <param name="u">User accoutn</param>
-        public void CreateUser(User u) => 
+        public void CreateUser(User u) =>
             _usersCollection.InsertOne(u);
 
         /// <summary>

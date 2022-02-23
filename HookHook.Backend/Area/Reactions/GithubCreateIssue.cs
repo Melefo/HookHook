@@ -45,37 +45,17 @@ namespace HookHook.Backend.Reactions
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
 
-            Console.WriteLine("HERE1");
-            Console.WriteLine(_serviceAccountId);
-            Console.WriteLine(user.ServicesAccounts[Providers.GitHub]);
-            Console.WriteLine(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId));
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
 
-            Console.WriteLine("HERE2");
             var createIssue = new NewIssue(Title);
             createIssue.Body = Body;
             var issue = await _githubClient.Issue.Create(UserName, Repository, createIssue);
 
-            Console.WriteLine("HERE3");
             // ? add new issue to database ?
 
-            // ? error checks ?
             if (issue == null) {
                 throw new Exceptions.ApiException("Failed to call API");
             }
-
-            // * title is required, the rest is optional (check for null values)
-            // HttpRequestMessage requestMessage = new HttpRequestMessage();
-            // requestMessage.Content = JsonContent.Create(new {
-            //     Title,
-            //     Body,
-            //     Labels,
-            //     Assignees
-            // });
-
-            // IssueJson ?response = await _httpClient.PostAsync<IssueJson>($"https://api.github.com/repos/{UserName}/{Repository}/issues", requestMessage);
-            // if (response == null)
-            //     throw new Exceptions.ApiException("Failed to call API");
         }
     }
 }
