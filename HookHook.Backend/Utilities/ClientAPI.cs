@@ -8,9 +8,6 @@ namespace HookHook.Backend.Utilities
         {
             var response = await client.GetAsync(url);
 
-            Console.WriteLine("HTTP RESPONSE");
-            Console.WriteLine(response);
-
             if (!response.IsSuccessStatusCode)
                 return default;
             if (response.StatusCode == HttpStatusCode.NoContent)
