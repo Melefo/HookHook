@@ -1,6 +1,7 @@
 ﻿using System;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
+using HookHook.Backend.Models;
 using HookHook.Backend.Utilities;
 using Octokit;
 
@@ -32,7 +33,7 @@ namespace HookHook.Backend.Services
 			return (client, res);
 		}
 
-		public async Task AddAccount(Entities.User user, string code)
+		public async Task<ServiceAccount?> AddAccount(Entities.User user, string code)
         {
 			(var client, var res) = await OAuth(code);
 			var current = await client.User.Current();
@@ -40,10 +41,10 @@ namespace HookHook.Backend.Services
 
 			user.ServicesAccounts.TryAdd(Providers.GitHub, new());
 			if (user.ServicesAccounts[Providers.GitHub].Any(x => x.UserId == id))
-				return;
-
+				return null;
 
 			user.ServicesAccounts[Providers.GitHub].Add(new(id.ToString(), res.AccessToken));
+			return new(id, current.Login);
         }
 	}
 }

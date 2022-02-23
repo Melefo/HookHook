@@ -119,35 +119,38 @@ namespace HookHook.Backend.Controllers
         }
 
         [HttpPost("{provider}")]
-        public async Task<ActionResult> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
+        public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
             try
             {
+                ServiceAccount? account = null;
                 switch (provider)
                 {
                     case Providers.Discord:
-                        await _discord.AddAccount(user, code);
+                        account = await _discord.AddAccount(user, code);
                         break;
                     case Providers.Twitter:
-                        await _twitter.AddAccount(user, code, verifier);
+                        account = await _twitter.AddAccount(user, code, verifier);
                         break;
                     case Providers.Twitch:
-                        await _twitch.AddAccount(user, code);
+                        account = await _twitch.AddAccount(user, code);
                         break;
                     case Providers.Spotify:
-                        await _spotify.AddAccount(user, code);
+                        account = await _spotify.AddAccount(user, code);
                         break;
                     case Providers.Google:
-                        await _google.AddAccount(user, code);
+                        account = await _google.AddAccount(user, code);
                         break;
                     case Providers.GitHub:
-                        await _gitHub.AddAccount(user, code);
+                        account = await _gitHub.AddAccount(user, code);
                         break;
                     default:
                         return BadRequest();
                 }
                 _mongo.SaveUser(user);
+                if (account != null)
+                    return account;
                 return NoContent();
             }
             catch (Exceptions.ApiException ex)
