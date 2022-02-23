@@ -15,7 +15,7 @@ namespace HookHook.Backend.Area
         public string ArtistName {get; set;}
 
         [BsonIgnore]
-        private SpotifyClient _spotifyClient = null;
+        private SpotifyClient? _spotifyClient;
 
         public List<string> StoredLibrary { get; private init; } = new();
 
@@ -31,7 +31,7 @@ namespace HookHook.Backend.Area
 
             var albums = await _spotifyClient.Library.GetAlbums();
 
-            foreach (var item in albums.Items) {
+            foreach (var item in albums.Items!) {
 
                 DateTime dateAdded = item.AddedAt;
                 // ! possible de trier avec dateAdded ;(
@@ -60,7 +60,7 @@ namespace HookHook.Backend.Area
 
             // todo gestion d'erreur
 
-            LibrarySaveAlbumsRequest saveAlbums = new (new List<string>() {searchResults.Albums.Items[0].Id});
+            LibrarySaveAlbumsRequest saveAlbums = new (new List<string>() {searchResults.Albums.Items![0].Id});
             await _spotifyClient.Library.SaveAlbums(saveAlbums);
         }
     }

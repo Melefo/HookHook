@@ -24,6 +24,15 @@ namespace HookHook.Backend.Services
 
         [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
+
+        public TwitchToken(string access, int expires, string refresh, string[] scope, string type)
+        {
+            AccessToken = access;
+            ExpiresIn = expires;
+            RefreshToken = refresh;
+            Scope = scope;
+            TokenType = type;
+        }
     }
 
     public class TwitchService
@@ -103,7 +112,7 @@ namespace HookHook.Backend.Services
                 new("refresh_token", account.RefreshToken),
             });
             var res = await _client.PostAsync<TwitchToken>("https://id.twitch.tv/oauth2/token", content);
-            account.AccessToken = res.AccessToken;
+            account.AccessToken = res!.AccessToken;
             account.ExpiresIn = DateTime.UtcNow.Add(TimeSpan.FromSeconds(res.ExpiresIn));
             account.RefreshToken = res.RefreshToken;
         }

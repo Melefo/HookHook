@@ -58,11 +58,12 @@ namespace HookHook.Backend.Area.Actions
 
             foreach (var commit in response)
             {
-                if (StoredCommitHashes.Contains(commit.Commit.Sha))
+                var sha = commit.Commit!.Sha!;
+                if (StoredCommitHashes.Contains(sha))
                     continue;
 
                 // await reaction.Execute();
-                StoredCommitHashes.Add(commit.Commit.Sha);
+                StoredCommitHashes.Add(sha);
 
                 return (commit.Commit.Message, true);
             }

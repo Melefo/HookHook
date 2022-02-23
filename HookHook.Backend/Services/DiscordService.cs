@@ -23,6 +23,15 @@ namespace HookHook.Backend.Services
 
         [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
+
+        public DiscordToken(string access, int expires, string refresh, string scope, string type)
+        {
+            AccessToken = access;
+            ExpiresIn = expires;
+            RefreshToken = refresh;
+            Scope = scope;
+            TokenType = type;
+        }
     }
 
     public class DiscordService
@@ -93,7 +102,7 @@ namespace HookHook.Backend.Services
             });
 
             var res = await _client.PostAsync<DiscordToken>("https://discord.com/api/oauth2/token", content);
-            account.AccessToken = res.AccessToken;
+            account.AccessToken = res!.AccessToken;
             account.ExpiresIn = DateTime.UtcNow.Add(TimeSpan.FromSeconds(res.ExpiresIn));
             account.RefreshToken = res.RefreshToken;
         }

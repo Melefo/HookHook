@@ -89,7 +89,7 @@ namespace HookHook.Backend.Controllers
         }
 
         [HttpGet("getServices")]
-        public async Task<ActionResult> getServices()
+        public ActionResult getServices()
         {
             // * retrieve classes that have the Service attribute, get their constructor and argument list
             var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
@@ -106,12 +106,12 @@ namespace HookHook.Backend.Controllers
                 var parameters = service.GetConstructors()[0].GetParameters();
                 var strParams = parameters.Where(x => x.ParameterType == stringType).ToArray();
 
-                var attr = service.GetCustomAttribute<ServiceAttribute>();
+                var attr = service.GetCustomAttribute<ServiceAttribute>()!;
 
                 if (actionType.IsAssignableFrom(service))
-                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", strParams.Select(x => x.Name).ToArray()));
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", strParams.Select(x => x.Name).ToArray()!));
                 if (reactionType.IsAssignableFrom(service))
-                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", strParams.Select(x => x.Name).ToArray()));
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", strParams.Select(x => x.Name).ToArray()!));
             }
             return Ok(servicesResponse);
         }
@@ -123,7 +123,7 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult CreateArea([FromBody] AreaModel area)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
 
@@ -140,9 +140,9 @@ namespace HookHook.Backend.Controllers
         [HttpPut("modify/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> ModifyArea([FromBody] AreaModel area, string id)
+        public ActionResult ModifyArea([FromBody] AreaModel area, string id)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
 
@@ -162,9 +162,9 @@ namespace HookHook.Backend.Controllers
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> DeleteArea(string id)
+        public ActionResult DeleteArea(string id)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
 
@@ -184,7 +184,7 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> TriggerUserAreas(string id)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(id);
             if (user == null)
                 return BadRequest();
 

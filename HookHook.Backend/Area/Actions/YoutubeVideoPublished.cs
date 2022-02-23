@@ -19,15 +19,13 @@ namespace HookHook.Backend.Area
 
         public List<string> Videos { get; private init; } = new();
 
-        private IConfiguration _config;
-
         public YoutubeVideoPublished(string channel, GoogleService googleService)
         {
             Channel = channel;
             _googleService = googleService;
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public Task<(string?, bool)> Check(User user)
         {
             var youtubeClient = _googleService.CreateYouTube(user.OAuthAccounts[Providers.Google]);
 
@@ -48,10 +46,10 @@ namespace HookHook.Backend.Area
 
                 // todo save
                 Videos.Add(video.Id);
-                return (video.Snippet.Title, true);
+                return Task.FromResult<(string?, bool)>((video.Snippet.Title, true));
             }
 
-            return (null, false);
+            return Task.FromResult<(string?, bool)>((null, false));
         }
 
 
