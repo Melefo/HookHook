@@ -22,6 +22,9 @@ export default defineComponent({
     oauth: {
       type: Boolean,
       default: true
+    },
+    list: {
+      type: null as any[]|null
     }
   },
   methods: {
@@ -58,15 +61,18 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveTwitter);
-      const { errors, error } = this.oauth ? await this.twitter({token: data.oauth_token, verifier: data.oauth_verifier }) : await this.addTwitter({token: data.oauth_token, verifier: data.oauth_verifier });
-      this.errors = errors || null;
-      this.error = error || null;
+      const info = this.oauth ? await this.twitter({token: data.oauth_token, verifier: data.oauth_verifier }) : await this.addTwitter({token: data.oauth_token, verifier: data.oauth_verifier });
+      this.errors = info.errors || null;
+      this.error = info.error || null;
       if (this.oauth) {
         if (!this.error && !this.errors) {
           this.$router.push("/dashboard");
         }
       }
+      else {
+        this.$emit('addAccount', info);
+      }
     },
-  },
+  }
 });
 </script>

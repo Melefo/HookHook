@@ -1,13 +1,13 @@
 <template>
   <div class="text-black justify-start">
     <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name + '.svg'" :bgColor="color(item.name)">
-      <div v-for="account in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
+      <div v-for="(account, keyy) in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
         <p>{{ account.username }}</p>
-        <button @click.prevent="async () => await deleteService(item.name, account.userId)">
+        <button @click.prevent="async () => await deleteService(item.name, account.userId, key, keyy)">
           <XIcon class="h-8" />
         </button>
       </div>
-      <component :is="item.name + 'Oauth'" :oauth="false">
+      <component :is="item.name + 'Oauth'" :oauth="false" @addAccount="handleAdd($event, key)">
         ADD
       </component>
     </DialogComponent>
@@ -33,8 +33,15 @@
     methods: {
       ...mapActions("about", ["get"]),
       ...mapActions("service", ["getAccounts", "deleteAccount"]),
-      async deleteService(provider: String, id: String) {
+      handleAdd(e: any, key: number) {
+        if (e.userId === undefined || e.username === undefined) {
+          return;
+        }
+        this.services[key].accounts.push(e);
+      },
+      async deleteService(provider: String, id: String, serviceKey: number, accountKey: number) {
         await this.deleteAccount({provider: provider, id: id});
+        this.services[serviceKey].accounts.splice(accountKey, 1);
       },
       color(name: string) {
         switch (name) {
@@ -56,7 +63,7 @@
     },
     data: function() {
       return {
-        services: [],
+        services: [] as any[],
       }
     },
     created: async function() {

@@ -16,9 +16,15 @@
       <div>
         <div>{{ formatDate(slide.date * 1000) }}</div>
         <div class="flex flex-row justify-end">
-          <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
-          <PencilIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
-          <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2" />
+          <button>
+            <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
+          </button>
+          <button>
+            <PencilIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
+          </button>
+          <button>
+            <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
+          </button>
         </div>
       </div>
     </Bloc>
@@ -48,20 +54,20 @@ export default defineComponent({
     },
     color(name: string) {
       name = name.toLowerCase();
-        switch (name) {
-          case 'twitter':
-            return "#A3E7EE";
-          case 'spotify':
-            return "#B4E1DC";
-          case 'discord':
-            return "#D9D1EA";
-          case 'github':
-            return "#F5CDCB";
-          case 'google':
-            return "#F8CBAA";
-          case 'twitch':
-            return "#FFFFC7";
-        }
+      switch (name) {
+        case 'twitter':
+          return "#A3E7EE";
+        case 'spotify':
+          return "#B4E1DC";
+        case 'discord':
+          return "#D9D1EA";
+        case 'github':
+          return "#F5CDCB";
+        case 'google':
+          return "#F8CBAA";
+        case 'twitch':
+          return "#FFFFC7";
+      }
     }
   }
 });

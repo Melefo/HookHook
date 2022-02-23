@@ -1,5 +1,6 @@
 ﻿using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
+using HookHook.Backend.Models;
 using HookHook.Backend.Utilities;
 using SpotifyAPI.Web;
 
@@ -36,7 +37,7 @@ namespace HookHook.Backend.Services
 			return (spotify, response);
 		}
 
-		public async Task AddAccount(User user, string code)
+		public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
 			(var client, var token) = await OAuth(code);
 			var spotifyUser = await client.UserProfile.Current();
@@ -44,10 +45,12 @@ namespace HookHook.Backend.Services
 
 			user.ServicesAccounts.TryAdd(Providers.Spotify, new());
 			if (user.ServicesAccounts[Providers.Spotify].Any(x => x.UserId == id))
-				return;
+				return null;
 
 			user.ServicesAccounts[Providers.Spotify].Add(new(id, token.AccessToken, TimeSpan.FromSeconds(token.ExpiresIn), token.RefreshToken));
 			_db.SaveUser(user);
+			var current = await client.UserProfile.Current();
+			return new(id, current.DisplayName);
 		}
 
 		public async Task Refresh(OAuthAccount account)

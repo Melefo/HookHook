@@ -63,13 +63,16 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveDiscord);
-      const { errors, error } = this.oauth ? await this.discord(data.code) : await this.addDiscord(data.code);
-      this.errors = errors || null;
-      this.error = error || null;
+      const info = this.oauth ? await this.discord(data.code) : await this.addDiscord(data.code);
+      this.errors = info.errors || null;
+      this.error = info.error || null;
       if (this.oauth) {
         if (!this.error && !this.errors) {
           this.$router.push("/dashboard");
         }
+      }
+      else {
+        this.$emit('addAccount', info);
       }
     },
   },
