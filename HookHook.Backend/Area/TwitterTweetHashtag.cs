@@ -23,12 +23,17 @@ namespace HookHook.Backend.Area
 
         private IConfiguration _config;
 
-        private string _serviceAccountId;
+        public string _clientId { get; private init; }
+        public string _clientSecret { get; private init;}
+
+        public string _serviceAccountId;
 
         public TwitterTweetHashtag(string hashtag, IConfiguration config, string serviceAccountId, string tweetContent = "")
         {
             Hashtag = hashtag;
             TweetContent = tweetContent;
+            _clientId = config["Twitter:ClientId"];
+            _clientSecret = config["Twitter:ClientSecret"];
             _config = config;
             _serviceAccountId = serviceAccountId;
         }
@@ -37,10 +42,10 @@ namespace HookHook.Backend.Area
         {
             var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId);
 
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
+            _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             // * you might want to search for a hashtag, and get the latest one
-            // * jsp ce que c'est product et label
+            // * jsp ce que c'est product et label, et il trouve pas manifestement
             var tweets = await  _twitterClient.Tweets.SearchAsync(product: "", query: Hashtag, label: "");
 
             foreach (var tweet in tweets) {
