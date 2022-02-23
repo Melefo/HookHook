@@ -63,7 +63,7 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveTwitch);
-      const info = this.oauth ? await this.twitch(data.code) : this.addTwitch(data.code);
+      const info = this.oauth ? await this.twitch(data.code) : await this.addTwitch(data.code);
       this.errors = info.errors || null;
       this.error = info.error || null;
       if (this.oauth) {
@@ -72,6 +72,7 @@ export default defineComponent({
         }
       }
       else {
+        console.log(info);
         this.$emit('addAccount', info);
       }
     },
