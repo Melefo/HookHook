@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using HookHook.Backend.Services;
 using System.Text.Json.Serialization;
+using FluentScheduler;
 
 namespace HookHook.Backend
 {
@@ -37,6 +38,7 @@ namespace HookHook.Backend
             services.AddSingleton<TwitchService>();
             services.AddSingleton<SpotifyService>();
             services.AddSingleton<GitHubService>();
+            services.AddSingleton<AreaService>();
             services.AddScoped<UserService>();
 
             services.AddControllers().AddJsonOptions(x =>
@@ -97,6 +99,8 @@ namespace HookHook.Backend
         /// <param name="env">Environment</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            JobManager.Initialize(app.ApplicationServices.GetService<AreaService>());
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();

@@ -76,7 +76,7 @@ namespace HookHook.Backend.Services
         /// <returns></returns>
         public bool Promote(string id)
         {
-            User user = _db.GetUser(id);
+            User user = _db.GetUser(id)!;
             user.Role = user.Role == "Admin" ? "User" : "Admin";
 
             return _db.SaveUser(user);
@@ -203,7 +203,7 @@ namespace HookHook.Backend.Services
             var primary = emails.SingleOrDefault(x => x.Primary);
             OAuthAccount account = new(user.Id.ToString(), res.AccessToken);
 
-            return OAuth(ctx, Providers.GitHub, primary.Email, account);
+            return OAuth(ctx, Providers.GitHub, primary!.Email, account);
         }
 
         private string OAuth(HttpContext ctx, Providers provider, string email, OAuthAccount account)

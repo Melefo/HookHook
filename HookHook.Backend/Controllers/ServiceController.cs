@@ -46,7 +46,7 @@ namespace HookHook.Backend.Controllers
         [HttpGet("{provider}")]
         public async Task<ActionResult<List<ServiceAccount>>> Get(Providers provider)
         {
-            var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
+            var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
             List<ServiceAccount> list = new();
 
             if (!user.ServicesAccounts.TryGetValue(provider, out var accounts))
@@ -121,7 +121,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("{provider}")]
         public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
         {
-            var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
+            var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
             try
             {
                 ServiceAccount? account = null;
@@ -131,7 +131,7 @@ namespace HookHook.Backend.Controllers
                         account = await _discord.AddAccount(user, code);
                         break;
                     case Providers.Twitter:
-                        account = await _twitter.AddAccount(user, code, verifier);
+                        account = await _twitter.AddAccount(user, code, verifier!);
                         break;
                     case Providers.Twitch:
                         account = await _twitch.AddAccount(user, code);
@@ -162,10 +162,10 @@ namespace HookHook.Backend.Controllers
         [HttpDelete("{provider}")]
         public ActionResult Delete(Providers provider, [BindRequired] [FromQuery] string id)
         {
-            var user = _mongo.GetUser(HttpContext.User.Identity!.Name!);
+            var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
             if (!user.ServicesAccounts.TryGetValue(provider, out var accounts))
                 return NoContent();
-            var account = accounts.SingleOrDefault(x => x.UserId == id);
+            var account = accounts.SingleOrDefault(x => x.UserId == id)!;
 
             accounts.Remove(account);
             _mongo.SaveUser(user);

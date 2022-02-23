@@ -53,7 +53,7 @@ namespace HookHook.Backend.Services
 		public async Task<ServiceAccount?> AddAccount(Entities.User user, string code, string verifier)
         {
 			(UserResponse twitter, Tokens tokens) = await OAuth(code, verifier);
-			var id = twitter.Id.ToString();
+			var id = twitter.Id.ToString()!;
 
 			user.ServicesAccounts.TryAdd(Providers.Twitter, new());
 			if (user.ServicesAccounts[Providers.Twitter].Any(x => x.UserId == id))

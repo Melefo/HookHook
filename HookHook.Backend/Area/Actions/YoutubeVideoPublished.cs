@@ -29,7 +29,7 @@ namespace HookHook.Backend.Area
             _serviceAccountId = serviceAccountId;
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public Task<(string?, bool)> Check(User user)
         {
             var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == _serviceAccountId));
 
@@ -50,10 +50,10 @@ namespace HookHook.Backend.Area
 
                 // todo save
                 Videos.Add(video.Id);
-                return (video.Snippet.Title, true);
+                return Task.FromResult<(string?, bool)>((video.Snippet.Title, true));
             }
 
-            return (null, false);
+            return Task.FromResult<(string?, bool)>((null, false));
         }
 
 

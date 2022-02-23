@@ -49,7 +49,9 @@ namespace HookHook.Backend.Entities
 
         public async Task Launch(User user, MongoService _db)
         {
-            // ? pass area ID here so the action can modify it in the db
+            if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
+                return;
+            LastUpdate = DateTime.UtcNow.AddMinutes(MinutesBetween);
             (string? actionInfo, bool actionValue) = await Action.Check(user);
 
             if (!actionValue)

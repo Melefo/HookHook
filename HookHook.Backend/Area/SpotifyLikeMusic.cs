@@ -15,7 +15,7 @@ namespace HookHook.Backend.Area
         public string ArtistName {get; set;}
 
         [BsonIgnore]
-        private SpotifyClient _spotifyClient = null;
+        private SpotifyClient? _spotifyClient;
 
         public List<string> StoredLibrary { get; private init; } = new();
 
@@ -34,7 +34,7 @@ namespace HookHook.Backend.Area
 
             var tracks = await _spotifyClient.Library.GetTracks();
 
-            foreach (var item in tracks.Items) {
+            foreach (var item in tracks.Items!) {
                 if (StoredLibrary.Contains(item.Track.Id)) {
                     continue;
                 }
@@ -59,7 +59,7 @@ namespace HookHook.Backend.Area
 
             // todo gestion d'erreur
 
-            LibrarySaveTracksRequest saveTracks = new (new List<string>() {searchResults.Tracks.Items[0].Id});
+            LibrarySaveTracksRequest saveTracks = new (new List<string>() {searchResults.Tracks.Items![0].Id});
             await _spotifyClient.Library.SaveTracks(saveTracks);
         }
     }
