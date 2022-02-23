@@ -30,7 +30,7 @@ namespace HookHook.Backend.Actions
 
         public string _serviceAccountId {get; private init;}
 
-        public GithubIssueCreated(string user, string repository, string serviceAccountId, MongoService db)
+        public GithubIssueCreated(string user, string repository, string serviceAccountId, MongoService db, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;
@@ -38,12 +38,27 @@ namespace HookHook.Backend.Actions
             _serviceAccountId = serviceAccountId;
 
             _db = db;
+
+            // * get issues and store them
+            var currentRepositoryIssues = GetIssues(userEntity).GetAwaiter().GetResult();
+            foreach (var issue in currentRepositoryIssues) {
+                Console.WriteLine("Getting existing issues: " + issue.Id.ToString());
+                StoredIssues.Add(issue.Id);
+            }
+        }
+
+        private async Task<IReadOnlyList<Issue>> GetIssues(Entities.User user)
+        {
+            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
+
+            var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
+
+            return (issuesForRepository);
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            // todo peupler notre liste avec la data dans l'AREA id
-
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
 
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId).AccessToken);
