@@ -1,6 +1,5 @@
 ﻿using CoreTweet;
 using Discord.Rest;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Services;
 using HookHook.Backend.Utilities;

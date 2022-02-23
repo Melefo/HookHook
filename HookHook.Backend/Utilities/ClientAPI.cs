@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text.Json;
 
 namespace HookHook.Backend.Utilities
 {
@@ -23,7 +24,11 @@ namespace HookHook.Backend.Utilities
                 return default;
             if (response.StatusCode == HttpStatusCode.NoContent)
                 return default;
-            return await response.Content.ReadFromJsonAsync<T>();
+            Console.WriteLine(await response.Content.ReadAsStringAsync());
+            return await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions()
+            {
+                IncludeFields = true
+            });
         }
     }
 }
