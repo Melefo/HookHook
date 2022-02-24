@@ -17,7 +17,7 @@ namespace HookHook.Backend.Area.Actions
 
         public bool isLive { get; private set; }
 
-        public string ServiceAccountId { get; set; }
+        public string AccountId { get; set; }
         public string _clientId { get; private init; }
 
 
@@ -25,7 +25,7 @@ namespace HookHook.Backend.Area.Actions
         {
             UserName = user;
             isLive = false;
-            ServiceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
 
             _clientId = config["Twitch:ClientId"];
         }
@@ -33,7 +33,7 @@ namespace HookHook.Backend.Area.Actions
         public async Task<(string?, bool)> Check(Entities.User user)
         {
             _twitchClient = new TwitchAPI();
-            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken;
+            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken;
             _twitchClient.Settings.ClientId = _clientId;
 
             var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userIds: new List<string>(){ UserName });

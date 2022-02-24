@@ -24,15 +24,15 @@ namespace HookHook.Backend.Area
         public string _clientId { get; private init; }
         public string _clientSecret { get; private init;}
 
-        public string ServiceAccountId { get; set; }
+        public string AccountId { get; set; }
 
-        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string serviceAccountId, Entities.User userEntity)
+        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string serviceAccountId, User userEntity)
         {
             UserName = user;
             _clientId = config["Twitter:ClientId"];
             _clientSecret = config["Twitter:ClientSecret"];
             _config = config;
-            ServiceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
 
             // * save existing followings
             var existingFollowers = GetFollowers(userEntity).GetAwaiter().GetResult();
@@ -43,9 +43,9 @@ namespace HookHook.Backend.Area
             }
         }
 
-        private async Task<Cursored<CoreTweet.User>> GetFollowers(Entities.User user)
+        private async Task<Cursored<CoreTweet.User>> GetFollowers(User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!;
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);
@@ -72,7 +72,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user, string actionInfo)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == ServiceAccountId);
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var currentUser = await _twitterClient.Users.ShowAsync(_twitterClient.UserId);

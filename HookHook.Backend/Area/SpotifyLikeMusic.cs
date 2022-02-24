@@ -19,13 +19,13 @@ namespace HookHook.Backend.Area
 
         public List<string> StoredLibrary { get; private init; } = new();
 
-        public string ServiceAccountId;
+        public string AccountId { get; set; }
 
         public SpotifyLikeMusic(string songTitle, string artistName, string serviceAccountId, Entities.User userEntity)
         {
             SongTitle = songTitle;
             ArtistName = artistName;
-            ServiceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
 
             var likedSongs = GetLikedSongs(userEntity).GetAwaiter().GetResult();
 
@@ -36,7 +36,7 @@ namespace HookHook.Backend.Area
 
         private async Task<Paging<SavedTrack>> GetLikedSongs(Entities.User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             var tracks = await _spotifyClient.Library.GetTracks();
 
@@ -61,7 +61,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user, string actionInfo)
         {
-            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             // * search song
             // * add song to library

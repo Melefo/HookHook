@@ -18,18 +18,18 @@ namespace HookHook.Backend.Area
 
         public List<string> Videos { get; private init; } = new();
 
-        private string _serviceAccountId;
+        public string AccountId { get; set; }
 
         public YoutubeVideoPublished(string channel, GoogleService googleService, string serviceAccountId)
         {
             Channel = channel;
             _googleService = googleService;
-            _serviceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
         }
 
         public Task<(string?, bool)> Check(User user)
         {
-            var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!);
+            var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == AccountId)!);
 
             var channelsRequest = youtubeClient.Channels.List(Channel);
             channelsRequest.ForUsername = Channel;

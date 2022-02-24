@@ -37,14 +37,14 @@ namespace HookHook.Backend.Area.Actions
 
         public List<string> StoredCommitHashes { get; private init; } = new();
 
-        public string ServiceAccountId { get; set; }
+        public string AccountId { get; set; }
 
         public GithubNewCommit(string user, string repository, string serviceAccountId, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            ServiceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
 
             // * get commits and store them
             var currentRepositoryCommits = GetCommits(userEntity).GetAwaiter().GetResult();
@@ -59,7 +59,7 @@ namespace HookHook.Backend.Area.Actions
         private async Task<IReadOnlyList<GitHubCommit>> GetCommits(Entities.User user)
         {
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             // * ça marche peut etre uniquement sur master?
             var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);

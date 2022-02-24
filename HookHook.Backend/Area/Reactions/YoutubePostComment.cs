@@ -16,7 +16,7 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         private GoogleService _googleService;
 
-        private string _serviceAccountId;
+        public string AccountId { get; set; }
 
         // * faudrait prendre le channelName aussi pour être sûr
         // * ou le lien plutôt... et à la limite on parse l'id dessus
@@ -25,12 +25,12 @@ namespace HookHook.Backend.Reactions
             VideoName = videoName;
             Comment = comment;
             _googleService = googleService;
-            _serviceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
         }
 
         public Task Execute(User user, string actionInfo)
         {
-            var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!);
+            var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == AccountId)!);
 
             var searchRequest = youtubeClient.Search.List(VideoName);
             var search = searchRequest.Execute();

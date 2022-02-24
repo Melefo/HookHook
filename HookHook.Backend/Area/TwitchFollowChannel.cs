@@ -18,12 +18,12 @@ namespace HookHook.Backend.Area
 
         public List<string> FollowedUsers { get; private init; } = new();
 
-        public string ServiceAccountId { get; set; }
+        public string AccountId { get; set; }
 
-        public TwitchFollowChannel(string user, string serviceAccountId, Entities.User userEntity)
+        public TwitchFollowChannel(string user, string serviceAccountId, User userEntity)
         {
             UserName = user;
-            ServiceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
 
             var follows = GetUserFollows(userEntity).GetAwaiter().GetResult();
 
@@ -32,10 +32,10 @@ namespace HookHook.Backend.Area
             }
         }
 
-        public async Task<TwitchLib.Api.Helix.Models.Users.GetUserFollows.GetUsersFollowsResponse> GetUserFollows(Entities.User user)
+        public async Task<TwitchLib.Api.Helix.Models.Users.GetUserFollows.GetUsersFollowsResponse> GetUserFollows(User user)
         {
             _twitchClient = new();
-            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!;
+            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == AccountId)!;
             _twitchClient.Settings.AccessToken = oauth.AccessToken;
 
             var userToCheck = await _twitchClient.Helix.Users.GetUsersAsync(logins: new List<string>() { UserName }, accessToken: oauth.AccessToken);
@@ -64,9 +64,9 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user, string actionInfo)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == ServiceAccountId);
+            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == AccountId);
 
-            _twitchClient.Settings.AccessToken = oauth.AccessToken;
+            _twitchClient.Settings.AccessToken = oauth!.AccessToken;
 
             // * search for user
             // * follow user

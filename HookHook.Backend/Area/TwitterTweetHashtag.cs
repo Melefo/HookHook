@@ -26,7 +26,7 @@ namespace HookHook.Backend.Area
         public string _clientId { get; private init; }
         public string _clientSecret { get; private init;}
 
-        public string _serviceAccountId;
+        public string AccountId { get; set; }
 
         public TwitterTweetHashtag(string hashtag, IConfiguration config, string serviceAccountId, string tweetContent = "")
         {
@@ -35,12 +35,12 @@ namespace HookHook.Backend.Area
             _clientId = config["Twitter:ClientId"];
             _clientSecret = config["Twitter:ClientSecret"];
             _config = config;
-            _serviceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
 
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
@@ -62,7 +62,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user, string actionInfo)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
 
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 

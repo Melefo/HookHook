@@ -13,14 +13,17 @@ namespace HookHook.Backend.Area.Reactions
         public string Url { get; private init; }
         public string Message { get; private init; }
 
+        public string AccountId { get; set; }
+
         [BsonIgnore]
         private DiscordWebhookClient _client;
 
-        public DiscordWebhook(string url, string message)
+        public DiscordWebhook(string url, string message, string accountId)
         {
             Url = url;
             Message = message;
             _client = new DiscordWebhookClient(Url);
+            AccountId = accountId;
         }
 
         public async Task Execute(User user, string actionInfo) =>

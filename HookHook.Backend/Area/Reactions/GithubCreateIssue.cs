@@ -22,7 +22,7 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         public GitHubClient _githubClient;
 
-        public string _serviceAccountId { get; set; }
+        public string AccountId { get; set; }
 
         public GithubCreateIssue(string user, string repository, string title, string body, string serviceAccountId)
         {
@@ -30,16 +30,16 @@ namespace HookHook.Backend.Reactions
             Repository = repository;
             Title = title;
             Body = body;
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
-            _serviceAccountId = serviceAccountId;
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+            AccountId = serviceAccountId;
         }
 
         public async Task Execute(Entities.User user, string actionInfo)
         {
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
 
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             var createIssue = new NewIssue(Title);
             createIssue.Body = Body;

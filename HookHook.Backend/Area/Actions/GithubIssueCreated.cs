@@ -23,14 +23,14 @@ namespace HookHook.Backend.Actions
 
         public List<int> StoredIssues { get; private init; } = new();
 
-        public string ServiceAccountId { get; private init; }
+        public string AccountId { get; set; }
 
         public GithubIssueCreated(string user, string repository, string serviceAccountId, MongoService db, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            ServiceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
 
             _db = db;
 
@@ -44,7 +44,7 @@ namespace HookHook.Backend.Actions
         private async Task<IReadOnlyList<Issue>> GetIssues(Entities.User user)
         {
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
 

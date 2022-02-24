@@ -43,7 +43,7 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId));
             actionTypes.Add("YoutubeVideoPublished", (string[] args, string accountId, User user) => new YoutubeVideoPublished(args[0], googleService, accountId));
 
-            reactionTypes.Add("DiscordWebhook", (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1]));
+            reactionTypes.Add("DiscordWebhook", (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], accountId));
             reactionTypes.Add("GithubCreateRepository", (string[] args, string accountId, User user) => new GithubCreateRepository(args[0], args[1], accountId));
             reactionTypes.Add("GithubCreateIssue", (string[] args, string accountId, User user) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId));
             reactionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId, user));

@@ -20,12 +20,12 @@ namespace HookHook.Backend.Actions
 
         public List<long> StoredRepositories { get; private init; } = new();
 
-        public string ServiceAccountId { get; set; }
+        public string AccountId { get; set; }
 
         public GithubNewRepository(string user, string serviceAccountId, Entities.User userEntity)
         {
             UserName = user;
-            ServiceAccountId = serviceAccountId;
+            AccountId = serviceAccountId;
 
             // * get repos and store them
             var currentRepositories = GetRepositories(userEntity).GetAwaiter().GetResult();
@@ -40,7 +40,7 @@ namespace HookHook.Backend.Actions
         {
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
 
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);
 
