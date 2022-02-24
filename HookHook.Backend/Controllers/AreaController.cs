@@ -36,7 +36,7 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId, user));
             actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId, user));
             actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId, user, config));
-            actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId));
+            actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId, user));
             actionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId, user));
             actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId));
             actionTypes.Add("YoutubeVideoPublished", (string[] args, string accountId, User user) => new YoutubeVideoPublished(args[0], googleService, accountId));
@@ -46,7 +46,7 @@ namespace HookHook.Backend.Controllers
             reactionTypes.Add("GithubCreateIssue", (string[] args, string accountId, User user) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId));
             reactionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId, user));
             reactionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId, user));
-            reactionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId));
+            reactionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId, user));
             reactionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId, user));
             reactionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId, args[1]));
             reactionTypes.Add("YoutubePostComment", (string[] args, string accountId, User user) => new YoutubePostComment(args[0], args[1], googleService, accountId));
