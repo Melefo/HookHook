@@ -2,6 +2,6 @@
 {
     public interface IReaction
     {
-        public Task Execute(User user);
+        public Task Execute(User user, string actionInfo);
     }
 }

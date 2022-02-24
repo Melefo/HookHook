@@ -62,7 +62,7 @@ namespace HookHook.Backend.Area
             return (null, false);
         }
 
-        public async Task Execute(User user)
+        public async Task Execute(User user, string actionInfo)
         {
             _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
 

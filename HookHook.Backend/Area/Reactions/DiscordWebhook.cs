@@ -23,7 +23,7 @@ namespace HookHook.Backend.Area.Reactions
             _client = new DiscordWebhookClient(Url);
         }
 
-        public async Task Execute(User user) =>
+        public async Task Execute(User user, string actionInfo) =>
             await _client.SendMessageAsync(Message);
     }
 }

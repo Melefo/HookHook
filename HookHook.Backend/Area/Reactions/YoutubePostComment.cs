@@ -28,7 +28,7 @@ namespace HookHook.Backend.Reactions
             _serviceAccountId = serviceAccountId;
         }
 
-        public Task Execute(User user)
+        public Task Execute(User user, string actionInfo)
         {
             var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!);
 

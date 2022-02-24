@@ -58,7 +58,7 @@ namespace HookHook.Backend.Entities
                 return;
 
             foreach (var reaction in Reactions)
-                await reaction.Execute(user);
+                await reaction.Execute(user, actionInfo ?? "");
             _db.SaveUser(user);
         }
     }

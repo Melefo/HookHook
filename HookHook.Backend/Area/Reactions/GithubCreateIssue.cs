@@ -34,7 +34,7 @@ namespace HookHook.Backend.Reactions
             _serviceAccountId = serviceAccountId;
         }
 
-        public async Task Execute(Entities.User user)
+        public async Task Execute(Entities.User user, string actionInfo)
         {
             // * https://octokitnet.readthedocs.io/en/latest/getting-started/
             _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));

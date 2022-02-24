@@ -60,13 +60,13 @@ namespace HookHook.Backend.Area
             return (null, false);
         }
 
-        public async Task Execute(User user)
+        public async Task Execute(User user, string actionInfo)
         {
             var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
 
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
-            await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{Hashtag}");
+            await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{Hashtag}\n{actionInfo}");
         }
     }
 }
