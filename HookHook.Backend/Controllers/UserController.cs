@@ -17,9 +17,15 @@ namespace HookHook.Backend.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _service;
+        private readonly MongoService _db;
+        private readonly AreaService _area;
 
-        public UserController(UserService service) =>
+        public UserController(UserService service, MongoService db, AreaService area)
+        {
             _service = service;
+            _db = db;
+            _area = area;
+        }
 
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -50,6 +56,19 @@ namespace HookHook.Backend.Controllers
         {
             _service.Promote(id);
             return Accepted();
+        }
+
+        [HttpGet("trigger/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> TriggerUserAreas(string id)
+        {
+            var user = _db.GetUser(id);
+            if (user == null)
+                return BadRequest();
+
+            await _area.ExecuteUser(user);
+            return Ok();
         }
     }
 }

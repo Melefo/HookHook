@@ -18,9 +18,6 @@ const service = {
     },
     actions: {
         async getAccounts({ commit, state }: any, provider: any) {
-            if (state.accounts[provider] !== undefined) {
-                return {};
-            }
             const res = await fetch('/api/service/' + provider, {
                 method: 'GET',
                 headers: authHeader()

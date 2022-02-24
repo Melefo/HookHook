@@ -10,9 +10,6 @@ const about = {
     },
     actions: {
         async get({ commit, state }: any) {
-            if (state.info !== null) {
-                return {};
-            }
             const res = await fetch("/api/about.json", {
                 method: 'GET'
             })

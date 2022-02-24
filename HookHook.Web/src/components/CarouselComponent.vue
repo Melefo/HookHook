@@ -16,13 +16,13 @@
       <div>
         <div>{{ formatDate(slide.date * 1000) }}</div>
         <div class="flex flex-row justify-end">
-          <button>
+          <button @click.prevent="async () => await trigger(slide.id)">
             <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
           </button>
           <button>
             <PencilIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
           </button>
-          <button @click.prevent="async() => await deleteArea(slide.id, key)" >
+          <button @click.prevent="async () => await deleteArea(slide.id, key)" >
             <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
           </button>
         </div>
@@ -51,7 +51,7 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions("area", ["get", "delete"]),
+    ...mapActions("area", ["get", "delete", "trigger"]),
     formatDate(time: number) {
       return dayjs(time).format("D MMMM YYYY HH:mm");
     },

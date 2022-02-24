@@ -19,7 +19,7 @@
   import DialogComponent from "@/components/DialogComponent.vue";
   import { mapActions } from "vuex";
   import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
-  import GithubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+  import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
   import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
   import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
   import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
@@ -28,7 +28,7 @@
 
   export default defineComponent ({
     name: 'OAuthButtonsComponent',
-    components: { DialogComponent, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth, XIcon },
+    components: { DialogComponent, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth, XIcon },
     props: ['text', 'bgColor', 'src'],
     methods: {
       ...mapActions("about", ["get"]),
@@ -66,10 +66,10 @@
       }
     },
     created: async function() {
-      await this.get();
+      this.get();
       const services = this.$store.state.about.info?.server?.services || [];
       this.services = await Promise.all(services.map(async (s: any) => {
-        await this.getAccounts(s.name);
+        this.getAccounts(s.name);
 
         return {...s, accounts: this.accounts[s.name] };
       }));

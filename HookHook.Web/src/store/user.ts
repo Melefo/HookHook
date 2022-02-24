@@ -37,6 +37,12 @@ const user = {
                 method: "PATCH",
                 headers: authHeader()
             })
+        },
+        trigger(_: any, id: string) {
+            fetch("/api/user/trigger/" + id, {
+                method: "GET",
+                headers: authHeader()
+            })
         }
     },
     getters: {

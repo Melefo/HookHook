@@ -12,13 +12,13 @@ const area = {
         },
         getAreas(state: any, areas: any) {
             state.areas = areas;
+        },
+        addArea(state: any, area: any) {
+            state.areas.push(area);
         }
     },
     actions: {
         async getServices({ commit, state }: any) {
-            if (state.services.length > 0) {
-                return;
-            }
             const res = await fetch("/api/area/getservices", {
                 method: 'GET',
                 headers: authHeader()
@@ -37,7 +37,7 @@ const area = {
             }
             return {};
         },
-        async createAreaRequest(_: any, json: any) {
+        async createAreaRequest({ commit }: any, json: any) {
             const res = await fetch("/api/area/create", {
                 method: 'POST',
                 headers: {
@@ -53,8 +53,11 @@ const area = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                const { error, errors } = await res.json();
-                return { error, errors };
+                const json = await res.json();
+
+                if (json.error !== undefined || json.erors !== undefined)
+                    return json;
+                commit('addArea', json);
             }
             return {};
         },
@@ -79,6 +82,20 @@ const area = {
         async delete(_: any, id: string) {
             const res = await fetch("/api/area/delete/" + id, {
                 method: 'DELETE',
+                headers: authHeader()
+            });
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                return await res.json();
+            }
+            return {};
+        },
+        async trigger(_: any, id: string) {
+            const res = await fetch("/api/area/trigger/" + id, {
+                method: 'GET',
                 headers: authHeader()
             });
             if (res.status === 500) {

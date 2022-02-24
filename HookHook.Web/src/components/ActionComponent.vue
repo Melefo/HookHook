@@ -101,7 +101,7 @@ export default defineComponent({
     };
   },
   created: async function () {
-    await this.get();
+    this.get();
   },
 });
 </script>

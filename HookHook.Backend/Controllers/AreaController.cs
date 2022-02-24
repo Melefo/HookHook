@@ -20,14 +20,16 @@ namespace HookHook.Backend.Controllers
     [Authorize]
     public class AreaController : ControllerBase
     {
-        public MongoService _db;
+        private readonly MongoService _db;
+        private readonly AreaService _area;
 
         public Dictionary<string, Func<string[], string, User, IAction>> actionTypes = new();
         public Dictionary<string, Func<string[], string, User, IReaction>> reactionTypes = new();
 
-        public AreaController(MongoService db, TwitterService twitterService, GoogleService googleService, IConfiguration config)
+        public AreaController(MongoService db, TwitterService twitterService, GoogleService googleService, AreaService area, IConfiguration config)
         {
             _db = db;
+            _area = area;
 
             actionTypes.Add("DiscordPinned", (string[] args, string accountId, User user) => new DiscordPinned(args[0], args[1], accountId));
             actionTypes.Add("GithubIssueCreated", (string[] args, string accountId, User user) => new GithubIssueCreated(args[0], args[1], accountId, _db, user));
@@ -124,7 +126,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult CreateArea([FromBody] AreaModel area)
+        public ActionResult<UserArea> CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
@@ -135,7 +137,8 @@ namespace HookHook.Backend.Controllers
             user.Areas.Add(areaEntity);
             _db.SaveUser(user);
 
-            return Ok(areaEntity);
+            UserArea userArea = new(areaEntity.Id, areaEntity.Name, areaEntity.Action.GetProvider(), areaEntity.Reactions.Select(x => x.GetProvider()).ToArray(), areaEntity.LastUpdate);
+            return Ok(userArea);
         }
 
         // * modify -> add/remove reactions/action, so a new area ??
@@ -182,22 +185,20 @@ namespace HookHook.Backend.Controllers
         }
 
         // * trigger all areas
-        [HttpGet("Trigger/{id}")]
+        [HttpGet("trigger/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> TriggerUserAreas(string id)
         {
-            var user = _db.GetUser(id);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
-
-            foreach (var area in user.Areas)
-                await area.Launch(user, _db);
-            _db.SaveUser(user);
+            if (!await _area.ExecuteUserArea(user, id))
+                return BadRequest();
             return Ok();
         }
 
-        public class Test
+        public class UserArea
         {
             public string Id { get; set; }
             public string Name { get; set; }
@@ -205,7 +206,7 @@ namespace HookHook.Backend.Controllers
             public Providers[] To { get; set; }
             public long Date { get; set; }
 
-            public Test(string id, string name, Providers from, Providers[] to, DateTime date)
+            public UserArea(string id, string name, Providers from, Providers[] to, DateTime date)
             {
                 Id = id;
                 Name = name;
@@ -215,17 +216,16 @@ namespace HookHook.Backend.Controllers
             }
         }
 
-        // * get all the areas
-        [HttpGet("All")]
+        [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<List<Test>> GetAllUserAreas()
+        public ActionResult<List<UserArea>> GetAllUserAreas()
         {
             var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
 
-            List<Test> list = new();
+            List<UserArea> list = new();
             foreach (var area in user.Areas)
                 list.Add(new(area.Id, area.Name, area.Action.GetProvider(), area.Reactions.Select(x => x.GetProvider()).ToArray(), area.LastUpdate));
 

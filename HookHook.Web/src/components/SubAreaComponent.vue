@@ -185,7 +185,7 @@ export default defineComponent({
         }
       }
       this.selectedPerson = null;
-      await this.getAccounts(newAction.name);
+      this.getAccounts(newAction.name);
       this.people = this.accounts[newAction.name];
       this.seelctedService = newAction;
     },

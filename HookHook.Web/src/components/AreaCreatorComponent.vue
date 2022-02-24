@@ -202,7 +202,7 @@ export default defineComponent({
   },
   setup() {},
   created: async function () {
-    await this.getServices();
+    this.getServices();
   },
 });
 </script>
