@@ -140,7 +140,7 @@ namespace HookHook.Backend.Services
             {
                 Subject = new(claims),
 
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddDays(1),
 
                 SigningCredentials = new(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256)
             };

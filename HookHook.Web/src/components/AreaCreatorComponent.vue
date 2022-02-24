@@ -155,11 +155,11 @@ export default defineComponent({
         this.minutes = 1440;
       }
     },
-    updateAction({ type, params }: any) {
-      this.action = { type: type, arguments: [...params] };
+    updateAction({ type, params, accountId }: any) {
+      this.action = { type: type, arguments: [...params], accountId };
     },
-    updateReaction({ type, params, index }: any) {
-      this.reactions[index] = { type: type, arguments: [...params] };
+    updateReaction({ type, params, index, accountId }: any) {
+      this.reactions[index] = { type: type, arguments: [...params], accountId };
     },
     async createArea() {
       // todo call the store, check for errors
@@ -167,6 +167,7 @@ export default defineComponent({
         action: this.action,
         reactions: this.reactions,
         minutes: this.minutes,
+        name: this.name
       });
       this.error = error || null;
     },
@@ -184,10 +185,14 @@ export default defineComponent({
       return false;
     },
   },
-  computed: {},
+  computed: {
+    serviceDetails() {
+      const that: any = this;
+      return that.$store.state.area.services;
+    }
+  },
   data: function () {
     return {
-      serviceDetails: [] as any[],
       action: null as any,
       reactions: [null] as any[],
       error: null as any,
@@ -197,9 +202,7 @@ export default defineComponent({
   },
   setup() {},
   created: async function () {
-    // * fetch the services with the service arguments
-    const serviceDetails = await this.getServices();
-    this.serviceDetails = serviceDetails;
+    this.getServices();
   },
 });
 </script>

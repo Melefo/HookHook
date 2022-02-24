@@ -32,14 +32,14 @@ namespace HookHook.Backend.Services
         [JsonPropertyName("id_token")]
         public string IdToken { get; set; }
 
-        public GoogleAuth(string access, string refresh, int expires, string scope, string type, string id)
+        public GoogleAuth(string accessToken, string refreshToken, int expiresIn, string scope, string tokenType, string idToken)
         {
-            AccessToken = access;
-            RefreshToken = refresh;
-            ExpiresIn = expires;
+            AccessToken = accessToken;
+            RefreshToken = refreshToken;
+            ExpiresIn = expiresIn;
             Scope = scope;
-            TokenType = type;
-            IdToken = id;
+            TokenType = tokenType;
+            IdToken = idToken;
         }
     }
 

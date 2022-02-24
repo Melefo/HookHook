@@ -32,6 +32,9 @@ export default defineComponent({
 
       var scopes = [
         "channel:read:subscriptions",
+        "channel:manage:broadcast",
+        "user:read:broadcast",
+        "user:read:subscriptions",
         "user:edit",
         "user:read:email",
         "user:read:follows"
@@ -70,9 +73,6 @@ export default defineComponent({
         if (!this.error && !this.errors) {
           this.$router.push("/dashboard");
         }
-      }
-      else {
-        this.$emit('addAccount', info);
       }
     },
   },

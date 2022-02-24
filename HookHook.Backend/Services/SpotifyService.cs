@@ -66,7 +66,6 @@ namespace HookHook.Backend.Services
 
 			account.AccessToken = res.AccessToken;
 			account.ExpiresIn = DateTime.UtcNow.Add(TimeSpan.FromSeconds(res.ExpiresIn));
-			account.RefreshToken = res.RefreshToken;
 		}
 	}
 }

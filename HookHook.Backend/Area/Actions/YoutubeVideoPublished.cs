@@ -1,4 +1,3 @@
-using CoreTweet;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
@@ -8,7 +7,7 @@ using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
-    [Service("google", "Video is published")]
+    [Service(Providers.Google, "Video is published")]
     [BsonIgnoreExtraElements]
     public class YoutubeVideoPublished: IAction
     {
@@ -19,15 +18,18 @@ namespace HookHook.Backend.Area
 
         public List<string> Videos { get; private init; } = new();
 
-        public YoutubeVideoPublished(string channel, GoogleService googleService)
+        public string AccountId { get; set; }
+
+        public YoutubeVideoPublished(string channel, GoogleService googleService, string accountId)
         {
             Channel = channel;
             _googleService = googleService;
+            AccountId = accountId;
         }
 
         public Task<(string?, bool)> Check(User user)
         {
-            var youtubeClient = _googleService.CreateYouTube(user.OAuthAccounts[Providers.Google]);
+            var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == AccountId)!);
 
             var channelsRequest = youtubeClient.Channels.List(Channel);
             channelsRequest.ForUsername = Channel;

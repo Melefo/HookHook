@@ -25,13 +25,13 @@ namespace HookHook.Backend.Services
         [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
 
-        public TwitchToken(string access, int expires, string refresh, string[] scope, string type)
+        public TwitchToken(string accessToken, int expiresIn, string refreshToken, string[] scope, string tokenType)
         {
-            AccessToken = access;
-            ExpiresIn = expires;
-            RefreshToken = refresh;
+            AccessToken = accessToken;
+            ExpiresIn = expiresIn;
+            RefreshToken = refreshToken;
             Scope = scope;
-            TokenType = type;
+            TokenType = tokenType;
         }
     }
 

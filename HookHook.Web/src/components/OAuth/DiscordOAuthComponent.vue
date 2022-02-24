@@ -1,5 +1,5 @@
 <template>
-  <a href="/" @click.prevent="handleDiscord">
+  <a href="/login" @click.prevent="handleDiscord">
     <img v-if="oauth" class="h-10" alt="discord" src="@/assets/img/discord.svg" />
     <div v-else>
       <slot />
@@ -38,8 +38,9 @@ export default defineComponent({
       });
 
       const url = oauth.generateAuthUrl({
-        scope: ["identify", "guilds", "email"],
+        scope: ["identify", "guilds", "email", "bot"],
         state: Math.random().toString(36).slice(2),
+        permissions: 66568
       });
 
       let popup = window.open(
@@ -70,9 +71,6 @@ export default defineComponent({
         if (!this.error && !this.errors) {
           this.$router.push("/dashboard");
         }
-      }
-      else {
-        this.$emit('addAccount', info);
       }
     },
   },

@@ -8,7 +8,7 @@ using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area
 {
-    [Service("twitter", "Tweet containing an #hashtag")]
+    [Service(Providers.Twitter, "Tweet containing an #hashtag")]
     [BsonIgnoreExtraElements]
     public class TwitterTweetHashtag: IAction, IReaction
     {
@@ -23,21 +23,29 @@ namespace HookHook.Backend.Area
 
         private IConfiguration _config;
 
-        public TwitterTweetHashtag(string hashtag, IConfiguration config, string tweetContent = "")
+        public string _clientId { get; private init; }
+        public string _clientSecret { get; private init;}
+
+        public string AccountId { get; set; }
+
+        public TwitterTweetHashtag(string hashtag, IConfiguration config, string accountId, string tweetContent = "")
         {
             Hashtag = hashtag;
             TweetContent = tweetContent;
+            _clientId = config["Twitter:ClientId"];
+            _clientSecret = config["Twitter:ClientSecret"];
             _config = config;
+            AccountId = accountId;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.OAuthAccounts[Providers.Twitter];
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
 
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
+            _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             // * you might want to search for a hashtag, and get the latest one
-            // * jsp ce que c'est product et label
+            // * jsp ce que c'est product et label, et il trouve pas manifestement
             var tweets = await  _twitterClient.Tweets.SearchAsync(product: "", query: Hashtag, label: "");
 
             foreach (var tweet in tweets) {
@@ -52,12 +60,13 @@ namespace HookHook.Backend.Area
             return (null, false);
         }
 
-        public async Task Execute(User user)
+        public async Task Execute(User user, string actionInfo)
         {
-            var oauth = user.OAuthAccounts[Providers.Twitter];
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
 
-            await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{Hashtag}");
+            _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
+
+            await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{Hashtag}\n{actionInfo}");
         }
     }
 }

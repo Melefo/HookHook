@@ -127,6 +127,7 @@
             type: currentService.name,
             params: paramsToSend,
             index: reactionIndex,
+            accountId: selectedPerson.userId
           })
         "
       />
@@ -158,7 +159,6 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("service", ["getAccounts"]),
-    ...mapActions("area", ["getServices"]),
     async changeOptions(newAction: any) {
       this.currentParameters = [];
       this.paramsToSend = [];
@@ -172,11 +172,12 @@ export default defineComponent({
 
         // * find the service in the service details
         const actionDetail = this.serviceDetails.find(
-          (x: any) => x["className"] === action.name
+          (x: any) => {
+              return (x.className === action.name && x.areaType.toLowerCase() === this.areaType.toLowerCase());
+          }
         );
 
         // * if the types are the same, add to possibles
-
         if (
           this.areaType.toLowerCase() === actionDetail.areaType.toLowerCase()
         ) {
@@ -184,7 +185,8 @@ export default defineComponent({
         }
       }
       this.selectedPerson = null;
-      this.people = await this.getAccounts(newAction.name);
+      this.getAccounts(newAction.name);
+      this.people = this.accounts[newAction.name];
       this.seelctedService = newAction;
     },
     serviceSelected(service: any) {
@@ -202,17 +204,21 @@ export default defineComponent({
         type: service.name,
         params: this.paramsToSend,
         index: this.reactionIndex,
+        accountId: this.selectedPerson.userId
       });
     },
   },
-  computed: {},
+  computed: {
+    accounts(): any {
+      return this.$store.state.service.accounts;
+    }
+  },
   data: function () {
     return {
       possibleServices: [] as string[],
       currentParameters: [] as string[],
       paramsToSend: [] as string[],
       currentService: null as any|null,
-      accounts: [] as any[],
       people: [],
       selectedPerson: null as any|null,
       seelctedService: null as any|null

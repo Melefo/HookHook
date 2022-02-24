@@ -45,7 +45,7 @@ import { ShieldCheckIcon, ShieldExclamationIcon, TrashIcon, RefreshIcon } from "
 export default defineComponent({
     components: { ShieldCheckIcon, ShieldExclamationIcon, TrashIcon, RefreshIcon },
     methods: {
-        ...mapActions("user", ["all", "del", "promote"]),
+        ...mapActions("user", ["all", "del", "promote", "trigger"]),
         promoteUser(_: any, id: string, key: number) {
             this.promote(id);
             this.users[key].role = this.users[key].role === "Admin" ? "User": "Admin";
@@ -54,8 +54,8 @@ export default defineComponent({
             this.del(id);
             this.users.splice(key, 1);
         },
-        refreshUser(id: string) {
-            console.log(id);
+        async refreshUser(id: string) {
+            await this.trigger(id);
         }
     },
     data: function() {

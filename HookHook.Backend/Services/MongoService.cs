@@ -2,11 +2,8 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Utilities;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using System.Linq.Expressions;
 
 namespace HookHook.Backend.Services
 {
@@ -35,6 +32,32 @@ namespace HookHook.Backend.Services
         /// <param name="config">Host configuration</param>
         public MongoService(IConfiguration config)
         {
+            // var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
+
+            // foreach (var service in services)
+            // {
+            //     Type serviceType = service.GetType();
+            //     TODO BsonClassMap.RegisterClassMap<serviceType>(cm => cm.AutoMap());
+            // }
+
+            // * solution temporaire, j'ai cherché je trouve pas comment convertir un type var à un type générique
+            BsonClassMap.RegisterClassMap<Reactions.GithubCreateIssue>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Actions.GithubIssueCreated>(cm => {
+                cm.AutoMap();
+            });
+            BsonClassMap.RegisterClassMap<Actions.GithubNewRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Reactions.GithubCreateRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.GithubNewCommit>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Reactions.DiscordWebhook>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitterTweetHashtag>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.TwitchLiveStarted>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitterFollowUser>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.SpotifyLikeAlbum>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.SpotifyLikeMusic>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitchFollowChannel>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.DiscordPinned>(cm => cm.AutoMap());
+
+
             BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));
             _client = new MongoClient(config["Mongo:Client"]);
             _db = _client.GetDatabase(config["Mongo:Database"]);
@@ -72,7 +95,7 @@ namespace HookHook.Backend.Services
         /// Create and insert user inside database
         /// </summary>
         /// <param name="u">User accoutn</param>
-        public void CreateUser(User u) => 
+        public void CreateUser(User u) =>
             _usersCollection.InsertOne(u);
 
         /// <summary>

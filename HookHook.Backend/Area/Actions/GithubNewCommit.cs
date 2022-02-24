@@ -1,10 +1,8 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using Octokit;
 using MongoDB.Bson.Serialization.Attributes;
 using HookHook.Backend.Attributes;
-using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Area.Actions
 {
@@ -27,7 +25,7 @@ namespace HookHook.Backend.Area.Actions
         public CommitObject ?Commit {get; set;}
     }
 
-    [Service("github", "new commit is done")]
+    [Service(Providers.GitHub, "new commit is done")]
     [BsonIgnoreExtraElements]
     public class GithubNewCommit : IAction
     {
@@ -36,27 +34,44 @@ namespace HookHook.Backend.Area.Actions
 
         [BsonIgnore]
         public GitHubClient _githubClient;
-        [BsonIgnore]
-        private readonly HttpClient _httpClient = new();
 
         public List<string> StoredCommitHashes { get; private init; } = new();
 
-        public GithubNewCommit(string user, string repository)
+        public string AccountId { get; set; }
+
+        public GithubNewCommit(string user, string repository, string accountId, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+            AccountId = accountId;
+
+            // * get commits and store them
+            var currentRepositoryCommits = GetCommits(userEntity).GetAwaiter().GetResult();
+            foreach (var commit in currentRepositoryCommits) {
+                var sha = commit.Commit!.Sha!;
+
+                Console.WriteLine("Getting existing commits: " + sha);
+                StoredCommitHashes.Add(sha);
+            }
+        }
+
+        private async Task<IReadOnlyList<GitHubCommit>> GetCommits(Entities.User user)
+        {
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
+
+            // * ça marche peut etre uniquement sur master?
+            var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);
+
+            return (commits);
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"token {user.OAuthAccounts[Providers.GitHub].AccessToken}");
+            var commits = await GetCommits(user);
 
-            CommitJson[] ?response = await _httpClient.GetAsync<CommitJson[]>($"https://api.github.com/repos/{UserName}/{Repository}/commits");
-            if (response == null)
-                throw new Exceptions.ApiException("Failed to call API");
-
-            foreach (var commit in response)
+            foreach (var commit in commits)
             {
                 var sha = commit.Commit!.Sha!;
                 if (StoredCommitHashes.Contains(sha))

@@ -1,17 +1,13 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Models.Github;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
-using System.Net.Http.Headers;
-using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace HookHook.Backend.Reactions
 {
     [BsonIgnoreExtraElements]
-    [Service("google", "post a comment")]
+    [Service(Providers.Google, "post a comment")]
     public class YoutubePostComment : IReaction
     {
         public string VideoName {get; private init;}
@@ -20,17 +16,21 @@ namespace HookHook.Backend.Reactions
         [BsonIgnore]
         private GoogleService _googleService;
 
+        public string AccountId { get; set; }
+
         // * faudrait prendre le channelName aussi pour être sûr
-        public YoutubePostComment(string videoName, string comment, GoogleService googleService)
+        // * ou le lien plutôt... et à la limite on parse l'id dessus
+        public YoutubePostComment(string videoName, string comment, GoogleService googleService, string accountId)
         {
             VideoName = videoName;
             Comment = comment;
             _googleService = googleService;
+            AccountId = accountId;
         }
 
-        public Task Execute(Entities.User user)
+        public Task Execute(User user, string actionInfo)
         {
-            var youtubeClient = _googleService.CreateYouTube(user.OAuthAccounts[Providers.Google]);
+            var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == AccountId)!);
 
             var searchRequest = youtubeClient.Search.List(VideoName);
             var search = searchRequest.Execute();

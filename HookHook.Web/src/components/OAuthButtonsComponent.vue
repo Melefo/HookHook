@@ -1,13 +1,13 @@
 <template>
   <div class="text-black justify-start">
-    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name + '.svg'" :bgColor="color(item.name)">
-      <div v-for="(account, keyy) in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
+    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name.toLowerCase() + '.svg'" :bgColor="color(item.name)">
+      <div v-for="(account, keyy) in accounts[item.name]" :key="account.userId" class="flex justify-between items-center mx-16">
         <p>{{ account.username }}</p>
-        <button @click.prevent="async () => await deleteService(item.name, account.userId, key, keyy)">
+        <button @click.prevent="async () => await deleteService(item.name, account.userId, keyy)">
           <XIcon class="h-8" />
         </button>
       </div>
-      <component :is="item.name + 'Oauth'" :oauth="false" @addAccount="handleAdd($event, key)">
+      <component :is="item.name + 'Oauth'" :oauth="false">
         ADD
       </component>
     </DialogComponent>
@@ -19,7 +19,7 @@
   import DialogComponent from "@/components/DialogComponent.vue";
   import { mapActions } from "vuex";
   import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
-  import GithubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+  import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
   import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
   import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
   import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
@@ -28,22 +28,16 @@
 
   export default defineComponent ({
     name: 'OAuthButtonsComponent',
-    components: { DialogComponent, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth, XIcon },
+    components: { DialogComponent, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth, XIcon },
     props: ['text', 'bgColor', 'src'],
     methods: {
       ...mapActions("about", ["get"]),
       ...mapActions("service", ["getAccounts", "deleteAccount"]),
-      handleAdd(e: any, key: number) {
-        if (e.userId === undefined || e.username === undefined) {
-          return;
-        }
-        this.services[key].accounts.push(e);
-      },
-      async deleteService(provider: String, id: String, serviceKey: number, accountKey: number) {
-        await this.deleteAccount({provider: provider, id: id});
-        this.services[serviceKey].accounts.splice(accountKey, 1);
+      async deleteService(provider: String, id: String, accountKey: number) {
+        await this.deleteAccount({provider: provider, id: id, key: accountKey});
       },
       color(name: string) {
+        name = name.toLowerCase();
         switch (name) {
           case 'twitter':
             return "#A3E7EE";
@@ -61,18 +55,20 @@
         }
       }
     },
-    data: function() {
-      return {
-        services: [] as any[],
+    computed: {
+      accounts(): any {
+        return this.$store.state.service.accounts;
+      },
+      services(): any {
+        return this.$store.state.about.info?.server?.services || []
       }
     },
     created: async function() {
-      const { server: { services } } = await this.get();
-      this.services = await Promise.all(services.map(async (s: any) => {
-        const accounts = await this.getAccounts(s.name);
-
-        return {...s, accounts: accounts };
-      }));
+      this.get().then(() => {
+        for (const service in this.services) {
+          this.getAccounts(this.services[service].name);
+        }
+      });
     }
   });
 </script>

@@ -1,4 +1,3 @@
-
 <template>
   <div class="flex flex-col items-center">
     <span class="text-white font-bold mb-2" v-if="!errors && !error && sent"

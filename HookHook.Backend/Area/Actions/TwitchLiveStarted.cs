@@ -1,14 +1,12 @@
 using HookHook.Backend.Utilities;
-using HookHook.Backend.Exceptions;
 using HookHook.Backend.Entities;
 using TwitchLib.Api;
 using MongoDB.Bson.Serialization.Attributes;
 using HookHook.Backend.Attributes;
-using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Area.Actions
 {
-    [Service("twitch", "Check if a live started on twitch")]
+    [Service(Providers.Twitch, "Check if a live started on twitch")]
     [BsonIgnoreExtraElements]
     public class TwitchLiveStarted : IAction
     {
@@ -19,17 +17,24 @@ namespace HookHook.Backend.Area.Actions
 
         public bool isLive { get; private set; }
 
-        public TwitchLiveStarted(string user)
+        public string AccountId { get; set; }
+        public string _clientId { get; private init; }
+
+
+        public TwitchLiveStarted(string user, string accountId, User userEntity, IConfiguration config)
         {
             UserName = user;
             isLive = false;
-            // _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
+            AccountId = accountId;
+
+            _clientId = config["Twitch:ClientId"];
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            // * can we use the api with just access token ?
-            _twitchClient.Settings.AccessToken = user.OAuthAccounts[Providers.Twitch].AccessToken;
+            _twitchClient = new TwitchAPI();
+            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken;
+            _twitchClient.Settings.ClientId = _clientId;
 
             var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userIds: new List<string>(){ UserName });
 
@@ -38,6 +43,7 @@ namespace HookHook.Backend.Area.Actions
                 isLive = true;
                 return (streams.Streams[0].ThumbnailUrl, true);
             }
+            isLive = false;
             return (null, false);
         }
 

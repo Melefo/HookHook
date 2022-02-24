@@ -8,7 +8,7 @@
         </div>
         <ArrowNarrowRightIcon class="h-8 dark:text-white text-black mx-1" />
         <div class="gap-2 grid grid-cols-4">
-          <div v-for="(to, key) in slide.to" :key="key" class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(to) }">
+          <div v-for="(to, keyy) in slide.to" :key="keyy" class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(to) }">
             <img class="w-7 h-7 m-auto" :src="require(`@/assets/img/coloredsvg/${to.toLowerCase()}.svg`)"/>
           </div>
         </div>
@@ -16,13 +16,10 @@
       <div>
         <div>{{ formatDate(slide.date * 1000) }}</div>
         <div class="flex flex-row justify-end">
-          <button>
+          <button @click.prevent="async () => await trigger(slide.id)">
             <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
           </button>
-          <button>
-            <PencilIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
-          </button>
-          <button>
+          <button @click.prevent="async () => await deleteArea(slide.id, key)" >
             <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
           </button>
         </div>
@@ -35,22 +32,25 @@
 import { defineComponent } from 'vue';
 import Bloc from "@/components/BlocComponent.vue";
 import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline"
-import { PencilIcon, TrashIcon } from "@heroicons/vue/solid"
+import { TrashIcon } from "@heroicons/vue/solid"
 import dayjs from 'dayjs';
+import { mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'CarouselComponent',
   components: {
-    Bloc, RefreshIcon, PencilIcon, TrashIcon, ArrowNarrowRightIcon
+    Bloc, RefreshIcon, TrashIcon, ArrowNarrowRightIcon
   },
-  data: () => ({
-      blocs: Array(Math.floor(Math.random() * 150)).fill(0).map(() => 
-        { return { name: "Twitter on Push", from: "GitHub", to: Array(Math.floor(Math.random() * 15) + 1).fill("Twitter"), date: 1645101544 } }
-      )
-  }),
+  computed: {
+    blocs() {
+      const that: any = this;
+      return that.$store.state.area.areas;
+    }
+  },
   methods: {
+    ...mapActions("area", ["get", "delete", "trigger"]),
     formatDate(time: number) {
-      return dayjs(time).format("D MMMM YYYY H:m");
+      return dayjs(time).format("D MMMM YYYY HH:mm");
     },
     color(name: string) {
       name = name.toLowerCase();
@@ -68,7 +68,14 @@ export default defineComponent({
         case 'twitch':
           return "#FFFFC7";
       }
+    },
+    async deleteArea(id: string, key: number) {
+      await this.delete(id);
+      this.blocs.splice(key, 1);
     }
+  },
+  created: async function() {
+    await this.get();
   }
 });
 </script>

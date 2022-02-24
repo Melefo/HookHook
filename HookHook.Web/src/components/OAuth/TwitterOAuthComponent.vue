@@ -33,7 +33,7 @@ export default defineComponent({
     async handleTwitter() {
       window.removeEventListener("message", this.receiveTwitter);
 
-      var { url, error, errors } = await this.authorize("twitter");
+      var { url, error, errors } = await this.authorize("Twitter");
       if (url === null) {
         this.errors = errors || null;
         this.error = error || null;
@@ -68,9 +68,6 @@ export default defineComponent({
         if (!this.error && !this.errors) {
           this.$router.push("/dashboard");
         }
-      }
-      else {
-        this.$emit('addAccount', info);
       }
     },
   }

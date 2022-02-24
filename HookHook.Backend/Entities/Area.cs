@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using HookHook.Backend.Services;
 
 namespace HookHook.Backend.Entities
 {
@@ -16,10 +17,12 @@ namespace HookHook.Backend.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; private init; } = ObjectId.GenerateNewId().ToString();
 
+        public string Name { get; private init; }
+
         /// <summary>
         /// Last successful Area update
         /// </summary>
-        public DateTime LastUpdate { get; set; }
+        public DateTime LastUpdate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// Number of minutes between updates
@@ -36,14 +39,15 @@ namespace HookHook.Backend.Entities
         /// </summary>
         public List<IReaction> Reactions { get; private init; }
 
-        public Area(IAction action, IEnumerable<IReaction> reactions, int minutes)
+        public Area(string name, IAction action, IEnumerable<IReaction> reactions, int minutes)
         {
+            Name = name;
             Action = action;
             Reactions = new(reactions);
             MinutesBetween = minutes;
         }
 
-        public async Task Launch(User user)
+        public async Task Launch(User user, MongoService _db)
         {
             if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
                 return;
@@ -52,9 +56,19 @@ namespace HookHook.Backend.Entities
 
             if (!actionValue)
                 return;
-            foreach (var reaction in Reactions)
-                await reaction.Execute(user);
 
+            foreach (var reaction in Reactions) {
+                try
+                {
+                    await reaction.Execute(user, actionInfo ?? "null");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"{e.Source}: {e.Message}");
+                    return;
+                }
+            }
+            _db.SaveUser(user);
         }
     }
 }
