@@ -20,30 +20,41 @@ namespace HookHook.Backend.Actions
 
         public List<long> StoredRepositories { get; private init; } = new();
 
-        public string _serviceAccountId { get; set; }
+        public string ServiceAccountId { get; set; }
 
-        public GithubNewRepository(string user, string serviceAccountId)
+        public GithubNewRepository(string user, string serviceAccountId, Entities.User userEntity)
         {
             UserName = user;
-            // _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
-            _serviceAccountId = serviceAccountId;
+            ServiceAccountId = serviceAccountId;
+
+            // * get repos and store them
+            var currentRepositories = GetRepositories(userEntity).GetAwaiter().GetResult();
+            foreach (var repo in currentRepositories) {
+
+                Console.WriteLine("Getting existing commits: " + repo.Id);
+                StoredRepositories.Add(repo.Id);
+            }
+        }
+
+        private async Task<IReadOnlyList<Repository>> GetRepositories(Entities.User user)
+        {
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
+
+            var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);
+
+            return (repositoriesForUser);
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
-
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
-
-            var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);
+            var repositoriesForUser = await GetRepositories(user);
 
             foreach (var repository in repositoriesForUser) {
                 if (StoredRepositories.Contains(repository.Id))
                     continue;
 
                 StoredRepositories.Add(repository.Id);
-
-                // TODO save in db
 
                 return (repository.Name, true);
             }

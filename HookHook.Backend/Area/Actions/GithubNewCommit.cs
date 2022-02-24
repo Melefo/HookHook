@@ -61,6 +61,7 @@ namespace HookHook.Backend.Area.Actions
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
 
+            // * ça marche peut etre uniquement sur master?
             var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);
 
             return (commits);

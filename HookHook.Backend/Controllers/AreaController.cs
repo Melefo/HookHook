@@ -32,7 +32,7 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("DiscordPinned", (string[] args, string accountId, User user) => new DiscordPinned(args[0], args[1], accountId));
             actionTypes.Add("GithubIssueCreated", (string[] args, string accountId, User user) => new GithubIssueCreated(args[0], args[1], accountId, _db, user));
             actionTypes.Add("GithubNewCommit", (string[] args, string accountId, User user) => new GithubNewCommit(args[0], args[1], accountId, user));
-            actionTypes.Add("GithubNewRepository", (string[] args, string accountId, User user) => new GithubNewRepository(args[0], accountId));
+            actionTypes.Add("GithubNewRepository", (string[] args, string accountId, User user) => new GithubNewRepository(args[0], accountId, user));
             actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId));
             actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId));
             actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId));
