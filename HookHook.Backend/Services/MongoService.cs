@@ -56,6 +56,7 @@ namespace HookHook.Backend.Services
             BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Reactions.DiscordWebhook>(cm => cm.AutoMap());
             BsonClassMap.RegisterClassMap<HookHook.Backend.Area.TwitterTweetHashtag>(cm => cm.AutoMap());
             BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Actions.TwitchLiveStarted>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.TwitterFollowUser>(cm => cm.AutoMap());
 
 
             BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));
