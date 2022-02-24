@@ -59,9 +59,6 @@ const area = {
             return {};
         },
         async get({ state, commit }: any) {
-            if (state.areas.length !== 0) {
-                return;
-            }
             const res = await fetch("/api/area/all", {
                 method: 'GET',
                 headers: authHeader()
