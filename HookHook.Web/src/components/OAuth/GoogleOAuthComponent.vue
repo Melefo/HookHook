@@ -73,9 +73,6 @@ export default defineComponent({
           this.$router.push("/dashboard");
         }
       }
-      else {
-        this.$emit('addAccount', info);
-      }
     },
   },
 });

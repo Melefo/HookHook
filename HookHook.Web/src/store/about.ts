@@ -1,7 +1,18 @@
 const about = {
     namespaced: true,
+    state: {
+        info: null
+    },
+    mutations: {
+        get(state: any, info: any) {
+            state.info = info;
+        }
+    },
     actions: {
-        async get(_: any) {
+        async get({ commit, state }: any) {
+            if (state.info !== null) {
+                return {};
+            }
             const res = await fetch("/api/about.json", {
                 method: 'GET'
             })
@@ -12,15 +23,15 @@ const about = {
             if (contentType && contentType.indexOf("application/json") !== -1) {
                 const json = await res.json();
 
-                return json;
+                commit('get', json);
             }
-            if (contentType && contentType.indexOf("application/problem+json") !== 1) {
+            else if (contentType && contentType.indexOf("application/problem+json") !== 1) {
                 const { error, errors } = await res.json();
                 return { error, errors };
             }
             return {};
         }
-    }
+    },
 }
 
 export default about

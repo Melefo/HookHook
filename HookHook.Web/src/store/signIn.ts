@@ -1,5 +1,6 @@
 import { parseJwt } from "@/router";
 import { authHeader } from "@/store";
+import store from "@/store";
 
 const signIn = {
     namespaced: true,
@@ -51,6 +52,11 @@ const signIn = {
         },
         async logout({ commit }: any) {
             commit('login', null);
+            const state: any = store.state;
+            state.about.info = null;
+            state.service.accounts = {};
+            state.area.services = [];
+            state.area.areas = [];
         },
         async discord({ commit }: any, code: String) {
             const res = await fetch("/api/signin/oauth/discord?code=" + code, {

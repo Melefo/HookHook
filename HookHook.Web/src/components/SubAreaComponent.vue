@@ -159,7 +159,6 @@ export default defineComponent({
   },
   methods: {
     ...mapActions("service", ["getAccounts"]),
-    ...mapActions("area", ["getServices"]),
     async changeOptions(newAction: any) {
       this.currentParameters = [];
       this.paramsToSend = [];
@@ -186,7 +185,8 @@ export default defineComponent({
         }
       }
       this.selectedPerson = null;
-      this.people = await this.getAccounts(newAction.name);
+      await this.getAccounts(newAction.name);
+      this.people = this.accounts[newAction.name];
       this.seelctedService = newAction;
     },
     serviceSelected(service: any) {
@@ -208,14 +208,17 @@ export default defineComponent({
       });
     },
   },
-  computed: {},
+  computed: {
+    accounts(): any {
+      return this.$store.state.service.accounts;
+    }
+  },
   data: function () {
     return {
       possibleServices: [] as string[],
       currentParameters: [] as string[],
       paramsToSend: [] as string[],
       currentService: null as any|null,
-      accounts: [] as any[],
       people: [],
       selectedPerson: null as any|null,
       seelctedService: null as any|null

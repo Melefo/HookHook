@@ -3,11 +3,11 @@
     <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name.toLowerCase() + '.svg'" :bgColor="color(item.name)">
       <div v-for="(account, keyy) in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
         <p>{{ account.username }}</p>
-        <button @click.prevent="async () => await deleteService(item.name, account.userId, key, keyy)">
+        <button @click.prevent="async () => await deleteService(item.name, account.userId, keyy)">
           <XIcon class="h-8" />
         </button>
       </div>
-      <component :is="item.name + 'Oauth'" :oauth="false" @addAccount="handleAdd($event, key)">
+      <component :is="item.name + 'Oauth'" :oauth="false">
         ADD
       </component>
     </DialogComponent>
@@ -33,15 +33,8 @@
     methods: {
       ...mapActions("about", ["get"]),
       ...mapActions("service", ["getAccounts", "deleteAccount"]),
-      handleAdd(e: any, key: number) {
-        if (e.userId === undefined || e.username === undefined) {
-          return;
-        }
-        this.services[key].accounts.push(e);
-      },
-      async deleteService(provider: String, id: String, serviceKey: number, accountKey: number) {
-        await this.deleteAccount({provider: provider, id: id});
-        this.services[serviceKey].accounts.splice(accountKey, 1);
+      async deleteService(provider: String, id: String, accountKey: number) {
+        await this.deleteAccount({provider: provider, id: id, key: accountKey});
       },
       color(name: string) {
         name = name.toLowerCase();
@@ -67,12 +60,18 @@
         services: [] as any[],
       }
     },
+    computed: {
+      accounts(): any {
+        return this.$store.state.service.accounts;
+      }
+    },
     created: async function() {
-      const { server: { services } } = await this.get();
+      await this.get();
+      const services = this.$store.state.about.info?.server?.services || [];
       this.services = await Promise.all(services.map(async (s: any) => {
-        const accounts = await this.getAccounts(s.name);
+        await this.getAccounts(s.name);
 
-        return {...s, accounts: accounts };
+        return {...s, accounts: this.accounts[s.name] };
       }));
     }
   });

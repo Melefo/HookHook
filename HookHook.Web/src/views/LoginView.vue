@@ -66,14 +66,13 @@ export default defineComponent({
   methods: {
     ...mapActions("about", ["get"])
   },
-  data: function() {
-    return {
-      services: []
+  computed: {
+    services() {
+      return this.$store.state.about.info?.server?.services || []
     }
   },
   created: async function() {
-    const { server: { services } } = await this.get();
-    this.services = services;
+    await this.get();
   }
 });
 </script>

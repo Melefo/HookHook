@@ -185,10 +185,14 @@ export default defineComponent({
       return false;
     },
   },
-  computed: {},
+  computed: {
+    serviceDetails() {
+      const that: any = this;
+      return that.$store.state.area.services;
+    }
+  },
   data: function () {
     return {
-      serviceDetails: [] as any[],
       action: null as any,
       reactions: [null] as any[],
       error: null as any,
@@ -198,9 +202,7 @@ export default defineComponent({
   },
   setup() {},
   created: async function () {
-    // * fetch the services with the service arguments
-    const serviceDetails = await this.getServices();
-    this.serviceDetails = serviceDetails;
+    await this.getServices();
   },
 });
 </script>

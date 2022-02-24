@@ -44,9 +44,10 @@ export default defineComponent({
   components: {
     Bloc, RefreshIcon, PencilIcon, TrashIcon, ArrowNarrowRightIcon
   },
-  data() {
-    return {
-      blocs: [] as any[]
+  computed: {
+    blocs() {
+      const that: any = this;
+      return that.$store.state.area.areas;
     }
   },
   methods: {
@@ -77,7 +78,7 @@ export default defineComponent({
     }
   },
   created: async function() {
-    this.blocs = await this.get();
+    await this.get();
   }
 });
 </script>

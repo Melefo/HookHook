@@ -38,7 +38,7 @@
         >
           <ListboxOption
             v-slot="{ active }"
-            v-for="serviceChose in service"
+            v-for="serviceChose in services"
             :key="serviceChose.name"
             :value="serviceChose"
             as="template"
@@ -90,18 +90,18 @@ export default defineComponent({
       }
     },
   },
-  computed: {},
+  computed: {
+    services() {
+      return this.$store.state.about.info?.server?.services || []
+    }
+  },
   data: function () {
     return {
-      service: [],
       selectedService: null,
     };
   },
   created: async function () {
-    const {
-      server: { services },
-    } = await this.get();
-    this.service = services;
+    await this.get();
   },
 });
 </script>

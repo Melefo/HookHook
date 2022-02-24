@@ -2,8 +2,25 @@ import { authHeader } from ".";
 
 const service = {
     namespaced: true,
+    state: {
+        accounts: {}
+    },
+    mutations: {
+        getAccounts(state: any, {provider, info }: any) {
+            state.accounts[provider] = info;
+        },
+        deleteAccount(state: any, { provider, key }: any) {
+            state.accounts[provider].splice(key, 1);
+        },
+        addAccount(state: any, {provider, info}: any) {
+            state.accounts[provider].push(info);
+        }
+    },
     actions: {
-        async getAccounts({ commit }: any, provider: String) {
+        async getAccounts({ commit, state }: any, provider: any) {
+            if (state.accounts[provider] !== undefined) {
+                return {};
+            }
             const res = await fetch('/api/service/' + provider, {
                 method: 'GET',
                 headers: authHeader()
@@ -13,11 +30,14 @@ const service = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                return await res.json();
+                const json = await res.json();
+                if (json.error !== undefined || json.errors !== undefined)
+                    return json;
+                commit('getAccounts', { provider, info: json });
             }
             return {};
         },
-        async deleteAccount({ commit }: any, { provider, id }: any) {
+        async deleteAccount({ commit }: any, { provider, id, key }: any) {
             const res = await fetch('/api/service/' + provider + '?id=' + id, {
                 method: 'DELETE',
                 headers: authHeader()
@@ -29,6 +49,7 @@ const service = {
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
                 return await res.json();
             }
+            commit('deleteAccount', { provider, key });
             return {};
         },
         async addDiscord({ commit }: any, code: String) {
@@ -41,7 +62,13 @@ const service = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                return await res.json();
+                const json = await res.json();
+                if (json.error !== undefined || json.errors !== undefined)
+                    return json;
+                if (json.userId === undefined || json.username === undefined) {
+                        return {};
+                }
+                commit('addAccount', { provider: 'Discord', info: json });
             }
             return {};
         },
@@ -55,7 +82,13 @@ const service = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                return await res.json();
+                const json = await res.json();
+                if (json.error !== undefined || json.errors !== undefined)
+                    return json;
+                if (json.userId === undefined || json.username === undefined) {
+                        return {};
+                }
+                commit('addAccount', { provider: 'Twitter', info: json });
             }
             return {};
         },
@@ -69,7 +102,13 @@ const service = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                return await res.json();
+                const json = await res.json();
+                if (json.error !== undefined || json.errors !== undefined)
+                    return json;
+                if (json.userId === undefined || json.username === undefined) {
+                        return {};
+                }
+                commit('addAccount', { provider: 'Twitch', info: json });
             }
             return {};
         },
@@ -83,7 +122,13 @@ const service = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                return await res.json();
+                const json = await res.json();
+                if (json.error !== undefined || json.errors !== undefined)
+                    return json;
+                if (json.userId === undefined || json.username === undefined) {
+                        return {};
+                }
+                commit('addAccount', { provider: 'Spotify', info: json });
             }
             return {};
         },
@@ -97,7 +142,13 @@ const service = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                return await res.json();
+                const json = await res.json();
+                if (json.error !== undefined || json.errors !== undefined)
+                    return json;
+                if (json.userId === undefined || json.username === undefined) {
+                        return {};
+                }
+                commit('addAccount', { provider: 'GitHub', info: json });
             }
             return {};
         },
@@ -111,7 +162,13 @@ const service = {
             }
             const contentType = res.headers.get("content-type");
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
-                return await res.json();
+                const json = await res.json();
+                if (json.error !== undefined || json.errors !== undefined)
+                    return json;
+                if (json.userId === undefined || json.username === undefined) {
+                        return {};
+                }
+                commit('addAccount', { provider: 'Google', info: json });
             }
             return {};
         },
