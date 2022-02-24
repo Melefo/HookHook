@@ -21,21 +21,41 @@ namespace HookHook.Backend.Area
 
         private IConfiguration _config;
 
-        private string _serviceAccountId;
+        public string _clientId { get; private init; }
+        public string _clientSecret { get; private init;}
 
-        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string serviceAccountId)
+        public string ServiceAccountId { get; set; }
+
+        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string serviceAccountId, Entities.User userEntity)
         {
             UserName = user;
+            _clientId = config["Twitter:ClientId"];
+            _clientSecret = config["Twitter:ClientSecret"];
             _config = config;
-            _serviceAccountId = serviceAccountId;
+            ServiceAccountId = serviceAccountId;
+
+            // * save existing followings
+            var existingFollowers = GetFollowers(userEntity).GetAwaiter().GetResult();
+            foreach (var follower in existingFollowers) {
+                if (!follower.Id.HasValue)
+                    continue;
+                Followers.Add(follower.Id.Value);
+            }
+        }
+
+        private async Task<Cursored<CoreTweet.User>> GetFollowers(Entities.User user)
+        {
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!;
+            _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
+
+            var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);
+
+            return (followers);
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
-
-            var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);
+            var followers = await GetFollowers(user);
 
             foreach (var follower in followers)
             {
@@ -44,7 +64,6 @@ namespace HookHook.Backend.Area
                 if (Followers.Contains(follower.Id.Value))
                     continue;
 
-                // todo save
                 Followers.Add(follower.Id.Value);
                 return (follower.Name, true);
             }
@@ -54,7 +73,7 @@ namespace HookHook.Backend.Area
         public async Task Execute(User user)
         {
             var oauth = user.OAuthAccounts[Providers.Twitter];
-            _twitterClient = Tokens.Create(_config["Twitter:ClientId"], _config["Twitter:ClientSecret"], oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
+            _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var currentUser = await _twitterClient.Users.ShowAsync(_twitterClient.UserId);
             await _twitterClient.Friendships.CreateAsync(UserName);

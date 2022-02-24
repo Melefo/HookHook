@@ -32,6 +32,9 @@ export default defineComponent({
 
       var scopes = [
         "channel:read:subscriptions",
+        "channel:manage:broadcast",
+        "user:read:broadcast",
+        "user:read:subscriptions",
         "user:edit",
         "user:read:email",
         "user:read:follows"

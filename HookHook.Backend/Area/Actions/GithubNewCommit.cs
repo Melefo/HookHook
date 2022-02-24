@@ -37,22 +37,39 @@ namespace HookHook.Backend.Area.Actions
 
         public List<string> StoredCommitHashes { get; private init; } = new();
 
-        public string _serviceAccountId;
+        public string ServiceAccountId { get; set; }
 
-        public GithubNewCommit(string user, string repository, string serviceAccountId)
+        public GithubNewCommit(string user, string repository, string serviceAccountId, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            _serviceAccountId = serviceAccountId;
+            ServiceAccountId = serviceAccountId;
+
+            // * get commits and store them
+            var currentRepositoryCommits = GetCommits(userEntity).GetAwaiter().GetResult();
+            foreach (var commit in currentRepositoryCommits) {
+                var sha = commit.Commit!.Sha!;
+
+                Console.WriteLine("Getting existing commits: " + sha);
+                StoredCommitHashes.Add(sha);
+            }
+        }
+
+        private async Task<IReadOnlyList<GitHubCommit>> GetCommits(Entities.User user)
+        {
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
+
+            // * ça marche peut etre uniquement sur master?
+            var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);
+
+            return (commits);
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken);
-
-            var commits = await _githubClient.Repository.Commit.GetAll(UserName, Repository);
+            var commits = await GetCommits(user);
 
             foreach (var commit in commits)
             {
