@@ -54,11 +54,7 @@ namespace HookHook.Backend.Actions
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-
-            _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
-
-            var issuesForRepository = await _githubClient.Issue.GetAllForRepository(UserName, Repository);
+            var issuesForRepository = await GetIssues(user);
 
             foreach (var issue in issuesForRepository)
             {
