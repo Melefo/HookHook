@@ -39,6 +39,7 @@ namespace HookHook.Backend.Actions
         private async Task<IReadOnlyList<Repository>> GetRepositories(Entities.User user)
         {
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
 
             var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);

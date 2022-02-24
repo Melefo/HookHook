@@ -17,18 +17,24 @@ namespace HookHook.Backend.Area.Actions
 
         public bool isLive { get; private set; }
 
-        private string _serviceAccountId;
+        public string ServiceAccountId { get; set; }
+        public string _clientId { get; private init; }
 
-        public TwitchLiveStarted(string user, string serviceAccountId)
+
+        public TwitchLiveStarted(string user, string serviceAccountId, Entities.User userEntity, IConfiguration config)
         {
             UserName = user;
             isLive = false;
-            _serviceAccountId = serviceAccountId;
+            ServiceAccountId = serviceAccountId;
+
+            _clientId = config["Twitch:ClientId"];
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)
         {
-            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!.AccessToken;
+            _twitchClient = new TwitchAPI();
+            _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken;
+            _twitchClient.Settings.ClientId = _clientId;
 
             var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userIds: new List<string>(){ UserName });
 
@@ -37,6 +43,7 @@ namespace HookHook.Backend.Area.Actions
                 isLive = true;
                 return (streams.Streams[0].ThumbnailUrl, true);
             }
+            isLive = false;
             return (null, false);
         }
 

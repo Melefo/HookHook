@@ -35,7 +35,7 @@ namespace HookHook.Backend.Controllers
             actionTypes.Add("GithubNewRepository", (string[] args, string accountId, User user) => new GithubNewRepository(args[0], accountId, user));
             actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId));
             actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId));
-            actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId));
+            actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId, user, config));
             actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId));
             actionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId));
             actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId));
