@@ -18,22 +18,36 @@ namespace HookHook.Backend.Area
 
         public List<string> FollowedUsers { get; private init; } = new();
 
-        private string _serviceAccountId;
+        public string ServiceAccountId { get; set; }
 
-        public TwitchFollowChannel(string user, string serviceAccountId)
+        public TwitchFollowChannel(string user, string serviceAccountId, Entities.User userEntity)
         {
             UserName = user;
-            _serviceAccountId = serviceAccountId;
+            ServiceAccountId = serviceAccountId;
+
+            var follows = GetUserFollows(userEntity).GetAwaiter().GetResult();
+
+            foreach (var follower in follows.Follows) {
+                FollowedUsers.Add(follower.ToUserId);
+            }
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<TwitchLib.Api.Helix.Models.Users.GetUserFollows.GetUsersFollowsResponse> GetUserFollows(Entities.User user)
         {
-            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
+            _twitchClient = new();
+            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!;
             _twitchClient.Settings.AccessToken = oauth.AccessToken;
 
             var userToCheck = await _twitchClient.Helix.Users.GetUsersAsync(logins: new List<string>() { UserName }, accessToken: oauth.AccessToken);
 
             var follows = await _twitchClient.Helix.Users.GetUsersFollowsAsync(fromId: userToCheck.Users[0].Id);
+
+            return (follows);
+        }
+
+        public async Task<(string?, bool)> Check(User user)
+        {
+            var follows = await GetUserFollows(user);
 
             foreach (var follower in follows.Follows) {
 
@@ -41,8 +55,6 @@ namespace HookHook.Backend.Area
                 if (FollowedUsers.Contains(follower.ToUserId)) {
                     continue;
                 }
-
-                // todo save
 
                 FollowedUsers.Add(follower.ToUserId);
                 return (follower.ToUserName, true);
