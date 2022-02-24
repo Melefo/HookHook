@@ -50,10 +50,12 @@ const service = {
             return {};
         },
         async addDiscord({ commit }: any, code: String) {
+            console.log("htdfgwxgfdwsfgdfwsc");
             const res = await fetch("/api/service/discord?code=" + code, {
                 method: 'POST',
                 headers: authHeader()
             });
+            console.log("htdfgwxc");
             if (res.status === 500) {
                 return { error: "Backend unavailable" };
             }

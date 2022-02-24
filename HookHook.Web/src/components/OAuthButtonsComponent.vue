@@ -1,7 +1,7 @@
 <template>
   <div class="text-black justify-start">
     <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name.toLowerCase() + '.svg'" :bgColor="color(item.name)">
-      <div v-for="(account, keyy) in item.accounts" :key="account.userId" class="flex justify-between items-center mx-16">
+      <div v-for="(account, keyy) in accounts[item.name]" :key="account.userId" class="flex justify-between items-center mx-16">
         <p>{{ account.username }}</p>
         <button @click.prevent="async () => await deleteService(item.name, account.userId, keyy)">
           <XIcon class="h-8" />
@@ -55,24 +55,16 @@
         }
       }
     },
-    data: function() {
-      return {
-        services: [] as any[],
-      }
-    },
     computed: {
       accounts(): any {
         return this.$store.state.service.accounts;
+      },
+      services(): any {
+        return this.$store.state.about.info?.server?.services || []
       }
     },
     created: async function() {
       this.get();
-      const services = this.$store.state.about.info?.server?.services || [];
-      this.services = await Promise.all(services.map(async (s: any) => {
-        this.getAccounts(s.name);
-
-        return {...s, accounts: this.accounts[s.name] };
-      }));
     }
   });
 </script>
