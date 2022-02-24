@@ -32,14 +32,14 @@
 import { defineComponent } from 'vue';
 import Bloc from "@/components/BlocComponent.vue";
 import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline"
-import { PencilIcon, TrashIcon } from "@heroicons/vue/solid"
+import { TrashIcon } from "@heroicons/vue/solid"
 import dayjs from 'dayjs';
 import { mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'CarouselComponent',
   components: {
-    Bloc, RefreshIcon, PencilIcon, TrashIcon, ArrowNarrowRightIcon
+    Bloc, RefreshIcon, TrashIcon, ArrowNarrowRightIcon
   },
   computed: {
     blocs() {
