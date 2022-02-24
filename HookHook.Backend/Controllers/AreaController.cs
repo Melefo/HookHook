@@ -53,23 +53,20 @@ namespace HookHook.Backend.Controllers
 
         }
 
-        private Entities.Area CreateEntityFromModel(AreaModel area, Entities.User user)
+        private Entities.Area CreateEntityFromModel(AreaModel area, User user)
         {
             // * create an IAction from area.Action.type
             IAction action = actionTypes[area.Action.Type](area.Action.Arguments, area.Action.AccountId, user);
 
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
-            for (int i = 0; i < area.Reactions.Length; i++) {
-                Console.WriteLine(area.Reactions[i].AccountId);
-
+            for (int i = 0; i < area.Reactions.Length; i++)
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountId, user));
-            }
 
             // * create an area entity
             Entities.Area areaEntity = new Entities.Area(area.Name, action, reactions, area.Minutes);
 
-            return (areaEntity);
+            return areaEntity;
         }
 
         private class ServiceDescription
@@ -135,12 +132,9 @@ namespace HookHook.Backend.Controllers
 
             Entities.Area areaEntity = CreateEntityFromModel(area, user);
 
-            Console.WriteLine("About to add areaEntity");
             user.Areas.Add(areaEntity);
-            Console.WriteLine("About to save");
             _db.SaveUser(user);
 
-            Console.WriteLine("Done");
             return Ok(areaEntity);
         }
 

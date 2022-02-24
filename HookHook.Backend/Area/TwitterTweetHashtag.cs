@@ -64,10 +64,6 @@ namespace HookHook.Backend.Area
         {
             var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == _serviceAccountId)!;
 
-            Console.WriteLine(oauth);
-            Console.WriteLine(oauth.AccessToken);
-            Console.WriteLine(oauth.Secret);
-
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{Hashtag}");
