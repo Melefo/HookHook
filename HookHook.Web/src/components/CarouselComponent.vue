@@ -19,9 +19,6 @@
           <button @click.prevent="async () => await trigger(slide.id)">
             <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
           </button>
-          <button>
-            <PencilIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
-          </button>
           <button @click.prevent="async () => await deleteArea(slide.id, key)" >
             <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#F9F9F9] dark:text-[#F9F9F9] text-[#181A1E] rounded-md p-1.5 mx-2 duration-500 hover:scale-105" />
           </button>
@@ -35,14 +32,14 @@
 import { defineComponent } from 'vue';
 import Bloc from "@/components/BlocComponent.vue";
 import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline"
-import { PencilIcon, TrashIcon } from "@heroicons/vue/solid"
+import { TrashIcon } from "@heroicons/vue/solid"
 import dayjs from 'dayjs';
 import { mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'CarouselComponent',
   components: {
-    Bloc, RefreshIcon, PencilIcon, TrashIcon, ArrowNarrowRightIcon
+    Bloc, RefreshIcon, TrashIcon, ArrowNarrowRightIcon
   },
   computed: {
     blocs() {

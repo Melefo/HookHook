@@ -57,8 +57,17 @@ namespace HookHook.Backend.Entities
             if (!actionValue)
                 return;
 
-            foreach (var reaction in Reactions)
-                await reaction.Execute(user, actionInfo ?? "null");
+            foreach (var reaction in Reactions) {
+                try
+                {
+                    await reaction.Execute(user, actionInfo ?? "null");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"{e.Source}: {e.Message}");
+                    return;
+                }
+            }
             _db.SaveUser(user);
         }
     }
