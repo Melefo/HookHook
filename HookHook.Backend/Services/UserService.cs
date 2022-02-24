@@ -8,6 +8,8 @@ using Discord.Rest;
 using User = HookHook.Backend.Entities.User;
 using HookHook.Backend.Entities;
 using CoreTweet;
+using System.Net.Mail;
+using System.Net;
 
 namespace HookHook.Backend.Services
 {
@@ -32,6 +34,9 @@ namespace HookHook.Backend.Services
         /// </summary>
         private readonly string _key;
 
+        private readonly SmtpClient _smtp;
+        private readonly MailAddress _from;
+
         public UserService(MongoService db, TwitterService twitter, DiscordService discord, TwitchService twitch, SpotifyService spotify, GitHubService github, GoogleService google, IConfiguration config)
         {
             _db = db;
@@ -42,7 +47,25 @@ namespace HookHook.Backend.Services
             _github = github;
             _google = google;
 
+            _smtp = new SmtpClient("smtp.gmail.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(config["SMTP:email"], config["SMTP:password"])
+            };
+            _from = new MailAddress(config["SMTP:Email"], "HookHook");
+
             _key = config["JwtKey"];
+        }
+
+        public async Task SendMail(string to, string subject, string body)
+        {
+            var mail = new MailMessage(_from, new(to))
+            {
+                Subject = subject,
+                IsBodyHtml = true,
+                Body = body
+            };
+            await _smtp.SendMailAsync(mail);
         }
 
         /// <summary>
@@ -82,14 +105,14 @@ namespace HookHook.Backend.Services
             return _db.SaveUser(user);
         }
 
-        public void Register(User user)
+        public async Task<User> Register(User user)
         {
             var existing = _db.GetUserByIdentifier(user.Email);
 
             if (existing == null || existing.Password != null)
             {
                 Create(user);
-                return;
+                return user;
             }
             if (_db.GetUserByIdentifier(user.Username!) != null)
                 throw new UserException(TypeUserException.Username, "An user with this username is already registered");
@@ -98,7 +121,7 @@ namespace HookHook.Backend.Services
             existing.LastName = user.LastName;
             existing.Password = PasswordHash.HashPassword(user.Password!);
             _db.SaveUser(existing);
-            return;
+            return existing;
         }
 
         /// <summary>
@@ -115,8 +138,25 @@ namespace HookHook.Backend.Services
                 throw new MongoException("User not found");
             if (user.Password == null)
                 throw new MongoException("User not found");
+            if (user.Verified != true)
+                throw new UserException(TypeUserException.Email, "Please verify your email before logging in.");
             if (!PasswordHash.VerifyPassword(password, user.Password))
                 throw new UserException(TypeUserException.Password, "Wrong password");
+
+            return CreateJwt(user);
+        }
+
+        public string Verify(string id)
+        {
+            var user = _db.GetUser(id);
+
+            if (user == null)
+                throw new MongoException("User not found");
+            if (user.Verified)
+                throw new UserException(TypeUserException.Email, "Email already verified");
+
+            user.Verified = true;
+            _db.SaveUser(user);
 
             return CreateJwt(user);
         }

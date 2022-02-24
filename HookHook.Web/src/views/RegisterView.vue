@@ -57,7 +57,7 @@ import Bloc from "@/components/BlocComponent.vue";
 import HookHook from "@/components/HookHookComponent.vue";
 import Register from "@/components/User/RegisterComponent.vue";
 import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
-import GithubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
 import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
 import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
 import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
@@ -67,18 +67,17 @@ import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
 export default defineComponent({
-  components: { Bloc, HookHook, Register, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
+  components: { Bloc, HookHook, Register, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
   methods: {
     ...mapActions("about", ["get"])
   },
   data: function() {
     return {
-      services: []
+      services: this.$store.state.about.info?.server?.services || []
     }
   },
   created: async function() {
-    const { server: { services } } = await this.get();
-    this.services = services;
+    await this.get();
   }
 });
 </script>

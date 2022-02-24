@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Mail;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Exceptions;
 using HookHook.Backend.Models;
@@ -15,10 +17,14 @@ namespace HookHook.Backend.Controllers
     public class SignInController : ControllerBase
     {
         private readonly UserService _service;
+        private readonly IConfiguration _config;
 
-        public SignInController(UserService service) =>
+        public SignInController(UserService service, IConfiguration config)
+        {
             _service = service;
-        
+            _config = config;
+        }
+
         /// <summary>
         /// Register an user to database
         /// </summary>
@@ -27,7 +33,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public ActionResult Create([FromBody] RegisterForm form)
+        public async Task<ActionResult> Create([FromBody] RegisterForm form)
         {
             if (!ModelState.IsValid)
                 return BadRequest(form);
@@ -36,7 +42,15 @@ namespace HookHook.Backend.Controllers
                 user.Role = "Admin";
             try
             {
-                _service.Register(user);
+                user = await _service.Register(user);
+                string html = $@"<html>
+    <body>
+        <h1>Welcome to HookHook!<h1>
+        <p>Please <a href=""{Request.Headers.Origin}/verify/{user.Id}"">click here</a> to confirm your registration.</p>
+    </bod>
+</html>";
+                await _service.SendMail(user.Email, "Welcome to HookHook!", html);
+
             }
             catch (UserException ex)
             {
@@ -49,7 +63,7 @@ namespace HookHook.Backend.Controllers
                 };
             }
 
-            return Created("", user);
+            return Created("", null);
         }
 
 
@@ -123,6 +137,31 @@ namespace HookHook.Backend.Controllers
             {
                 return Unauthorized(new { error = ex.Message });
             }
+        }
+
+        [HttpGet("verify/{id}")]
+        public ActionResult Verify([BindRequired] string id)
+        {
+            try
+            {
+                var token = _service.Verify(id);
+                return Ok(new { token });
+            }
+            catch (MongoException ex)
+            {
+                return Unauthorized(new { error = ex.Message });
+            }
+            catch (UserException ex)
+            {
+                return Unauthorized(new { error = ex.Message });
+            }
+        }
+
+
+        [HttpPost("forgot")]
+        public ActionResult ForgotPassword()
+        {
+            return Ok();
         }
     }
 }

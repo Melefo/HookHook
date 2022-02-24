@@ -20,6 +20,8 @@ namespace HookHook.Backend.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; private init; } = ObjectId.GenerateNewId().ToString();
 
+        public bool Verified { get; set; }
+
         /// <summary>
         /// User username
         /// </summary>

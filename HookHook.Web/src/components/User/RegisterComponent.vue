@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center">
-    <span class="text-white font-bold mb-2" v-if="!errors && !error && sent"
-      >You can now authenticate</span
+    <span class="text-black dark:text-white font-bold mb-2 text-center" v-if="!errors && !error && sent"
+      >You are successfully registered!<br />Please check your email inbox for verification link</span
     >
     <span class="text-red-500" v-if="error">{{ this.error }}</span>
     <form class="flex flex-col" @submit.prevent="send">
