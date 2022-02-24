@@ -72,7 +72,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            var oauth = user.OAuthAccounts[Providers.Twitter];
+            var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == ServiceAccountId);
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var currentUser = await _twitterClient.Users.ShowAsync(_twitterClient.UserId);

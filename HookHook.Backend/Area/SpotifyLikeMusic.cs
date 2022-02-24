@@ -61,7 +61,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.OAuthAccounts[Providers.Spotify].AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == ServiceAccountId)!.AccessToken);
 
             // * search song
             // * add song to library

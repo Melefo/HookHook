@@ -64,7 +64,7 @@ namespace HookHook.Backend.Area
 
         public async Task Execute(User user)
         {
-            var oauth = user.OAuthAccounts[Providers.Twitch];
+            var oauth = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == ServiceAccountId);
 
             _twitchClient.Settings.AccessToken = oauth.AccessToken;
 
