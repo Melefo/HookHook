@@ -26,7 +26,10 @@ namespace HookHook.Backend.Area.Reactions
             AccountId = accountId;
         }
 
-        public async Task Execute(User user, string actionInfo) =>
+        public async Task Execute(User user, string actionInfo)
+        {
+            _client = new DiscordWebhookClient(Url);
             await _client.SendMessageAsync(Message);
+        }
     }
 }

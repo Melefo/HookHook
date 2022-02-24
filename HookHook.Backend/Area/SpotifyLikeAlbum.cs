@@ -21,11 +21,11 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public SpotifyLikeAlbum(string albumTitle, string artistName, string serviceAccountId, Entities.User userEntity)
+        public SpotifyLikeAlbum(string albumTitle, string artistName, string accountId, User userEntity)
         {
             AlbumTitle = albumTitle;
             ArtistName = artistName;
-            AccountId = serviceAccountId;
+            AccountId = accountId;
 
             var albums = GetLikedAlbums(userEntity).GetAwaiter().GetResult();
 

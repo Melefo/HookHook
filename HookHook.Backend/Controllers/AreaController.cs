@@ -31,7 +31,7 @@ namespace HookHook.Backend.Controllers
             _db = db;
             _area = area;
 
-            actionTypes.Add("DiscordPinned", (string[] args, string accountId, User user) => new DiscordPinned(args[0], args[1], accountId));
+            actionTypes.Add("DiscordPinned", (string[] args, string accountId, User user) => new DiscordPinned(args[0], args[1], config["Discord:BotToken"]));
             actionTypes.Add("GithubIssueCreated", (string[] args, string accountId, User user) => new GithubIssueCreated(args[0], args[1], accountId, _db, user));
             actionTypes.Add("GithubNewCommit", (string[] args, string accountId, User user) => new GithubNewCommit(args[0], args[1], accountId, user));
             actionTypes.Add("GithubNewRepository", (string[] args, string accountId, User user) => new GithubNewRepository(args[0], accountId, user));
@@ -109,7 +109,7 @@ namespace HookHook.Backend.Controllers
 
                 var parameters = service.GetConstructors()[0].GetParameters();
                 // * on esquive le serviceAccountId, c'est pas au user de le rentrer
-                var strParams = parameters.Where(x => x.ParameterType == stringType && x.Name != "serviceAccountId").ToArray();
+                var strParams = parameters.Where(x => x.ParameterType == stringType && x.Name != "accountId").ToArray();
 
                 var attr = service.GetCustomAttribute<ServiceAttribute>()!;
 

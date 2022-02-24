@@ -64,7 +64,11 @@
       }
     },
     created: async function() {
-      this.get();
+      this.get().then(() => {
+        for (const service in this.services) {
+          this.getAccounts(this.services[service].name);
+        }
+      });
     }
   });
 </script>

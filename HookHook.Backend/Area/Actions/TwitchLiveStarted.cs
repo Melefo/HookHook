@@ -21,11 +21,11 @@ namespace HookHook.Backend.Area.Actions
         public string _clientId { get; private init; }
 
 
-        public TwitchLiveStarted(string user, string serviceAccountId, Entities.User userEntity, IConfiguration config)
+        public TwitchLiveStarted(string user, string accountId, User userEntity, IConfiguration config)
         {
             UserName = user;
             isLive = false;
-            AccountId = serviceAccountId;
+            AccountId = accountId;
 
             _clientId = config["Twitch:ClientId"];
         }

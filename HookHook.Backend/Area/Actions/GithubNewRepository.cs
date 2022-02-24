@@ -13,19 +13,16 @@ namespace HookHook.Backend.Actions
         public string UserName {get; private init;}
 
         [BsonIgnore]
-        public GitHubClient _githubClient = new GitHubClient(new Octokit.ProductHeaderValue("HookHook"));
-
-        [BsonIgnore]
-        private readonly HttpClient _httpClient = new();
+        public GitHubClient _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
 
         public List<long> StoredRepositories { get; private init; } = new();
 
         public string AccountId { get; set; }
 
-        public GithubNewRepository(string user, string serviceAccountId, Entities.User userEntity)
+        public GithubNewRepository(string user, string accountId, Entities.User userEntity)
         {
             UserName = user;
-            AccountId = serviceAccountId;
+            AccountId = accountId;
 
             // * get repos and store them
             var currentRepositories = GetRepositories(userEntity).GetAwaiter().GetResult();

@@ -20,11 +20,11 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public YoutubeVideoPublished(string channel, GoogleService googleService, string serviceAccountId)
+        public YoutubeVideoPublished(string channel, GoogleService googleService, string accountId)
         {
             Channel = channel;
             _googleService = googleService;
-            AccountId = serviceAccountId;
+            AccountId = accountId;
         }
 
         public Task<(string?, bool)> Check(User user)

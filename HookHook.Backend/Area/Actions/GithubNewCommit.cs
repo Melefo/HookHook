@@ -39,12 +39,12 @@ namespace HookHook.Backend.Area.Actions
 
         public string AccountId { get; set; }
 
-        public GithubNewCommit(string user, string repository, string serviceAccountId, Entities.User userEntity)
+        public GithubNewCommit(string user, string repository, string accountId, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            AccountId = serviceAccountId;
+            AccountId = accountId;
 
             // * get commits and store them
             var currentRepositoryCommits = GetCommits(userEntity).GetAwaiter().GetResult();

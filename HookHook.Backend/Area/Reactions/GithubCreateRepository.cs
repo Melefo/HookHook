@@ -21,12 +21,12 @@ namespace HookHook.Backend.Reactions
 
         public string AccountId { get; set; }
 
-        public GithubCreateRepository(string repositoryName, string description, string serviceAccountId)
+        public GithubCreateRepository(string repositoryName, string description, string accountId)
         {
             RepositoryName = repositoryName;
             Description = description;
             _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-            AccountId = serviceAccountId;
+            AccountId = accountId;
         }
 
         public async Task Execute(Entities.User user, string actionInfo)

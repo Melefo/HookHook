@@ -28,14 +28,14 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public TwitterTweetHashtag(string hashtag, IConfiguration config, string serviceAccountId, string tweetContent = "")
+        public TwitterTweetHashtag(string hashtag, IConfiguration config, string accountId, string tweetContent = "")
         {
             Hashtag = hashtag;
             TweetContent = tweetContent;
             _clientId = config["Twitter:ClientId"];
             _clientSecret = config["Twitter:ClientSecret"];
             _config = config;
-            AccountId = serviceAccountId;
+            AccountId = accountId;
         }
 
         public async Task<(string?, bool)> Check(User user)

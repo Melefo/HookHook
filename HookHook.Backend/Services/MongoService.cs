@@ -2,13 +2,8 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Utilities;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using HookHook.Backend.Attributes;
 
 namespace HookHook.Backend.Services
 {
@@ -46,20 +41,21 @@ namespace HookHook.Backend.Services
             // }
 
             // * solution temporaire, j'ai cherché je trouve pas comment convertir un type var à un type générique
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateIssue>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubIssueCreated>(cm => {
+            BsonClassMap.RegisterClassMap<Reactions.GithubCreateIssue>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Actions.GithubIssueCreated>(cm => {
                 cm.AutoMap();
             });
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Actions.GithubNewRepository>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Reactions.GithubCreateRepository>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Actions.GithubNewCommit>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Reactions.DiscordWebhook>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.TwitterTweetHashtag>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.Actions.TwitchLiveStarted>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.TwitterFollowUser>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.SpotifyLikeAlbum>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.SpotifyLikeMusic>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<HookHook.Backend.Area.TwitchFollowChannel>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Actions.GithubNewRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Reactions.GithubCreateRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.GithubNewCommit>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Reactions.DiscordWebhook>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitterTweetHashtag>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.TwitchLiveStarted>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitterFollowUser>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.SpotifyLikeAlbum>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.SpotifyLikeMusic>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitchFollowChannel>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.DiscordPinned>(cm => cm.AutoMap());
 
 
             BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));

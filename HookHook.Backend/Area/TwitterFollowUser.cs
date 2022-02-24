@@ -26,13 +26,13 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string serviceAccountId, User userEntity)
+        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string accountId, User userEntity)
         {
             UserName = user;
             _clientId = config["Twitter:ClientId"];
             _clientSecret = config["Twitter:ClientSecret"];
             _config = config;
-            AccountId = serviceAccountId;
+            AccountId = accountId;
 
             // * save existing followings
             var existingFollowers = GetFollowers(userEntity).GetAwaiter().GetResult();

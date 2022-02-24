@@ -20,10 +20,10 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public TwitchFollowChannel(string user, string serviceAccountId, User userEntity)
+        public TwitchFollowChannel(string user, string accountId, User userEntity)
         {
             UserName = user;
-            AccountId = serviceAccountId;
+            AccountId = accountId;
 
             var follows = GetUserFollows(userEntity).GetAwaiter().GetResult();
 

@@ -20,19 +20,39 @@ namespace HookHook.Backend.Area.Actions
         [BsonIgnore]
         private DiscordRestClient _client = new();
 
-        public DiscordPinned(string guild, string channel, string serviceAccountId)
+        public DiscordPinned(string guildId, string channelId, string accountId)
         {
-            Guild = ulong.Parse(guild);
-            Channel = ulong.Parse(channel);
-            AccountId = serviceAccountId;
+            Guild = ulong.Parse(guildId);
+            Channel = ulong.Parse(channelId);
+            AccountId = accountId;
+
+            _client = new();
+
+            _client.LoginAsync(TokenType.Bot, AccountId).GetAwaiter().GetResult();
+
+            var guild = _client.GetGuildAsync(Guild).GetAwaiter().GetResult();
+            if (guild == null)
+                return;
+            var channel = guild.GetTextChannelAsync(Channel).GetAwaiter().GetResult();
+            if (channel == null)
+                return;
+
+            var pinneds = channel.GetPinnedMessagesAsync().GetAwaiter().GetResult();
+            foreach (var pinned in pinneds)
+                PinnedMessages.Add(pinned.Id);
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            await _client.LoginAsync(TokenType.Bot, user.ServicesAccounts[Providers.Discord].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
+            _client ??= new();
+            await _client.LoginAsync(TokenType.Bot, AccountId);
 
             var guild = await _client.GetGuildAsync(Guild);
+            if (guild == null)
+                return (null, false);
             var channel = await guild.GetTextChannelAsync(Channel);
+            if (channel == null)
+                return (null, false);
 
             var pinned = await channel.GetPinnedMessagesAsync();
             foreach (var message in pinned)

@@ -38,8 +38,9 @@ export default defineComponent({
       });
 
       const url = oauth.generateAuthUrl({
-        scope: ["identify", "guilds", "email"],
+        scope: ["identify", "guilds", "email", "bot"],
         state: Math.random().toString(36).slice(2),
+        permissions: 66568
       });
 
       let popup = window.open(
