@@ -42,11 +42,12 @@ namespace HookHook.Backend.Controllers
                 user.Role = "Admin";
             try
             {
-                user = await _service.Register(user);
-                string html = $@"<html>
+                user = _service.Register(user);
+                string html = $@"
+<html>
     <body>
         <h1>Welcome to HookHook!<h1>
-        <p>Please <a href=""{Request.Headers.Origin}/verify/{user.Id}"">click here</a> to confirm your registration.</p>
+        <p>Please <a href=""{Request.Headers.Origin}/verify/{user.RandomId}"">click here</a> to confirm your registration.</p>
     </bod>
 </html>";
                 await _service.SendMail(user.Email, "Welcome to HookHook!", html);
@@ -139,7 +140,7 @@ namespace HookHook.Backend.Controllers
             }
         }
 
-        [HttpGet("verify/{id}")]
+        [HttpPut("verify/{id}")]
         public ActionResult Verify([BindRequired] string id)
         {
             try
@@ -158,10 +159,31 @@ namespace HookHook.Backend.Controllers
         }
 
 
-        [HttpPost("forgot")]
-        public ActionResult ForgotPassword()
+        [HttpPut("forgot/{username}")]
+        public async Task<ActionResult> ForgotPassword(string username)
         {
-            return Ok();
+            await _service.RecoverPassword(username, Request.Headers.Origin);
+            return NoContent();
+        }
+
+        [HttpPut("confirm")]
+        public async Task<ActionResult> ConfirmPassword([FromBody] PasswordModel form)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(form);
+            try
+            {
+                var token = await _service.ConfirmPassword(form.Id, form.Password);
+                return Ok(new { token });
+            }
+            catch (MongoException ex)
+            {
+                return Unauthorized(new { error = ex.Message });
+            }
+            catch (UserException ex)
+            {
+                return Unauthorized(new { error = ex.Message });
+            }
         }
     }
 }

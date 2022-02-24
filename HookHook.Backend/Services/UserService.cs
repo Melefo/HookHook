@@ -105,7 +105,7 @@ namespace HookHook.Backend.Services
             return _db.SaveUser(user);
         }
 
-        public async Task<User> Register(User user)
+        public User Register(User user)
         {
             var existing = _db.GetUserByIdentifier(user.Email);
 
@@ -148,7 +148,7 @@ namespace HookHook.Backend.Services
 
         public string Verify(string id)
         {
-            var user = _db.GetUser(id);
+            var user = _db.GetUserByRandomId(id);
 
             if (user == null)
                 throw new MongoException("User not found");
@@ -156,6 +156,43 @@ namespace HookHook.Backend.Services
                 throw new UserException(TypeUserException.Email, "Email already verified");
 
             user.Verified = true;
+            user.GenerateRandomId();
+            _db.SaveUser(user);
+
+            return CreateJwt(user);
+        }
+
+        public async Task RecoverPassword(string username, string origin)
+        {
+            var user = _db.GetUserByIdentifier(username);
+            if (user == null)
+                return;
+            if (user.Email == null)
+                return;
+            user.GenerateRandomId();
+            _db.SaveUser(user);
+            var html = $@"
+<html>
+    <body>
+        <h1>Welcome back to HookHook!</h1>
+        <p>Please <a href=""{origin}/confirm/{user.RandomId}"">click here</a> to reset your password.</p>
+        <p>⚠️ If you didn't ask to reset your password, delete this mail.</p>
+    </body>
+</html>";
+            await SendMail(user.Email, "Recover your password", html);
+        }
+
+        public async Task<string> ConfirmPassword(string id, string password)
+        {
+            var user = _db.GetUserByRandomId(id);
+            if (user == null)
+                throw new MongoException("User not found");
+            if (user.Email == null)
+                throw new UserException(TypeUserException.Email, "Only users with email can reset their password");
+
+            user.Password = PasswordHash.HashPassword(password);
+            user.Verified = true;
+            user.GenerateRandomId();
             _db.SaveUser(user);
 
             return CreateJwt(user);

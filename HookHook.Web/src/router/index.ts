@@ -6,6 +6,8 @@ import Dashboard from '@/views/DashboardView.vue'
 import OAuth from '@/views/OAuthView.vue'
 import Admin from '@/views/AdminView.vue'
 import Verify from "@/views/VerifyView.vue"
+import Forgot from "@/views/ForgotPasswordView.vue"
+import Confirm from "@/views/ConfirmPasswordView.vue"
 import store from '@/store'
 
 const routes = [
@@ -62,7 +64,24 @@ const routes = [
       onlyGuest: true
     },
     props: true
-  }
+  },
+  {
+    path: '/forgot',
+    name: 'forgot',
+    component: Forgot,
+    meta: {
+      onlyGuest: true
+    }
+  },
+  {
+    path: '/confirm/:id',
+    name: 'confirm',
+    component: Confirm,
+    meta: {
+      onlyGuest: true
+    },
+    props: true
+  },
 ]
 
 const router = createRouter({
