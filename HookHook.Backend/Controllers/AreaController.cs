@@ -61,8 +61,6 @@ namespace HookHook.Backend.Controllers
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
             for (int i = 0; i < area.Reactions.Length; i++) {
-                Console.WriteLine(area.Reactions[i].AccountId);
-
                 reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountId));
             }
 
@@ -135,12 +133,9 @@ namespace HookHook.Backend.Controllers
 
             Entities.Area areaEntity = CreateEntityFromModel(area, user);
 
-            Console.WriteLine("About to add areaEntity");
             user.Areas.Add(areaEntity);
-            Console.WriteLine("About to save");
             _db.SaveUser(user);
 
-            Console.WriteLine("Done");
             return Ok(areaEntity);
         }
 

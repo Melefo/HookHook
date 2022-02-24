@@ -24,7 +24,6 @@ namespace HookHook.Backend.Utilities
                 return default;
             if (response.StatusCode == HttpStatusCode.NoContent)
                 return default;
-            Console.WriteLine(await response.Content.ReadAsStringAsync());
             return await response.Content.ReadFromJsonAsync<T>(new JsonSerializerOptions()
             {
                 IncludeFields = true

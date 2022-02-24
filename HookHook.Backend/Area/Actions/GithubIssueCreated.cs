@@ -37,7 +37,6 @@ namespace HookHook.Backend.Actions
             // * get issues and store them
             var currentRepositoryIssues = GetIssues(userEntity).GetAwaiter().GetResult();
             foreach (var issue in currentRepositoryIssues) {
-                Console.WriteLine("Getting existing issues: " + issue.Id.ToString());
                 StoredIssues.Add(issue.Id);
             }
         }
@@ -67,7 +66,6 @@ namespace HookHook.Backend.Actions
 
                 // await reaction.Execute();
                 StoredIssues.Add(issue.Id);
-                Console.WriteLine("Found a new issue");
 
                 return (issue.Title, true);
             }
