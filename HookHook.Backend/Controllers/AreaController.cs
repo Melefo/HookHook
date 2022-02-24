@@ -198,6 +198,18 @@ namespace HookHook.Backend.Controllers
             return Ok();
         }
 
+        [HttpGet("get/{id}")]
+        public async Task<ActionResult<Entities.Area>> GetArea(string id)
+        {
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
+            if (user == null)
+                return BadRequest();
+            var area = user.Areas.SingleOrDefault(x => x.Id == id);
+            if (area == null)
+                return BadRequest();
+            return Ok(area);
+        }
+
         public class UserArea
         {
             public string Id { get; set; }
