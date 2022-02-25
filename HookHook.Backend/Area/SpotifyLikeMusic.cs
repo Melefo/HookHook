@@ -21,7 +21,7 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public SpotifyLikeMusic(string songTitle, string artistName, string accountId, User userEntity)
+        public SpotifyLikeMusic([ParameterName("Song title")] string songTitle, [ParameterName("Artist name")] string artistName, string accountId, User userEntity)
         {
             SongTitle = songTitle;
             ArtistName = artistName;
@@ -34,7 +34,7 @@ namespace HookHook.Backend.Area
             }
         }
 
-        private async Task<Paging<SavedTrack>> GetLikedSongs(Entities.User user)
+        private async Task<Paging<SavedTrack>> GetLikedSongs(User user)
         {
             _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 

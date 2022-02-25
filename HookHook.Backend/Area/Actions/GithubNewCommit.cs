@@ -39,7 +39,7 @@ namespace HookHook.Backend.Area.Actions
 
         public string AccountId { get; set; }
 
-        public GithubNewCommit(string user, string repository, string accountId, Entities.User userEntity)
+        public GithubNewCommit([ParameterName("Username")] string user, [ParameterName("Repository name")] string repository, string accountId, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;

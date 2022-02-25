@@ -21,7 +21,7 @@ namespace HookHook.Backend.Area.Actions
         public string _clientId { get; private init; }
 
 
-        public TwitchLiveStarted(string user, string accountId, User userEntity, IConfiguration config)
+        public TwitchLiveStarted([ParameterName("Username")] string user, string accountId, User userEntity, IConfiguration config)
         {
             UserName = user;
             isLive = false;
@@ -30,7 +30,7 @@ namespace HookHook.Backend.Area.Actions
             _clientId = config["Twitch:ClientId"];
         }
 
-        public async Task<(string?, bool)> Check(Entities.User user)
+        public async Task<(string?, bool)> Check(User user)
         {
             _twitchClient = new TwitchAPI();
             _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken;

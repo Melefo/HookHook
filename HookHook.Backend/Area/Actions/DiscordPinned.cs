@@ -20,7 +20,7 @@ namespace HookHook.Backend.Area.Actions
         [BsonIgnore]
         private DiscordRestClient _client = new();
 
-        public DiscordPinned(string guildId, string channelId, string accountId)
+        public DiscordPinned([ParameterName("Guild ID")] string guildId, [ParameterName("Channel ID")] string channelId, string accountId)
         {
             Guild = ulong.Parse(guildId);
             Channel = ulong.Parse(channelId);

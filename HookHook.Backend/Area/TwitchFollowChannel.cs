@@ -20,7 +20,7 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public TwitchFollowChannel(string user, string accountId, User userEntity)
+        public TwitchFollowChannel([ParameterName("Username")] string user, string accountId, User userEntity)
         {
             UserName = user;
             AccountId = accountId;

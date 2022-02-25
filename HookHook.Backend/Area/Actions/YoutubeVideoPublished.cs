@@ -20,7 +20,7 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public YoutubeVideoPublished(string channel, GoogleService googleService, string accountId)
+        public YoutubeVideoPublished([ParameterName("Channel name")] string channel, GoogleService googleService, string accountId)
         {
             Channel = channel;
             _googleService = googleService;

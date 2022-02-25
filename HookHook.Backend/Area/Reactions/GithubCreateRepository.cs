@@ -16,12 +16,10 @@ namespace HookHook.Backend.Reactions
 
         [BsonIgnore]
         public GitHubClient _githubClient;
-        [BsonIgnore]
-        private readonly HttpClient _httpClient = new();
 
         public string AccountId { get; set; }
 
-        public GithubCreateRepository(string repositoryName, string description, string accountId)
+        public GithubCreateRepository([ParameterName("Repository name")] string repositoryName, [ParameterName("Repository description")] string description, string accountId)
         {
             RepositoryName = repositoryName;
             Description = description;

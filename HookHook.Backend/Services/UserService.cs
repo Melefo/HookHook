@@ -182,7 +182,7 @@ namespace HookHook.Backend.Services
             await SendMail(user.Email, "Recover your password", html);
         }
 
-        public async Task<string> ConfirmPassword(string id, string password)
+        public string ConfirmPassword(string id, string password)
         {
             var user = _db.GetUserByRandomId(id);
             if (user == null)

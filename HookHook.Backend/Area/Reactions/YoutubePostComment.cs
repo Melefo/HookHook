@@ -20,7 +20,7 @@ namespace HookHook.Backend.Reactions
 
         // * faudrait prendre le channelName aussi pour être sûr
         // * ou le lien plutôt... et à la limite on parse l'id dessus
-        public YoutubePostComment(string videoName, string comment, GoogleService googleService, string accountId)
+        public YoutubePostComment([ParameterName("Video name")] string videoName, [ParameterName("Comment content")] string comment, GoogleService googleService, string accountId)
         {
             VideoName = videoName;
             Comment = comment;

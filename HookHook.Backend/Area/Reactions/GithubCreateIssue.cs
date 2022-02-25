@@ -24,7 +24,7 @@ namespace HookHook.Backend.Reactions
 
         public string AccountId { get; set; }
 
-        public GithubCreateIssue(string user, string repository, string title, string body, string accountId)
+        public GithubCreateIssue([ParameterName("Username")] string user, [ParameterName("Repository")] string repository, [ParameterName("Issue title")] string title, [ParameterName("Issue body")] string body, string accountId)
         {
             UserName = user;
             Repository = repository;

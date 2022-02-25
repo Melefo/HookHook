@@ -18,7 +18,7 @@ namespace HookHook.Backend.Area.Reactions
         [BsonIgnore]
         private DiscordWebhookClient _client;
 
-        public DiscordWebhook(string url, string message, string accountId)
+        public DiscordWebhook([ParameterName("Webhook URL")] string url, string message, string accountId)
         {
             Url = url;
             Message = message;

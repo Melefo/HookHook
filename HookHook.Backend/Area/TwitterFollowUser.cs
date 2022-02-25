@@ -26,7 +26,7 @@ namespace HookHook.Backend.Area
 
         public string AccountId { get; set; }
 
-        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string accountId, User userEntity)
+        public TwitterFollowUser([ParameterName("Username")] string user, TwitterService service, IConfiguration config, string accountId, User userEntity)
         {
             UserName = user;
             _clientId = config["Twitter:ClientId"];

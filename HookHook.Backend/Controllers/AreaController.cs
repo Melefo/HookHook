@@ -109,14 +109,23 @@ namespace HookHook.Backend.Controllers
 
                 var parameters = service.GetConstructors()[0].GetParameters();
                 // * on esquive le serviceAccountId, c'est pas au user de le rentrer
-                var strParams = parameters.Where(x => x.ParameterType == stringType && x.Name != "accountId").ToArray();
+                /*var strParams = parameters.Where(x => x.ParameterType == stringType && x.Name != "accountId").ToArray();
 
                 var attr = service.GetCustomAttribute<ServiceAttribute>()!;
 
                 if (actionType.IsAssignableFrom(service))
                     servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", strParams.Select(x => x.Name).ToArray()!));
                 if (reactionType.IsAssignableFrom(service))
-                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", strParams.Select(x => x.Name).ToArray()!));
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", strParams.Select(x => x.Name).ToArray()!));*/
+
+                var @params = parameters.Where(x => x.GetCustomAttribute<ParameterNameAttribute>() != null).Select(x => x.GetCustomAttribute<ParameterNameAttribute>()!.Name).ToArray();
+
+                var attr = service.GetCustomAttribute<ServiceAttribute>()!;
+
+                if (actionType.IsAssignableFrom(service))
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", @params));
+                if (reactionType.IsAssignableFrom(service))
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", @params));
             }
             return Ok(servicesResponse);
         }

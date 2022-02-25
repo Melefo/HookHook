@@ -25,7 +25,7 @@ namespace HookHook.Backend.Actions
 
         public string AccountId { get; set; }
 
-        public GithubIssueCreated(string user, string repository, string accountId, MongoService db, Entities.User userEntity)
+        public GithubIssueCreated([ParameterName("Username")] string user, [ParameterName("Repository name")] string repository, string accountId, MongoService db, Entities.User userEntity)
         {
             UserName = user;
             Repository = repository;

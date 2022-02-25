@@ -21,20 +21,17 @@ namespace HookHook.Backend.Area
 
         public List<long> Tweets { get; private init; } = new();
 
-        private IConfiguration _config;
-
         public string _clientId { get; private init; }
         public string _clientSecret { get; private init;}
 
         public string AccountId { get; set; }
 
-        public TwitterTweetHashtag(string hashtag, IConfiguration config, string accountId, string tweetContent = "")
+        public TwitterTweetHashtag([ParameterName("Hashtag")] string hashtag, IConfiguration config, string accountId, string tweetContent = "")
         {
             Hashtag = hashtag;
             TweetContent = tweetContent;
             _clientId = config["Twitter:ClientId"];
             _clientSecret = config["Twitter:ClientSecret"];
-            _config = config;
             AccountId = accountId;
         }
 

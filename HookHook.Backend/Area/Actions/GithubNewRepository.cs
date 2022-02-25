@@ -19,7 +19,7 @@ namespace HookHook.Backend.Actions
 
         public string AccountId { get; set; }
 
-        public GithubNewRepository(string user, string accountId, Entities.User userEntity)
+        public GithubNewRepository([ParameterName("Username")] string user, string accountId, Entities.User userEntity)
         {
             UserName = user;
             AccountId = accountId;
