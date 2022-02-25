@@ -50,6 +50,54 @@ const signIn = {
             }
             return {};
         },
+        async verify({ commit }: any, id: string) {
+            const res = await fetch("/api/signin/verify/" + id, {
+                method: 'PUT',
+            })
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                const { token, error, errors } = await res.json();
+                commit('login', token);
+                return { error, errors };
+            }
+            return {};
+        },
+        async forgot({ commit }: any, username: any) {
+            const res = await fetch("/api/signin/forgot/" + username, {
+                method: 'PUT'
+            })
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                const { error, errors } = await res.json();
+                return { error, errors };
+            }
+            return {};
+        },
+        async confirmPassword({ commit }: any, json: string) {
+            const res = await fetch("/api/signin/confirm/", {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(json)
+            })
+            if (res.status === 500) {
+                return { error: "Backend unavailable" };
+            }
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
+                const { token, error, errors } = await res.json();
+                commit('login', token);
+                return { error, errors };
+            }
+            return {};
+        },
         async logout({ commit }: any) {
             commit('login', null);
             const state: any = store.state;

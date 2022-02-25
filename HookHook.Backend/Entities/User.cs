@@ -20,6 +20,11 @@ namespace HookHook.Backend.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; private init; } = ObjectId.GenerateNewId().ToString();
 
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? RandomId { get; set; }
+
+        public bool Verified { get; set; }
+
         /// <summary>
         /// User username
         /// </summary>
@@ -70,7 +75,11 @@ namespace HookHook.Backend.Entities
             FirstName = form.FirstName;
             LastName = form.LastName;
             Password = form.Password;
+            GenerateRandomId();
         }
+
+        public void GenerateRandomId() =>
+            RandomId = ObjectId.GenerateNewId().ToString();
     }
 
     public class OAuthAccount

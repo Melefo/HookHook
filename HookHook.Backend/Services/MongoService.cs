@@ -88,6 +88,9 @@ namespace HookHook.Backend.Services
         public User? GetUserByIdentifier(string identifier) =>
             _usersCollection.Find(x => x.Username == identifier || x.Email == identifier).SingleOrDefault();
 
+        public User? GetUserByRandomId(string identifier) =>
+            _usersCollection.Find(x => x.RandomId == identifier).SingleOrDefault();
+
         public User? GetUserByProvider(Providers provider, string id) =>
             _usersCollection.Find(Builders<User>.Filter.Eq($"OAuthAccounts.{provider}.UserId", id)).SingleOrDefault();
 
