@@ -3,7 +3,7 @@
     class="
       transition-colors
       duration-200
-      bg-[#F9F9F9]
+      bg-[#f0f0f0]
       dark:bg-[#181A1E]
       min-h-screen min-w-screen
       p-10
