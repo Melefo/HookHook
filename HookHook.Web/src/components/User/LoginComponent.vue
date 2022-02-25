@@ -22,7 +22,10 @@
         :reverse="true"
         v-model="password"
       />
-      <Input type="submit" value="Login" :reverse="true" />
+      <Input type="submit" class="pb-5" value="Login" :reverse="true" />
+      <RouterLink to="/register">
+        <Input type="submit" value="Register"/>
+      </RouterLink>
     </form>
   </div>
 </template>
@@ -43,7 +46,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["login"]),
+    ...mapActions("signIn", ["login"]),
     async send() {
       const { errors, error } = await this.login({
         username: this.username,

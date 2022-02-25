@@ -1,21 +1,74 @@
 <template>
-  <div class="text-black mt-2 justify-start">
-    <DialogComponent text="Twitter" bgColor="#A3E7EE" src="twitter.svg"/>
-    <DialogComponent text="Spotify" bgColor="#B4E1DC" src="spotify.svg"/>
-    <DialogComponent text="Discord" bgColor="#D9D1EA" src="discord.svg"/>
-    <DialogComponent text="Github" bgColor="#F5CDCB" src="github.svg"/>
-    <DialogComponent text="Google" bgColor="#F8CBAA" src="google.svg"/>
-    <DialogComponent text="Twitch" bgColor="#FFFFC7" src="twitch.svg"/>
+  <div class="text-black justify-start">
+    <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name.toLowerCase() + '.svg'" :bgColor="color(item.name)">
+      <div v-for="(account, keyy) in accounts[item.name]" :key="account.userId" class="flex justify-between items-center mx-16">
+        <p>{{ account.username }}</p>
+        <button @click.prevent="async () => await deleteService(item.name, account.userId, keyy)">
+          <XIcon class="h-8" />
+        </button>
+      </div>
+      <component :is="item.name + 'Oauth'" :oauth="false">
+        ADD
+      </component>
+    </DialogComponent>
   </div>
 </template>
 
 <script lang="ts">
   import { defineComponent } from "vue";
   import DialogComponent from "@/components/DialogComponent.vue";
+  import { mapActions } from "vuex";
+  import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
+  import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+  import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
+  import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
+  import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
+  import GoogleOauth from "@/components/OAuth/GoogleOAuthComponent.vue";
+  import { XIcon } from "@heroicons/vue/solid";
 
   export default defineComponent ({
     name: 'OAuthButtonsComponent',
-    components: { DialogComponent },
+    components: { DialogComponent, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth, XIcon },
     props: ['text', 'bgColor', 'src'],
+    methods: {
+      ...mapActions("about", ["get"]),
+      ...mapActions("service", ["getAccounts", "deleteAccount"]),
+      async deleteService(provider: String, id: String, accountKey: number) {
+        await this.deleteAccount({provider: provider, id: id, key: accountKey});
+      },
+      color(name: string) {
+        name = name.toLowerCase();
+        switch (name) {
+          case 'twitter':
+            return "#A3E7EE";
+          case 'spotify':
+            return "#B4E1DC";
+          case 'discord':
+            return "#D9D1EA";
+          case 'github':
+            return "#F5CDCB";
+          case 'google':
+          case 'youtube':
+            return "#F8CBAA";
+          case 'twitch':
+            return "#FFFFC7";
+        }
+      }
+    },
+    computed: {
+      accounts(): any {
+        return this.$store.state.service.accounts;
+      },
+      services(): any {
+        return this.$store.state.about.info?.server?.services || []
+      }
+    },
+    created: async function() {
+      this.get().then(() => {
+        for (const service in this.services) {
+          this.getAccounts(this.services[service].name);
+        }
+      });
+    }
   });
 </script>

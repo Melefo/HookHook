@@ -1,9 +1,13 @@
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
+using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using SpotifyAPI.Web;
 
 namespace HookHook.Backend.Area
 {
+    [Service(Providers.Spotify, "Like a spotify music")]
     [BsonIgnoreExtraElements]
     public class SpotifyLikeMusic: IAction, IReaction
     {
@@ -11,28 +15,42 @@ namespace HookHook.Backend.Area
         public string ArtistName {get; set;}
 
         [BsonIgnore]
-        private SpotifyClient _spotifyClient = null;
+        private SpotifyClient? _spotifyClient;
 
         public List<string> StoredLibrary { get; private init; } = new();
 
-        public SpotifyLikeMusic(string songTitle, string artistName)
+        public string AccountId { get; set; }
+
+        public SpotifyLikeMusic(string songTitle, string artistName, string accountId, User userEntity)
         {
             SongTitle = songTitle;
             ArtistName = artistName;
+            AccountId = accountId;
+
+            var likedSongs = GetLikedSongs(userEntity).GetAwaiter().GetResult();
+
+            foreach (var song in likedSongs.Items!) {
+                StoredLibrary.Add(song.Track.Id);
+            }
+        }
+
+        private async Task<Paging<SavedTrack>> GetLikedSongs(Entities.User user)
+        {
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
+
+            var tracks = await _spotifyClient.Library.GetTracks();
+
+            return (tracks);
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
+            var tracks = await GetLikedSongs(user);
 
-            var tracks = await _spotifyClient.Library.GetTracks();
-
-            foreach (var item in tracks.Items) {
+            foreach (var item in tracks.Items!) {
                 if (StoredLibrary.Contains(item.Track.Id)) {
                     continue;
                 }
-
-                // todo save stored library
 
                 StoredLibrary.Add(item.Track.Id);
                 return (item.Track.Name, true);
@@ -41,9 +59,9 @@ namespace HookHook.Backend.Area
             return (null, false);
         }
 
-        public async Task Execute(User user)
+        public async Task Execute(User user, string actionInfo)
         {
-            _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             // * search song
             // * add song to library
@@ -52,7 +70,7 @@ namespace HookHook.Backend.Area
 
             // todo gestion d'erreur
 
-            LibrarySaveTracksRequest saveTracks = new (new List<string>() {searchResults.Tracks.Items[0].Id});
+            LibrarySaveTracksRequest saveTracks = new (new List<string>() {searchResults.Tracks.Items![0].Id});
             await _spotifyClient.Library.SaveTracks(saveTracks);
         }
     }

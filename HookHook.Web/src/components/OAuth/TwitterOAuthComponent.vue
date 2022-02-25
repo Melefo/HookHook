@@ -1,6 +1,9 @@
 <template>
   <a href="/login" @click.prevent="handleTwitter">
-    <img class="h-10" alt="twitter" src="@/assets/img/twitter.svg" />
+    <img v-if="oauth" class="h-10" alt="twitter" src="@/assets/img/twitter.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -15,12 +18,22 @@ export default defineComponent({
       errors: null,
     };
   },
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    },
+    list: {
+      type: null as any[]|null
+    }
+  },
   methods: {
-    ...mapActions("user", ["twitter", "authorize"]),
+    ...mapActions("signIn", ["twitter", "authorize"]),
+    ...mapActions("service", ["addTwitter"]),
     async handleTwitter() {
       window.removeEventListener("message", this.receiveTwitter);
 
-      var { url, error, errors } = await this.authorize("twitter");
+      var { url, error, errors } = await this.authorize("Twitter");
       if (url === null) {
         this.errors = errors || null;
         this.error = error || null;
@@ -44,18 +57,19 @@ export default defineComponent({
         return;
       }
       let data = Object.fromEntries(new URLSearchParams(event.data));
-      console.log(data);
       if (!data.oauth_token || !data.oauth_verifier) {
         return;
       }
       window.removeEventListener("message", this.receiveTwitter);
-      const { errors, error } = await this.twitter({token: data.oauth_token, verifier: data.oauth_verifier });
-      this.errors = errors || null;
-      this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      const info = this.oauth ? await this.twitter({token: data.oauth_token, verifier: data.oauth_verifier }) : await this.addTwitter({token: data.oauth_token, verifier: data.oauth_verifier });
+      this.errors = info.errors || null;
+      this.error = info.error || null;
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
-  },
+  }
 });
 </script>

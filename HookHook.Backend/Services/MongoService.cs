@@ -1,9 +1,9 @@
 using HookHook.Backend.Entities;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using System.Linq.Expressions;
 
 namespace HookHook.Backend.Services
 {
@@ -32,6 +32,33 @@ namespace HookHook.Backend.Services
         /// <param name="config">Host configuration</param>
         public MongoService(IConfiguration config)
         {
+            // var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
+
+            // foreach (var service in services)
+            // {
+            //     Type serviceType = service.GetType();
+            //     TODO BsonClassMap.RegisterClassMap<serviceType>(cm => cm.AutoMap());
+            // }
+
+            // * solution temporaire, j'ai cherché je trouve pas comment convertir un type var à un type générique
+            BsonClassMap.RegisterClassMap<Reactions.GithubCreateIssue>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Actions.GithubIssueCreated>(cm => {
+                cm.AutoMap();
+            });
+            BsonClassMap.RegisterClassMap<Actions.GithubNewRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Reactions.GithubCreateRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.GithubNewCommit>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Reactions.DiscordWebhook>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitterTweetHashtag>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.TwitchLiveStarted>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitterFollowUser>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.SpotifyLikeAlbum>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.SpotifyLikeMusic>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.TwitchFollowChannel>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<Area.Actions.DiscordPinned>(cm => cm.AutoMap());
+
+
+            BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));
             _client = new MongoClient(config["Mongo:Client"]);
             _db = _client.GetDatabase(config["Mongo:Database"]);
 
@@ -61,17 +88,14 @@ namespace HookHook.Backend.Services
         public User? GetUserByIdentifier(string identifier) =>
             _usersCollection.Find(x => x.Username == identifier || x.Email == identifier).SingleOrDefault();
 
-        public User? GetUserByDiscord(string id) =>
-            _usersCollection.Find(x => x.DiscordOAuth != null && x.DiscordOAuth.UserId == id).SingleOrDefault();
-
-        public User? GetUserByGitHub(string id) =>
-            _usersCollection.Find(x => x.GitHubOAuth != null && x.GitHubOAuth.UserId == id).SingleOrDefault();
+        public User? GetUserByProvider(Providers provider, string id) =>
+            _usersCollection.Find(Builders<User>.Filter.Eq($"OAuthAccounts.{provider}.UserId", id)).SingleOrDefault();
 
         /// <summary>
         /// Create and insert user inside database
         /// </summary>
         /// <param name="u">User accoutn</param>
-        public void CreateUser(User u) => 
+        public void CreateUser(User u) =>
             _usersCollection.InsertOne(u);
 
         /// <summary>
@@ -91,15 +115,5 @@ namespace HookHook.Backend.Services
             var result = _usersCollection.ReplaceOne(x => x.Id == user.Id, user);
             return result.IsAcknowledged && result.ModifiedCount == 1;
         }
-
-        public User? GetUserBySpotify(string id) =>
-            _usersCollection.Find(x => x.SpotifyOAuth != null && x.SpotifyOAuth.UserId == id).SingleOrDefault();
-
-        public User? GetUserByTwitch(string id) =>
-            _usersCollection.Find(x => x.TwitchOAuth != null && x.TwitchOAuth.UserId == id).SingleOrDefault();
-
-        public User? GetUserByTwitter(string id) =>
-            _usersCollection.Find(x => x.TwitterOAuth != null && x.TwitterOAuth.UserId == id).SingleOrDefault();
     }
-
 }

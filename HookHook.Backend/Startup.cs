@@ -3,6 +3,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using HookHook.Backend.Services;
+using System.Text.Json.Serialization;
+using FluentScheduler;
 
 namespace HookHook.Backend
 {
@@ -31,10 +33,18 @@ namespace HookHook.Backend
         {
             services.AddSingleton<MongoService>();
             services.AddSingleton<TwitterService>();
+            services.AddSingleton<DiscordService>();
+            services.AddSingleton<GoogleService>();
+            services.AddSingleton<TwitchService>();
+            services.AddSingleton<SpotifyService>();
+            services.AddSingleton<GitHubService>();
+            services.AddSingleton<AreaService>();
             services.AddScoped<UserService>();
-            // services.AddSingleton<GithubService>();
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+            {
+                x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HookHook", Version = "v1" });
@@ -80,7 +90,6 @@ namespace HookHook.Backend
 
             });
             services.AddRouting(x => x.LowercaseUrls = true);
-            services.AddSingleton<MongoService>();
         }
 
         /// <summary>
@@ -90,6 +99,8 @@ namespace HookHook.Backend
         /// <param name="env">Environment</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            JobManager.Initialize(app.ApplicationServices.GetService<AreaService>());
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();

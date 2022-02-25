@@ -49,7 +49,7 @@
 import { mapGetters } from 'vuex';
 export default {
   computed: {
-    ...mapGetters("user", ["isLoggedIn"])
+    ...mapGetters("signIn", ["isLoggedIn"])
   }
 }
 </script>

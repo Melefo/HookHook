@@ -1,6 +1,9 @@
 <template>
-  <a href="/" @click.prevent="handleDiscord">
-    <img class="h-10" alt="discord" src="@/assets/img/discord.svg" />
+  <a href="/login" @click.prevent="handleDiscord">
+    <img v-if="oauth" class="h-10" alt="discord" src="@/assets/img/discord.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -11,6 +14,12 @@ import DiscordOauth2 from "discord-oauth2";
 
 export default defineComponent({
   components: {},
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   data() {
       return {
           error: null,
@@ -18,7 +27,8 @@ export default defineComponent({
       }
   },
   methods: {
-    ...mapActions("user", ["discord"]),
+    ...mapActions("signIn", ["discord"]),
+    ...mapActions("service", ["addDiscord"]),
     async handleDiscord() {
       window.removeEventListener("message", this.receiveDiscord);
 
@@ -28,8 +38,9 @@ export default defineComponent({
       });
 
       const url = oauth.generateAuthUrl({
-        scope: ["identify", "guilds", "email"],
+        scope: ["identify", "guilds", "email", "bot"],
         state: Math.random().toString(36).slice(2),
+        permissions: 66568
       });
 
       let popup = window.open(
@@ -53,11 +64,13 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveDiscord);
-      const { errors, error } = await this.discord(data.code);
-      this.errors = errors || null;
-      this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      const info = this.oauth ? await this.discord(data.code) : await this.addDiscord(data.code);
+      this.errors = info.errors || null;
+      this.error = info.error || null;
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },

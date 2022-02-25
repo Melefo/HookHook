@@ -1,6 +1,9 @@
 <template>
   <a href="/login" @click.prevent="handleGithub">
-    <img class="h-10" alt="github" src="@/assets/img/github.svg" />
+    <img v-if="oauth" class="h-10" alt="github" src="@/assets/img/github.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -15,8 +18,15 @@ export default defineComponent({
       errors: null,
     };
   },
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
-    ...mapActions("user", ["github"]),
+    ...mapActions("signIn", ["github"]),
+    ...mapActions("service", ["addGitHub"]),
     async handleGithub() {
       window.removeEventListener("message", this.receiveGitHub);
 
@@ -45,11 +55,13 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveGitHub);
-      const { errors, error } = await this.github(data.code);
-      this.errors = errors || null;
-      this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      const info = this.oauth ? await this.github(data.code) : await this.addGitHub(data.code);
+      this.errors = info.errors || null;
+      this.error = info.error || null;
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },

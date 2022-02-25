@@ -1,4 +1,3 @@
-
 <template>
   <div class="flex flex-col items-center">
     <span class="text-white font-bold mb-2" v-if="!errors && !error && sent"
@@ -108,7 +107,7 @@ export default defineComponent({
     };
   },
   methods: {
-    ...mapActions("user", ["register"]),
+    ...mapActions("signIn", ["register"]),
     async send() {
       if (this.password !== this.confirm) {
         this.errors = {} as Errors;

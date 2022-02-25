@@ -19,15 +19,21 @@ namespace HookHook.Backend.Models
         [Required(ErrorMessage = "Component arguments are required")]
         public string[] Arguments {get; set;}
 
+       /// <summary>
+        /// AccountID
+        /// </summary>
+        public string AccountId { get; set; }
+
         /// <summary>
         /// AreaComponent constructor
         /// </summary>
         /// <param name="type">Type</param>
         /// <param name="arguments">Arguments</param>
-        public AreaComponent(string type, string[] arguments)
+        public AreaComponent(string type, string[] arguments, string accountId)
         {
             Type = type;
             Arguments = arguments;
+            AccountId = accountId;
         }
 
     }

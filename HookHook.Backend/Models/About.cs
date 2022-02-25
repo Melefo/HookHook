@@ -1,6 +1,7 @@
 ﻿
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
+using HookHook.Backend.Utilities;
 using System.Reflection;
 
 namespace HookHook.Backend.Models
@@ -86,7 +87,7 @@ namespace HookHook.Backend.Models
         /// Service class constructore
         /// </summary>
         /// <param name="name"></param>
-        public Service(string name, List<Type> areas)
+        public Service(Providers name, List<Type> areas)
         {
             Name = name;
             var iaction = typeof(IAction).GetTypeInfo();
@@ -96,19 +97,19 @@ namespace HookHook.Backend.Models
 
             foreach (var action in actionList)
             {
-                Actions.Add(new Action(action.Name, action.GetCustomAttribute<ServiceAttribute>().Description));
+                Actions.Add(new Action(action.Name, action.GetCustomAttribute<ServiceAttribute>()!.Description));
             }
 
             foreach (var reaction in reactionList)
             {
-                Reactions.Add(new Reaction(reaction.Name, reaction.GetCustomAttribute<ServiceAttribute>().Description));
+                Reactions.Add(new Reaction(reaction.Name, reaction.GetCustomAttribute<ServiceAttribute>()!.Description));
             }
         }
 
         /// <summary>
         /// Service Name
         /// </summary>
-        public string Name { get; set; }
+        public Providers Name { get; set; }
 
         /// <summary>
         /// Service List of Actions
@@ -134,7 +135,7 @@ namespace HookHook.Backend.Models
             CurrentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
-            var groupedServices = services.GroupBy(x => x.GetCustomAttribute<ServiceAttribute>().Name).ToDictionary(x => x.Key, x => x.ToList());
+            var groupedServices = services.GroupBy(x => x.GetCustomAttribute<ServiceAttribute>()!.Name).ToDictionary(x => x.Key, x => x.ToList());
             foreach (var service in groupedServices)
             {
                 Services.Add(new Service(service.Key, service.Value));

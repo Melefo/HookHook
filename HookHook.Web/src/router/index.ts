@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/views/HomeView.vue'
 import Login from '@/views/LoginView.vue'
+import Register from '@/views/RegisterView.vue'
 import Dashboard from '@/views/DashboardView.vue'
 import OAuth from '@/views/OAuthView.vue'
 import Admin from '@/views/AdminView.vue'
@@ -19,6 +20,14 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
+    meta: {
+      onlyGuest: true
+    }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
     meta: {
       onlyGuest: true
     }
@@ -53,13 +62,23 @@ const router = createRouter({
 
 
 router.beforeEach((to, from, next) => {
-  if (to.meta && to.meta.onlyAdmin && !store.getters["user/isAdmin"]) {
+  if (store.getters["signIn/isLoggedIn"]) {
+    const jwt = parseJwt(store.getters["signIn/token"]);
+    if (jwt !== null && jwt.exp < Date.now() / 1000) {
+        store.dispatch("signIn/logout");
+    }
+  }
+
+  if (to.meta && to.meta.onlyAdmin && !store.getters["signIn/isAdmin"]) {
     return next('/dashboard');
   }
-  if (to.meta && to.meta.onlyUser && !store.getters["user/isLoggedIn"]) {
+  if (to.meta && to.meta.onlyUser && !store.getters["signIn/isLoggedIn"]) {
     return next('/login');
   }
-  if (to.meta && to.meta.onlyGuest && store.getters["user/isLoggedIn"]) {
+  if (to.meta && to.meta.onlyUser && !store.getters["signIn/isLoggedIn"]) {
+    return next('/register');
+  }
+  if (to.meta && to.meta.onlyGuest && store.getters["signIn/isLoggedIn"]) {
     return next('/');
   }
   next();
@@ -70,12 +89,14 @@ declare interface Jwt {
   role: String,
   unique_name: String,
   given_name: String,
-  nbf: Date,
-  exp: Date,
-  iat: Date
+  nbf: Number,
+  exp: Number,
+  iat: Number
 }
 
-export function parseJwt(token: String): Jwt {
+export function parseJwt(token: String): Jwt|null {
+  if (token === null)
+    return null;
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
   const jsonPayload = decodeURIComponent(atob(base64).split("").map(function (c) {

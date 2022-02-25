@@ -1,9 +1,13 @@
+using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
+using HookHook.Backend.Services;
+using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using SpotifyAPI.Web;
 
 namespace HookHook.Backend.Area
 {
+    [Service(Providers.Spotify, "Like a spotify album")]
     [BsonIgnoreExtraElements]
     public class SpotifyLikeAlbum: IAction, IReaction
     {
@@ -11,32 +15,45 @@ namespace HookHook.Backend.Area
         public string ArtistName {get; set;}
 
         [BsonIgnore]
-        private SpotifyClient _spotifyClient = null;
+        private SpotifyClient? _spotifyClient;
 
         public List<string> StoredLibrary { get; private init; } = new();
 
-        public SpotifyLikeAlbum(string albumTitle, string artistName)
+        public string AccountId { get; set; }
+
+        public SpotifyLikeAlbum(string albumTitle, string artistName, string accountId, User userEntity)
         {
             AlbumTitle = albumTitle;
             ArtistName = artistName;
+            AccountId = accountId;
+
+            var albums = GetLikedAlbums(userEntity).GetAwaiter().GetResult();
+
+            foreach (var album in albums.Items!) {
+                StoredLibrary.Add(album.Album.Id);
+            }
+        }
+
+        private async Task<Paging<SavedAlbum>> GetLikedAlbums(Entities.User user)
+        {
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
+
+            var albums = await _spotifyClient.Library.GetAlbums();
+
+            return (albums);
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
-            _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
+            var albums = await GetLikedAlbums(user);
 
-            var albums = await _spotifyClient.Library.GetAlbums();
-
-            foreach (var item in albums.Items) {
+            foreach (var item in albums.Items!) {
 
                 DateTime dateAdded = item.AddedAt;
-                // ! possible de trier avec dateAdded ;(
 
                 if (StoredLibrary.Contains(item.Album.Id)) {
                     continue;
                 }
-
-                // todo save stored library
 
                 StoredLibrary.Add(item.Album.Id);
                 return (item.Album.Name, true);
@@ -45,9 +62,9 @@ namespace HookHook.Backend.Area
             return (null, false);
         }
 
-        public async Task Execute(User user)
+        public async Task Execute(User user, string actionInfo)
         {
-            _spotifyClient ??= new SpotifyClient(user.SpotifyOAuth.AccessToken);
+            _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             // * search album
             // * add album to library
@@ -56,7 +73,7 @@ namespace HookHook.Backend.Area
 
             // todo gestion d'erreur
 
-            LibrarySaveAlbumsRequest saveAlbums = new (new List<string>() {searchResults.Albums.Items[0].Id});
+            LibrarySaveAlbumsRequest saveAlbums = new (new List<string>() {searchResults.Albums.Items![0].Id});
             await _spotifyClient.Library.SaveAlbums(saveAlbums);
         }
     }

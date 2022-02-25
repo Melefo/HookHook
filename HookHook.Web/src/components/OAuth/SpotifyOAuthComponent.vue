@@ -1,6 +1,9 @@
 <template>
   <a href="/login" @click.prevent="handleSpotify">
-    <img class="h-10" alt="spotify" src="@/assets/img/spotify.svg" />
+    <img v-if="oauth" class="h-10" alt="spotify" src="@/assets/img/spotify.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -15,25 +18,33 @@ export default defineComponent({
       errors: null,
     };
   },
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
-    ...mapActions("user", ["spotify"]),
+    ...mapActions("signIn", ["spotify"]),
+    ...mapActions("service", ["addSpotify"]),
     async handleSpotify() {
       window.removeEventListener("message", this.receiveSpotify);
 
-      var scopes = "";
-      scopes += "user-read-email";
-      scopes += " user-read-private";
-      scopes += " user-library-modify";
-      scopes += " user-library-read";
-      scopes += " playlist-modify-private";
-      scopes += " playlist-read-private";
-      scopes += " playlist-modify-public";
+      var scopes = [
+        "user-read-email",
+        "user-read-private",
+        "user-library-modify",
+        "user-library-read",
+        "playlist-modify-private",
+        "playlist-read-private",
+        "playlist-modify-public"
+      ];
 
       const url = `https://accounts.spotify.com/authorize?client_id=${
         process.env.VUE_APP_SPOTIFY_CLIENTID
       }&redirect_uri=${
         process.env.VUE_APP_SPOTIFY_REDIRECT
-      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes}`;
+      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes.join(' ')}`;
       let popup = window.open(
         url,
         "_blank",
@@ -54,11 +65,13 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveSpotify);
-      const { errors, error } = await this.spotify(data.code);
-      this.errors = errors || null;
-      this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      const info = this.oauth ? await this.spotify(data.code) : await this.addSpotify(data.code);
+      this.errors = info.errors || null;
+      this.error = info.error || null;
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },

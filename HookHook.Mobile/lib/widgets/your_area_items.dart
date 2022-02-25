@@ -6,14 +6,15 @@ import 'list_items.dart';
 class YourAreaList extends StatelessWidget {
 
   final double itemWidth;
+  final Axis axis;
 
-  const YourAreaList({Key? key, required this.itemWidth}) : super(key: key);
+  const YourAreaList({Key? key, required this.itemWidth, required this.axis}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView(
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-        scrollDirection: Axis.horizontal,
+        scrollDirection: Axis.vertical,
         children: <Widget> [
           ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),
           ListItem(width: itemWidth, cornerRadius: 25, color: const Color(0xFF3B3F43), content: const AreaItem(service: "Twitter", action: "on push", dateTime: "10 décembre 14h23")),

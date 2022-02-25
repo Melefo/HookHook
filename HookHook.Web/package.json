@@ -12,10 +12,11 @@
     "@heroicons/vue": "^1.0.5",
     "@tailwindcss/forms": "^0.4.0",
     "core-js": "^3.8.3",
+    "dayjs": "^1.10.7",
     "discord-oauth2": "^2.9.0",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
-    "vue3-carousel": "^0.1.36",
+    "vue3-google-oauth2": "^1.0.6",
     "vuex": "^4.0.0",
     "vuex-persistedstate": "^4.1.0"
   },

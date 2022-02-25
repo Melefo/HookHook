@@ -1,6 +1,9 @@
 <template>
   <a href="/login" @click.prevent="handleTwitch">
-    <img class="h-10" alt="twitch" src="@/assets/img/twitch.svg" />
+    <img v-if="oauth" class="h-10" alt="twitch" src="@/assets/img/twitch.svg" />
+    <div v-else>
+      <slot />
+    </div>
   </a>
 </template>
 
@@ -15,22 +18,33 @@ export default defineComponent({
       errors: null,
     };
   },
+  props: {
+    oauth: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
-    ...mapActions("user", ["twitch"]),
+    ...mapActions("signIn", ["twitch"]),
+    ...mapActions("service", ["addTwitch"]),
     async handleTwitch() {
       window.removeEventListener("message", this.receiveTwitch);
 
-      var scopes = "";
-      scopes += "channel:read:subscriptions";
-      scopes += " user:edit";
-      scopes += " user:read:email";
-      scopes += " user:read:follows"
+      var scopes = [
+        "channel:read:subscriptions",
+        "channel:manage:broadcast",
+        "user:read:broadcast",
+        "user:read:subscriptions",
+        "user:edit",
+        "user:read:email",
+        "user:read:follows"
+      ];
 
       const url = `https://id.twitch.tv/oauth2/authorize?client_id=${
         process.env.VUE_APP_TWITCH_CLIENTID
       }&redirect_uri=${
         process.env.VUE_APP_TWITCH_REDIRECT
-      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes}`;
+      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes.join(' ')}`;
       let popup = window.open(
         url,
         "_blank",
@@ -47,18 +61,18 @@ export default defineComponent({
         return;
       }
 
-      // * on devrait cross check le state ?
-
       let data = Object.fromEntries(new URLSearchParams(event.data));
       if (!data.code) {
         return;
       }
       window.removeEventListener("message", this.receiveTwitch);
-      const { errors, error } = await this.twitch(data.code);
-      this.errors = errors || null;
-      this.error = error || null;
-      if (!this.error && !this.errors) {
-        this.$router.push("/dashboard");
+      const info = this.oauth ? await this.twitch(data.code) : await this.addTwitch(data.code);
+      this.errors = info.errors || null;
+      this.error = info.error || null;
+      if (this.oauth) {
+        if (!this.error && !this.errors) {
+          this.$router.push("/dashboard");
+        }
       }
     },
   },

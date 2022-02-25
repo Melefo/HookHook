@@ -7,150 +7,230 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HookHook.Backend.Actions;
 using HookHook.Backend.Reactions;
+using HookHook.Backend.Models;
+using HookHook.Backend.Attributes;
+using HookHook.Backend.Exceptions;
+using System.Reflection;
+using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class AreaController : ControllerBase
     {
-        public MongoService _db;
+        private readonly MongoService _db;
+        private readonly AreaService _area;
 
-        public Dictionary<string, Func<string[], IAction>> actionTypes = new();
-        public Dictionary<string, Func<string[], IReaction>> reactionTypes = new();
+        public Dictionary<string, Func<string[], string, User, IAction>> actionTypes = new();
+        public Dictionary<string, Func<string[], string, User, IReaction>> reactionTypes = new();
 
-        public AreaController(MongoService db, IConfiguration config)
+        public AreaController(MongoService db, TwitterService twitterService, GoogleService googleService, AreaService area, IConfiguration config)
         {
             _db = db;
+            _area = area;
 
-            actionTypes.Add("DiscordPinned", (string[] args) => new DiscordPinned(ulong.Parse(args[0]), ulong.Parse(args[1])));
-            actionTypes.Add("GithubIssueCreated", (string[] args) => new GithubIssueCreated(args[0], args[1]));
-            actionTypes.Add("GithubNewCommit", (string[] args) => new GithubNewCommit(args[0], args[1]));
-            actionTypes.Add("GithubNewRepository", (string[] args) => new GithubNewRepository(args[0]));
-            actionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
-            actionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
-            actionTypes.Add("TwitchLiveStarted", (string[] args) => new TwitchLiveStarted(args[0]));
-            actionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
+            actionTypes.Add("DiscordPinned", (string[] args, string accountId, User user) => new DiscordPinned(args[0], args[1], config["Discord:BotToken"]));
+            actionTypes.Add("GithubIssueCreated", (string[] args, string accountId, User user) => new GithubIssueCreated(args[0], args[1], accountId, _db, user));
+            actionTypes.Add("GithubNewCommit", (string[] args, string accountId, User user) => new GithubNewCommit(args[0], args[1], accountId, user));
+            actionTypes.Add("GithubNewRepository", (string[] args, string accountId, User user) => new GithubNewRepository(args[0], accountId, user));
+            actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId, user));
+            actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId, user));
+            actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId, user, config));
+            actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId, user));
+            actionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId, user));
+            actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId));
+            actionTypes.Add("YoutubeVideoPublished", (string[] args, string accountId, User user) => new YoutubeVideoPublished(args[0], googleService, accountId));
 
-            reactionTypes.Add("DiscordWebhook", (string[] args) => new DiscordWebhook(args[0], args[1]));
-            reactionTypes.Add("GithubCreateRepository", (string[] args) => new GithubCreateRepository(args[0], args[1]));
-            reactionTypes.Add("GithubCreateIssue", (string[] args) => new GithubCreateIssue(args[0], args[1], args[1], args[2]));
-            reactionTypes.Add("SpotifyLikeAlbum", (string[] args) => new SpotifyLikeAlbum(args[0], args[1]));
-            reactionTypes.Add("SpotifyLikeMusic", (string[] args) => new SpotifyLikeMusic(args[0], args[1]));
-            reactionTypes.Add("TwitchFollowChannel", (string[] args) => new TwitchFollowChannel(args[0]));
+            reactionTypes.Add("DiscordWebhook", (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], accountId));
+            reactionTypes.Add("GithubCreateRepository", (string[] args, string accountId, User user) => new GithubCreateRepository(args[0], args[1], accountId));
+            reactionTypes.Add("GithubCreateIssue", (string[] args, string accountId, User user) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId));
+            reactionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId, user));
+            reactionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId, user));
+            reactionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId, user));
+            reactionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId, user));
+            reactionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId, args[1]));
+            reactionTypes.Add("YoutubePostComment", (string[] args, string accountId, User user) => new YoutubePostComment(args[0], args[1], googleService, accountId));
+
         }
 
-        Entities.Area CreateEntityFromModel(Models.Area area)
+        private Entities.Area CreateEntityFromModel(AreaModel area, User user)
         {
-            Console.WriteLine("OKAY HERE");
             // * create an IAction from area.Action.type
-            IAction action = actionTypes[area.Action.Type](area.Action.Arguments);
-            Console.WriteLine("OKAY HERE");
+            IAction action = actionTypes[area.Action.Type](area.Action.Arguments, area.Action.AccountId, user);
 
             // * create list of IReactions from area.Reactions
             List<IReaction> reactions = new();
-            for (int i = 0; i < area.Reactions.Length; i++) {
-                Console.WriteLine($"Reaction {i} has {area.Reactions[i].Arguments.Length} args");
-
-                reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments));
-            }
-            Console.WriteLine("OKAY HERE");
+            for (int i = 0; i < area.Reactions.Length; i++)
+                reactions.Add(reactionTypes[area.Reactions[i].Type](area.Reactions[i].Arguments, area.Reactions[i].AccountId, user));
 
             // * create an area entity
-            Entities.Area areaEntity = new Entities.Area(action, reactions, area.Minutes);
-            return (areaEntity);
+            Entities.Area areaEntity = new Entities.Area(area.Name, action, reactions, area.Minutes);
+
+            return areaEntity;
         }
+
+        private class ServiceDescription
+        {
+            public Providers Name { get; set; }
+            public string ClassName { get; set; }
+            public string Description { get; set; }
+            // public int parameterCount { get; set; }
+
+            public string[] ParameterNames { get; set; }
+
+            public string AreaType { get; set; } // * ACTION or REACTION
+
+            public ServiceDescription(Providers name, string className, string description, string type, params string[] parameters)
+            {
+                Name = name;
+                ClassName = className;
+                Description = description;
+                AreaType = type;
+                ParameterNames = parameters;
+            }
+        }
+
+        [HttpGet("getServices")]
+        public ActionResult getServices()
+        {
+            // * retrieve classes that have the Service attribute, get their constructor and argument list
+            var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
+
+            // * response is an array containing:
+            List<ServiceDescription> servicesResponse = new();
+
+            var stringType = typeof(string);
+            var reactionType = typeof(IReaction);
+            var actionType = typeof(IAction);
+
+            foreach (var service in services) {
+
+                var parameters = service.GetConstructors()[0].GetParameters();
+                // * on esquive le serviceAccountId, c'est pas au user de le rentrer
+                var strParams = parameters.Where(x => x.ParameterType == stringType && x.Name != "accountId").ToArray();
+
+                var attr = service.GetCustomAttribute<ServiceAttribute>()!;
+
+                if (actionType.IsAssignableFrom(service))
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", strParams.Select(x => x.Name).ToArray()!));
+                if (reactionType.IsAssignableFrom(service))
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", strParams.Select(x => x.Name).ToArray()!));
+            }
+            return Ok(servicesResponse);
+        }
+
 
         // * create a new area
         [HttpPost("create")]
-        public async Task<ActionResult> CreateArea([FromBody] Models.Area area)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<UserArea> CreateArea([FromBody] AreaModel area)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
 
-            Entities.Area areaEntity = CreateEntityFromModel(area);
+            Entities.Area areaEntity = CreateEntityFromModel(area, user);
 
             user.Areas.Add(areaEntity);
             _db.SaveUser(user);
 
-            return Ok(areaEntity);
+            UserArea userArea = new(areaEntity.Id, areaEntity.Name, areaEntity.Action.GetProvider(), areaEntity.Reactions.Select(x => x.GetProvider()).ToArray(), areaEntity.LastUpdate);
+            return Ok(userArea);
         }
 
         // * modify -> add/remove reactions/action, so a new area ??
         // * PUT vu qu'on envoie un nouveau AREA je dirais
         [HttpPut("modify/{id}")]
-        public async Task<ActionResult> ModifyArea([FromBody] Models.Area area, string id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult ModifyArea([FromBody] AreaModel area, string id)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
-                return (BadRequest());
+                return BadRequest();
 
             // * find the AREA to modify and replace it...
-            for (int i = 0; i < user.Areas.Count; i++) {
-                if (user.Areas[i].Id == id) {
-                    Entities.Area areaEntity = CreateEntityFromModel(area);
+            var areaEntity = user.Areas.SingleOrDefault(x => x.Id == id);
+            if (areaEntity == null)
+                return BadRequest();
 
-                    user.Areas[i] = areaEntity;
-                    _db.SaveUser(user);
+            user.Areas.Remove(areaEntity);
+            user.Areas.Add(CreateEntityFromModel(area, user));
+            _db.SaveUser(user);
 
-                    return (Ok(areaEntity));
-                }
-            }
-            return (BadRequest());
+            return Ok(areaEntity);
         }
 
         // * delete -> rm area by ID
         [HttpDelete("delete/{id}")]
-        public async Task<ActionResult> DeleteArea(string id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult DeleteArea(string id)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
-                return (BadRequest());
+                return BadRequest();
 
-            // * il doit y avoir moyen plus stylé mais que vous voulez vous
-            for (int i = 0; i < user.Areas.Count; i++) {
-                if (user.Areas[i].Id == id) {
-                    user.Areas.RemoveAt(i);
-                    return(Ok());
-                }
-            }
-            return (BadRequest());
+            var area = user.Areas.SingleOrDefault(x => x.Id == id);
+            if (area == null)
+                return BadRequest();
+
+            user.Areas.Remove(area);
+            _db.SaveUser(user);
+
+            return NoContent();
         }
 
         // * trigger all areas
-        [HttpGet("TriggerAll")]
-        public async Task<ActionResult> TriggerAreas()
+        [HttpGet("trigger/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> TriggerUserAreas(string id)
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
+            if (!await _area.ExecuteUserArea(user, id))
+                return BadRequest();
+            return Ok();
+        }
 
-            Console.WriteLine("AFTER USER GET");
+        public class UserArea
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+            public Providers From { get; set; }
+            public Providers[] To { get; set; }
+            public long Date { get; set; }
 
-            for (int i = 0; i < user.Areas.Count; i++) {
-                // * bon pour le temps entre chaque lancement je sais pas si tu veux check ici ou dans Launch
-                await user.Areas[i].Launch(user);
+            public UserArea(string id, string name, Providers from, Providers[] to, DateTime date)
+            {
+                Id = id;
+                Name = name;
+                From = from;
+                To = to;
+                Date = (long)(date - DateTime.UnixEpoch).TotalSeconds;
             }
-            return Ok();
         }
 
-
-        [Authorize]
-        [HttpPost("poc")]
-        public async Task<ActionResult> POC(string githubUsername, string repository, string discordWebhook)
+        [HttpGet("all")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<UserArea>> GetAllUserAreas()
         {
-            var user = _db.GetUser(HttpContext.User.Identity.Name);
+            var user = _db.GetUser(HttpContext.User.Identity!.Name!);
             if (user == null)
                 return BadRequest();
-            var action = new GithubIssueCreated(githubUsername, repository);
-            (string? commit, bool res) = await action.Check(user);
 
-            if (!res)
-                BadRequest();
-            var reaction = new DiscordWebhook(discordWebhook, commit);
-            await reaction.Execute(user);
-            return Ok();
+            List<UserArea> list = new();
+            foreach (var area in user.Areas)
+                list.Add(new(area.Id, area.Name, area.Action.GetProvider(), area.Reactions.Select(x => x.GetProvider()).ToArray(), area.LastUpdate));
+
+            return list;
         }
+
     }
 }
