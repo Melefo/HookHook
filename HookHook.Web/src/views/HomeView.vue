@@ -16,7 +16,7 @@
           </div>
         </router-link>
         <router-link v-else to="/dashboard">
-          <div class="button-74">
+          <div class="button-74 transition-colors duration-200">
             <p>Dashboard</p>
           </div>
         </router-link>
@@ -43,7 +43,7 @@
           text-center
         "
       >
-        <h3 class="text-xl mb-2">Lack of communication?</h3>
+        <h3 class="text-xl mb-2 text-[#A3E7EE] dark:text-[#f09113]">Lack of communication?</h3>
         <p>Automate the publishing of your content on your social networks</p>
         <p>When <b>X</b>, Send <b>Y</b> to <b>Z</b></p>
       </div>
@@ -63,7 +63,7 @@
         <img class="h-20" src="@/assets/pinguin/maracas.gif" />
       </div>
       <div class="justify-center self-center text-center">
-        <h3 class="text-xl mb-2">
+        <h3 class="text-xl mb-2 dark:text-[#A3E7EE] text-[#f09113]">
           Want more time to devote to your personal life?
         </h3>
         <p>Automate all your repetitive tasks</p>
@@ -90,7 +90,7 @@
           text-center
         "
       >
-        <h3 class="text-xl mb-2">Want to share your creations?</h3>
+        <h3 class="text-xl mb-2 text-[#A3E7EE] dark:text-[#f09113]">Want to share your creations?</h3>
         <p>Share on only one platform and the rest will follow!</p>
         <p>When <b>X</b> is shared, share to <b>Y</b> and <b>Z</b></p>
       </div>
@@ -103,7 +103,7 @@
         <img class="h-32" src="@/assets/pinguin/dance.gif" />
       </div>
       <div class="justify-center self-center text-center">
-        <p>Creators :</p>
+        <h3 class="text-xl mb-2 dark:text-[#A3E7EE] text-[#f09113]">Creators</h3>
         <div class="flex justify-evenly flex-col lg:flex-row lg:gap-8">
           <a
             href="https://github.com/mllusar"
