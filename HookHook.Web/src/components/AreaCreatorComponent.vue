@@ -60,7 +60,7 @@
             rounded-md
             p-1.5
             mx-2
-            duration-500
+            duration-200
             hover:scale-105
           "
         />
@@ -81,7 +81,7 @@
           rounded-md
           p-1.5
           mx-2
-          duration-500
+          duration-200
           hover:scale-105
         "
       />
@@ -123,7 +123,7 @@
         p-1.5
         mx-2
         mt-4
-        duration-500
+        duration-200
         hover:scale-105
       "
       @click="createArea()"
