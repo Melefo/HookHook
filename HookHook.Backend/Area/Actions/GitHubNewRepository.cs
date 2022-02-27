@@ -4,44 +4,44 @@ using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Actions
+namespace HookHook.Backend.Area.Actions
 {
     [Service(Providers.GitHub, "new repository is created")]
     [BsonIgnoreExtraElements]
-    public class GithubNewRepository : IAction
+    public class GitHubNewRepository : IAction
     {
-        public string UserName {get; private init;}
-
-        [BsonIgnore]
-        public GitHubClient _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+        public string Username {get; private init;}
+        public string AccountId { get; set; }
 
         public List<long> StoredRepositories { get; private init; } = new();
 
-        public string AccountId { get; set; }
+        private GitHubClient _githubClient;
 
-        public GithubNewRepository(string user, string accountId, Entities.User userEntity)
+        [BsonConstructor]
+        public GitHubNewRepository() =>
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+
+        public GitHubNewRepository([ParameterName("Username")] string username, string accountId, Entities.User user) : this()
         {
-            UserName = user;
+            Username = username;
             AccountId = accountId;
 
-            // * get repos and store them
-            var currentRepositories = GetRepositories(userEntity).GetAwaiter().GetResult();
-            foreach (var repo in currentRepositories) {
+            var currentRepositories = GetRepositories(user).GetAwaiter().GetResult();
 
-                Console.WriteLine("Getting existing commits: " + repo.Id);
+            foreach (var repo in currentRepositories)
                 StoredRepositories.Add(repo.Id);
-            }
         }
 
         private async Task<IReadOnlyList<Repository>> GetRepositories(Entities.User user)
         {
-            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
-            var repositoriesForUser = await _githubClient.Repository.GetAllForUser(UserName);
+            var repositoriesForUser = await _githubClient.Search.SearchRepo(new SearchRepositoriesRequest()
+            {
+                User = Username
+            });
 
-            return (repositoriesForUser);
+            return repositoriesForUser.Items;
         }
 
         public async Task<(string?, bool)> Check(Entities.User user)

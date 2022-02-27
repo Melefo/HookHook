@@ -8,16 +8,12 @@ namespace HookHook.Backend.Services
 {
 	public class SpotifyService
 	{
-		private MongoService _db;
-
 		private readonly string _id;
 		private readonly string _secret;
 		private readonly string _redirect;
 
-		public SpotifyService(MongoService db, IConfiguration config)
+		public SpotifyService(IConfiguration config)
 		{
-			_db = db;
-
 			_id = config["Spotify:ClientId"];
 			_secret = config["Spotify:ClientSecret"];
 			_redirect = config["Spotify:Redirect"];
@@ -48,7 +44,6 @@ namespace HookHook.Backend.Services
 				return null;
 
 			user.ServicesAccounts[Providers.Spotify].Add(new(id, token.AccessToken, TimeSpan.FromSeconds(token.ExpiresIn), token.RefreshToken));
-			_db.SaveUser(user);
 			var current = await client.UserProfile.Current();
 			return new(id, current.DisplayName);
 		}

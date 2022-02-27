@@ -12,24 +12,24 @@ namespace HookHook.Backend.Area.Reactions
     {
         public string Url { get; private init; }
         public string Message { get; private init; }
-
         public string AccountId { get; set; }
 
-        [BsonIgnore]
-        private DiscordWebhookClient _client;
+        private readonly DiscordWebhookClient _client;
 
-        public DiscordWebhook(string url, string message, string accountId)
+        [BsonConstructor]
+        public DiscordWebhook(string url)
         {
             Url = url;
+            _client = new(url);
+        }
+
+        public DiscordWebhook([ParameterName("Webhook URL")] string url, [ParameterName("Message content")] string message, string accountId) : this(url)
+        {
             Message = message;
-            _client = new DiscordWebhookClient(Url);
             AccountId = accountId;
         }
 
-        public async Task Execute(User user, string actionInfo)
-        {
-            _client = new DiscordWebhookClient(Url);
+        public async Task Execute(User user, string actionInfo) =>
             await _client.SendMessageAsync(Message);
-        }
     }
 }

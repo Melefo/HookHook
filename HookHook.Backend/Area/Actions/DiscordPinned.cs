@@ -11,59 +11,61 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class DiscordPinned : IAction
     {
-        public ulong Guild { get; private init; }
-        public ulong Channel { get; private init; }
-        public List<ulong> PinnedMessages { get; private init; } = new();
-
+        public ulong GuildId { get; private init; }
+        public ulong ChannelId { get; private init; }
         public string AccountId { get; set; }
 
-        [BsonIgnore]
-        private DiscordRestClient _client = new();
+        public List<ulong> PinnedMessages { get; private init; } = new();
 
-        public DiscordPinned(string guildId, string channelId, string accountId)
+        private readonly string _botToken;
+        private readonly DiscordRestClient _client;
+
+        public DiscordPinned([ParameterName("Guild ID")] ulong guildId, [ParameterName("Channel ID")] ulong channelId, string accountId, string botToken) : this(botToken)
         {
-            Guild = ulong.Parse(guildId);
-            Channel = ulong.Parse(channelId);
+            GuildId = guildId;
+            ChannelId = channelId;
             AccountId = accountId;
 
-            _client = new();
-
-            _client.LoginAsync(TokenType.Bot, AccountId).GetAwaiter().GetResult();
-
-            var guild = _client.GetGuildAsync(Guild).GetAwaiter().GetResult();
-            if (guild == null)
+            var pinneds = GetPinned().GetAwaiter().GetResult();
+            if (pinneds == null)
                 return;
-            var channel = guild.GetTextChannelAsync(Channel).GetAwaiter().GetResult();
-            if (channel == null)
-                return;
-
-            var pinneds = channel.GetPinnedMessagesAsync().GetAwaiter().GetResult();
             foreach (var pinned in pinneds)
                 PinnedMessages.Add(pinned.Id);
         }
 
+        public DiscordPinned(string botToken)
+        {
+            _botToken = botToken;
+            _client = new();
+        }
+
+        public async Task<IReadOnlyCollection<RestMessage>?> GetPinned()
+        {
+            await _client.LoginAsync(TokenType.Bot, _botToken);
+
+            var guild = await _client.GetGuildAsync(GuildId);
+            if (guild == null)
+                return null;
+
+            var channel = await guild.GetTextChannelAsync(ChannelId);
+            if (channel == null)
+                return null;
+
+            return await channel.GetPinnedMessagesAsync();
+        }
+
         public async Task<(string?, bool)> Check(User user)
         {
-            _client ??= new();
-            await _client.LoginAsync(TokenType.Bot, AccountId);
-
-            var guild = await _client.GetGuildAsync(Guild);
-            if (guild == null)
-                return (null, false);
-            var channel = await guild.GetTextChannelAsync(Channel);
-            if (channel == null)
+            var pinneds = await GetPinned();
+            if (pinneds == null)
                 return (null, false);
 
-            var pinned = await channel.GetPinnedMessagesAsync();
-            foreach (var message in pinned)
+            foreach (var message in pinneds)
             {
                 if (PinnedMessages.Contains(message.Id))
                     continue;
-
-                // await reaction.Execute();
                 PinnedMessages.Add(message.Id);
 
-                // * send message.id to database ?
                 return (message.Content, true);
             }
             return (null, false);

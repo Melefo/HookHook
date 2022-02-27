@@ -167,13 +167,13 @@ namespace HookHook.Backend.Controllers
         }
 
         [HttpPut("confirm")]
-        public async Task<ActionResult> ConfirmPassword([FromBody] PasswordModel form)
+        public ActionResult ConfirmPassword([FromBody] PasswordModel form)
         {
             if (!ModelState.IsValid)
                 return BadRequest(form);
             try
             {
-                var token = await _service.ConfirmPassword(form.Id, form.Password);
+                var token = _service.ConfirmPassword(form.Id, form.Password);
                 return Ok(new { token });
             }
             catch (MongoException ex)

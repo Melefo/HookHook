@@ -10,42 +10,41 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class TwitchLiveStarted : IAction
     {
-        public string UserName {get; private init;}
-
-        [BsonIgnore]
-        public TwitchAPI _twitchClient = new TwitchAPI();
-
-        public bool isLive { get; private set; }
-
+        public string Username { get; private init; }
+        public string ClientId { get; private init; }
         public string AccountId { get; set; }
-        public string _clientId { get; private init; }
 
+        public bool IsLive { get; private set; }
 
-        public TwitchLiveStarted(string user, string accountId, User userEntity, IConfiguration config)
+        private readonly TwitchAPI _twitchClient;
+
+        public TwitchLiveStarted(string username, string accountId, string clientId) : this()
         {
-            UserName = user;
-            isLive = false;
+            Username = username;
             AccountId = accountId;
-
-            _clientId = config["Twitch:ClientId"];
+            ClientId = clientId;
         }
 
-        public async Task<(string?, bool)> Check(Entities.User user)
-        {
+        [BsonConstructor]
+        public TwitchLiveStarted() =>
             _twitchClient = new TwitchAPI();
+
+        public async Task<(string?, bool)> Check(User user)
+        {
             _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken;
-            _twitchClient.Settings.ClientId = _clientId;
+            _twitchClient.Settings.ClientId = ClientId;
 
-            var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userIds: new List<string>(){ UserName });
+            var streams = await _twitchClient.Helix.Streams.GetStreamsAsync(userLogins: new List<string>(){ Username });
 
-            // * on veut pas relancer si on savait deja qu'il était en stream
-            if (streams.Streams.Length > 0 && isLive == false) {
-                isLive = true;
+            if (streams.Streams.Length > 0) {
+                if (IsLive)
+                    return (null, false);
+                IsLive = true;
                 return (streams.Streams[0].ThumbnailUrl, true);
             }
-            isLive = false;
+            else
+                IsLive = false;
             return (null, false);
         }
-
     }
 }
