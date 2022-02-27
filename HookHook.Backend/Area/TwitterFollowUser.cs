@@ -12,30 +12,28 @@ namespace HookHook.Backend.Area
     [BsonIgnoreExtraElements]
     public class TwitterFollowUser: IAction, IReaction
     {
-        public string UserName {get; set;}
-
-        [BsonIgnore]
-        private Tokens? _twitterClient;
+        public string Username {get; set;}
+        public string AccountId { get; set; }
 
         public List<long> Followers { get; private init; } = new();
 
-        private IConfiguration _config;
+        private Tokens? _twitterClient;
+        private readonly string _clientId;
+        private readonly string _clientSecret;
 
-        public string _clientId { get; private init; }
-        public string _clientSecret { get; private init;}
-
-        public string AccountId { get; set; }
-
-        public TwitterFollowUser(string user, TwitterService service, IConfiguration config, string accountId, User userEntity)
+        public TwitterFollowUser(string clientId, string clientSecret)
         {
-            UserName = user;
-            _clientId = config["Twitter:ClientId"];
-            _clientSecret = config["Twitter:ClientSecret"];
-            _config = config;
+            _clientId = clientId;
+            _clientSecret = clientSecret;
+        }
+
+        public TwitterFollowUser([ParameterName("Username")] string username, string accountId, User user, string clientId, string clientSecret) : this(clientId, clientSecret)
+        {
+            Username = username;
             AccountId = accountId;
 
-            // * save existing followings
-            var existingFollowers = GetFollowers(userEntity).GetAwaiter().GetResult();
+            var existingFollowers = GetFollowers(user).GetAwaiter().GetResult();
+
             foreach (var follower in existingFollowers) {
                 if (!follower.Id.HasValue)
                     continue;
@@ -48,25 +46,36 @@ namespace HookHook.Backend.Area
             var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
-            var followers = await _twitterClient.Followers.ListAsync(_twitterClient.UserId);
+            var followers = await _twitterClient.Friends.ListAsync(_twitterClient.UserId, count: 200);
+            var list = new List<CoreTweet.User>();
 
-            return (followers);
+            while (followers.NextCursor != 0)
+            {
+                foreach (var follower in followers)
+                    list.Add(follower);
+                followers = await _twitterClient.Friends.ListAsync(_twitterClient.UserId, followers.NextCursor, count: 200);
+            }
+
+            foreach (var follower in followers)
+                list.Add(follower);
+
+            return followers;
         }
 
         public async Task<(string?, bool)> Check(User user)
         {
             var followers = await GetFollowers(user);
 
-            foreach (var follower in followers)
-            {
-                if (!follower.Id.HasValue)
-                    continue;
-                if (Followers.Contains(follower.Id.Value))
-                    continue;
+                foreach (var follower in followers)
+                {
+                    if (!follower.Id.HasValue)
+                        continue;
+                    if (Followers.Contains(follower.Id.Value))
+                        continue;
 
-                Followers.Add(follower.Id.Value);
-                return (follower.Name, true);
-            }
+                    Followers.Add(follower.Id.Value);
+                    return (follower.Name, true);
+                }
             return (null, false);
         }
 
@@ -76,7 +85,7 @@ namespace HookHook.Backend.Area
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var currentUser = await _twitterClient.Users.ShowAsync(_twitterClient.UserId);
-            await _twitterClient.Friendships.CreateAsync(UserName);
+            await _twitterClient.Friendships.CreateAsync(Username);
         }
     }
 }

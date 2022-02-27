@@ -182,7 +182,7 @@ namespace HookHook.Backend.Services
             await SendMail(user.Email, "Recover your password", html);
         }
 
-        public async Task<string> ConfirmPassword(string id, string password)
+        public string ConfirmPassword(string id, string password)
         {
             var user = _db.GetUserByRandomId(id);
             if (user == null)
@@ -208,6 +208,7 @@ namespace HookHook.Backend.Services
             {
                 new(ClaimTypes.Role, user.Role),
                 new(ClaimTypes.Name, user.Id),
+                new(ClaimTypes.NameIdentifier, user.Id)
             };
             if (user.Email != null)
                 claims.Add(new(ClaimTypes.Email, user.Email));

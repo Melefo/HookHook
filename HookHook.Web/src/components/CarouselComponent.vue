@@ -1,15 +1,44 @@
 <template>
   <div>
-    <Bloc v-for="(slide, key) in blocs" :key="key" class="dark:text-white text-black flex max-h-full flex-col justify-between my-2 sm:my-0">
+    <Bloc
+      v-for="(slide, key) in blocs"
+      :key="key"
+      class="
+        dark:text-white
+        text-black
+        flex
+        max-h-full
+        flex-col
+        justify-between
+        my-2
+        sm:my-0
+      "
+    >
       <div>{{ slide.name }}</div>
       <div class="flex flex-row items-center my-2">
-        <div class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(slide.from) }">
-          <img class="w-7 h-7 m-auto" :src="require(`@/assets/img/coloredsvg/${slide.from.toLowerCase()}.svg`)"/>
+        <div
+          class="flex w-[40px] h-[40px] rounded-xl"
+          :style="{ 'background-color': color(slide.from) }"
+        >
+          <img
+            class="w-7 h-7 m-auto"
+            :src="
+              require(`@/assets/img/coloredsvg/${slide.from.toLowerCase()}.svg`)
+            "
+          />
         </div>
         <ArrowNarrowRightIcon class="h-8 dark:text-white text-black mx-1" />
         <div class="gap-2 grid grid-cols-4">
-          <div v-for="(to, keyy) in slide.to" :key="keyy" class="flex w-[40px] h-[40px] rounded-xl" :style="{ 'background-color': color(to) }">
-            <img class="w-7 h-7 m-auto" :src="require(`@/assets/img/coloredsvg/${to.toLowerCase()}.svg`)"/>
+          <div
+            v-for="(to, keyy) in slide.to"
+            :key="keyy"
+            class="flex w-[40px] h-[40px] rounded-xl"
+            :style="{ 'background-color': color(to) }"
+          >
+            <img
+              class="w-7 h-7 m-auto"
+              :src="require(`@/assets/img/coloredsvg/${to.toLowerCase()}.svg`)"
+            />
           </div>
         </div>
       </div>
@@ -29,23 +58,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 import Bloc from "@/components/BlocComponent.vue";
-import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline"
-import { TrashIcon } from "@heroicons/vue/solid"
-import dayjs from 'dayjs';
-import { mapActions } from 'vuex';
+import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline";
+import { TrashIcon } from "@heroicons/vue/solid";
+import dayjs from "dayjs";
+import { mapActions } from "vuex";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 export default defineComponent({
-  name: 'CarouselComponent',
+  name: "CarouselComponent",
   components: {
-    Bloc, RefreshIcon, TrashIcon, ArrowNarrowRightIcon
+    Bloc,
+    RefreshIcon,
+    TrashIcon,
+    ArrowNarrowRightIcon,
   },
   computed: {
     blocs() {
       const that: any = this;
       return that.$store.state.area.areas;
-    }
+    },
   },
   methods: {
     ...mapActions("area", ["get", "delete", "trigger"]),
@@ -55,27 +88,44 @@ export default defineComponent({
     color(name: string) {
       name = name.toLowerCase();
       switch (name) {
-        case 'twitter':
+        case "twitter":
           return "#A3E7EE";
-        case 'spotify':
+        case "spotify":
           return "#B4E1DC";
-        case 'discord':
+        case "discord":
           return "#D9D1EA";
-        case 'github':
+        case "github":
           return "#F5CDCB";
-        case 'google':
+        case "google":
           return "#F8CBAA";
-        case 'twitch':
+        case "twitch":
           return "#FFFFC7";
       }
     },
     async deleteArea(id: string, key: number) {
       await this.delete(id);
       this.blocs.splice(key, 1);
+    },
+  },
+  data() {
+    return {
+      ws: new HubConnectionBuilder().withUrl("/api/area/hub", {
+        accessTokenFactory: () => this.$store.getters["signIn/token"],
+      }).withAutomaticReconnect().build(),
+    };
+  },
+  created: async function () {
+    await this.get();
+    await this.ws.start();
+    for (var area in this.blocs) {
+      this.ws.on(this.blocs[area].id, (e) => {
+        this.blocs[area].date = e;
+      });
+
     }
   },
-  created: async function() {
-    await this.get();
+  unmounted: async function() {
+    await this.ws.stop();
   }
 });
 </script>
