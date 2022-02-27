@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-row justify-center items-center whitespace-nowrap">
-      <img class="w-20 h-20" src="@/assets/pinguin/breakdance.gif" />
+      <img class="w-20 h-20" src="@/assets/pinguin/clap.gif" />
       <h2
         class="
           p-2
@@ -15,7 +15,7 @@
         Welcome to H<span class="blink">oo</span>kH<span class="blink">oo</span
         >k
       </h2>
-      <img class="w-20 h-20" src="@/assets/pinguin/breakdance.gif" />
+      <img class="w-20 h-20" src="@/assets/pinguin/clap.gif" />
     </div>
     <h2
       class="

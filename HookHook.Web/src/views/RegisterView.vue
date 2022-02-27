@@ -23,7 +23,7 @@
     text-2xl text-black
     dark:text-white
     "
-  >The best way to automate your work and make it more relaxing.</h2>
+  >Wanna try our service?</h2>
     <section
       class="
         flex flex-col justify-center items-center
@@ -37,18 +37,6 @@
         </div>
       </Bloc>
     </section>
-    <div class="flex flex-col xl:flex-row justify-evenly mt-20 hidden">
-      <img
-        class="object-contain w-40 h-40"
-        src="@/assets/pinguin/breakdance.gif"
-      />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/dance.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/clap.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/mop.gif" />
-      <img class="object-contain w-40 h-v" src="@/assets/pinguin/maracas.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/warp.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/photo.gif" />
-    </div>
   </div>
 </template>
 

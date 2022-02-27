@@ -16,13 +16,14 @@
         hover:bg-[#E2E2E2]
         active:bg-[#E9E9E9]
         hover:cursor-pointer
-        transition-colors
+        transition
         duration-200
+        hover:scale-105
       "
       :type="type"
       :value="value"
     />
-    <input v-else class="rounded-lg w-auto p-2 border-0" :type="type" :required="required" :placeholder="label" minlength="4" maxlength="256" @input="handleInput($event.target.value)" />
+    <input v-else class="rounded-lg w-auto p-2 border-0 transition-colors duration-200 dark:bg-white bg-[#E9E9E9]" :type="type" :required="required" :placeholder="label" minlength="4" maxlength="256" @input="handleInput($event.target.value)" />
   </div>
 </template>
 

@@ -30,7 +30,7 @@
       reaction-index="-1"
       :service-details="serviceDetails"
       verb="When"
-      area-type="Action"
+      areaType="Action"
     />
 
     <div
@@ -54,13 +54,13 @@
           class="
             h-10
             dark:bg-[#181A1E]
-            bg-[#F9F9F9]
-            dark:text-[#F9F9F9]
+            bg-[#f0f0f0]
+            dark:text-[#f0f0f0]
             text-[#181A1E]
             rounded-md
             p-1.5
             mx-2
-            duration-500
+            duration-200
             hover:scale-105
           "
         />
@@ -75,13 +75,13 @@
         class="
           h-10
           dark:bg-[#181A1E]
-          bg-[#F9F9F9]
-          dark:text-[#F9F9F9]
+          bg-[#f0f0f0]
+          dark:text-[#f0f0f0]
           text-[#181A1E]
           rounded-md
           p-1.5
           mx-2
-          duration-500
+          duration-200
           hover:scale-105
         "
       />
@@ -116,14 +116,14 @@
     <button
       class="
         dark:bg-[#181A1E]
-        bg-[#F9F9F9]
-        dark:text-[#F9F9F9]
+        bg-[#f0f0f0]
+        dark:text-[#f0f0f0]
         text-[#181A1E]
         rounded-md
         p-1.5
         mx-2
         mt-4
-        duration-500
+        duration-200
         hover:scale-105
       "
       @click="createArea()"
@@ -196,7 +196,7 @@ export default defineComponent({
       action: null as any,
       reactions: [null] as any[],
       error: null as any,
-      minutes: 1 as number,
+      minutes: 5 as number,
       name: null,
     };
   },
