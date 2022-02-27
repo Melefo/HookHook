@@ -1,3 +1,6 @@
+using HookHook.Backend.Area;
+using HookHook.Backend.Area.Actions;
+using HookHook.Backend.Area.Reactions;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Utilities;
 using MongoDB.Bson;
@@ -30,33 +33,50 @@ namespace HookHook.Backend.Services
         /// Mongo constructor
         /// </summary>
         /// <param name="config">Host configuration</param>
-        public MongoService(IConfiguration config)
+        public MongoService(GoogleService google, IConfiguration config)
         {
-            // var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
-
-            // foreach (var service in services)
-            // {
-            //     Type serviceType = service.GetType();
-            //     TODO BsonClassMap.RegisterClassMap<serviceType>(cm => cm.AutoMap());
-            // }
-
-            // * solution temporaire, j'ai cherché je trouve pas comment convertir un type var à un type générique
-            BsonClassMap.RegisterClassMap<Reactions.GithubCreateIssue>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Actions.GithubIssueCreated>(cm => {
+            BsonClassMap.RegisterClassMap<DiscordPinned>(cm =>
+            {
                 cm.AutoMap();
+                cm.MapCreator(x => new(config["Discord:BotToken"]));
             });
-            BsonClassMap.RegisterClassMap<Actions.GithubNewRepository>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Reactions.GithubCreateRepository>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.Actions.GithubNewCommit>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.Reactions.DiscordWebhook>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.TwitterTweetHashtag>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.Actions.TwitchLiveStarted>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.TwitterFollowUser>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.SpotifyLikeAlbum>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.SpotifyLikeMusic>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.TwitchFollowChannel>(cm => cm.AutoMap());
-            BsonClassMap.RegisterClassMap<Area.Actions.DiscordPinned>(cm => cm.AutoMap());
-
+            BsonClassMap.RegisterClassMap<GitHubIssueCreated>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<GitHubNewCommit>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<GitHubNewRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<TwitchFollowChannel>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<TwitchLiveStarted>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<YoutubeVideoPublished>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapCreator(x => new(google));
+            });
+            BsonClassMap.RegisterClassMap<DiscordWebhook>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<GithubCreateIssue>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<GithubCreateRepository>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<YoutubePostComment>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapCreator(x => new(google));
+            });
+            BsonClassMap.RegisterClassMap<SpotifyLikeAlbum>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<SpotifyLikedAlbum>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<SpotifyLikeMusic>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<SpotifyLikedMusic>(cm => cm.AutoMap());
+            BsonClassMap.RegisterClassMap<TwitterTweetHashtag>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapCreator(x => new(config["Twitter:ClientId"], config["Twitter:ClientSecret"]));
+            });
+            BsonClassMap.RegisterClassMap<TwitterTweet>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapCreator(x => new(config["Twitter:ClientId"], config["Twitter:ClientSecret"]));
+            });
+            BsonClassMap.RegisterClassMap<TwitterFollowUser>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapCreator(x => new(config["Twitter:ClientId"], config["Twitter:ClientSecret"]));
+            });
 
             BsonSerializer.RegisterSerializer(new EnumSerializer<Providers>(BsonType.String));
             _client = new MongoClient(config["Mongo:Client"]);

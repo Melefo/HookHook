@@ -5,11 +5,8 @@ using HookHook.Backend.Area.Reactions;
 using HookHook.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using HookHook.Backend.Actions;
-using HookHook.Backend.Reactions;
 using HookHook.Backend.Models;
 using HookHook.Backend.Attributes;
-using HookHook.Backend.Exceptions;
 using System.Reflection;
 using HookHook.Backend.Utilities;
 
@@ -23,36 +20,40 @@ namespace HookHook.Backend.Controllers
         private readonly MongoService _db;
         private readonly AreaService _area;
 
-        public Dictionary<string, Func<string[], string, User, IAction>> actionTypes = new();
-        public Dictionary<string, Func<string[], string, User, IReaction>> reactionTypes = new();
+        public Dictionary<string, Func<string[], string, User, IAction>> actionTypes;
+        public Dictionary<string, Func<string[], string, User, IReaction>> reactionTypes;
 
         public AreaController(MongoService db, TwitterService twitterService, GoogleService googleService, AreaService area, IConfiguration config)
         {
             _db = db;
             _area = area;
 
-            actionTypes.Add("DiscordPinned", (string[] args, string accountId, User user) => new DiscordPinned(args[0], args[1], config["Discord:BotToken"]));
-            actionTypes.Add("GithubIssueCreated", (string[] args, string accountId, User user) => new GithubIssueCreated(args[0], args[1], accountId, _db, user));
-            actionTypes.Add("GithubNewCommit", (string[] args, string accountId, User user) => new GithubNewCommit(args[0], args[1], accountId, user));
-            actionTypes.Add("GithubNewRepository", (string[] args, string accountId, User user) => new GithubNewRepository(args[0], accountId, user));
-            actionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId, user));
-            actionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId, user));
-            actionTypes.Add("TwitchLiveStarted", (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId, user, config));
-            actionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId, user));
-            actionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId, user));
-            actionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId));
-            actionTypes.Add("YoutubeVideoPublished", (string[] args, string accountId, User user) => new YoutubeVideoPublished(args[0], googleService, accountId));
+            actionTypes = new()
+            {
+                { nameof(DiscordPinned), (string[] args, string accountId, User user) => new DiscordPinned(ulong.Parse(args[0]), ulong.Parse(args[1]), accountId, config["Discord:BotToken"]) },
+                { nameof(GitHubIssueCreated), (string[] args, string accountId, User user) => new GitHubIssueCreated(args[0], args[1], accountId, user) },
+                { nameof(GitHubNewCommit), (string[] args, string accountId, User user) => new GitHubNewCommit(args[0], args[1], accountId, user) },
+                { nameof(GitHubNewRepository), (string[] args, string accountId, User user) => new GitHubNewRepository(args[0], accountId, user) },
+                { nameof(SpotifyLikedAlbum), (string[] args, string accountId, User user) => new SpotifyLikedAlbum(accountId, user) },
+                { nameof(SpotifyLikedMusic), (string[] args, string accountId, User user) => new SpotifyLikedMusic(accountId, user) },
+                { nameof(TwitchLiveStarted), (string[] args, string accountId, User user) => new TwitchLiveStarted(args[0], accountId, config["Twitch:ClientId"]) },
+                { nameof(TwitchFollowChannel), (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId, user, config["Twitch:ClientId"]) },
+                { nameof(TwitterFollowUser), (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], accountId, user, config["Twitter:ClientId"], config["Twitter:ClientSecret"]) },
+                { nameof(TwitterTweetHashtag), (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], accountId, user, config["Twitter:ClientId"], config["Twitter:ClientSecret"]) },
+                { nameof(YoutubeVideoPublished), (string[] args, string accountId, User user) => new YoutubeVideoPublished(args[0], accountId, user, googleService) }
+            };
 
-            reactionTypes.Add("DiscordWebhook", (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], accountId));
-            reactionTypes.Add("GithubCreateRepository", (string[] args, string accountId, User user) => new GithubCreateRepository(args[0], args[1], accountId));
-            reactionTypes.Add("GithubCreateIssue", (string[] args, string accountId, User user) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId));
-            reactionTypes.Add("SpotifyLikeAlbum", (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId, user));
-            reactionTypes.Add("SpotifyLikeMusic", (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId, user));
-            reactionTypes.Add("TwitchFollowChannel", (string[] args, string accountId, User user) => new TwitchFollowChannel(args[0], accountId, user));
-            reactionTypes.Add("TwitterFollowUser", (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], twitterService, config, accountId, user));
-            reactionTypes.Add("TwitterTweetHashtag", (string[] args, string accountId, User user) => new TwitterTweetHashtag(args[0], config, accountId, args[1]));
-            reactionTypes.Add("YoutubePostComment", (string[] args, string accountId, User user) => new YoutubePostComment(args[0], args[1], googleService, accountId));
-
+            reactionTypes = new()
+            {
+                { nameof(DiscordWebhook), (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], accountId) },
+                { nameof(GithubCreateRepository), (string[] args, string accountId, User user) => new GithubCreateRepository(args[0], args[1], accountId) },
+                { nameof(GithubCreateIssue), (string[] args, string accountId, User user) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId) },
+                { nameof(SpotifyLikeAlbum), (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId) },
+                { nameof(SpotifyLikeMusic), (string[] args, string accountId, User user) => new SpotifyLikeMusic(args[0], args[1], accountId) },
+                { nameof(TwitterFollowUser), (string[] args, string accountId, User user) => new TwitterFollowUser(args[0], accountId, user, config["Twitter:ClientId"], config["Twitter:ClientSecret"]) },
+                { nameof(TwitterTweet), (string[] args, string accountId, User user) => new TwitterTweet(args[0], accountId, config["Twitter:ClientId"], config["Twitter:ClientSecret"]) },
+                { nameof(YoutubePostComment), (string[] args, string accountId, User user) => new YoutubePostComment(args[0], args[1], googleService, accountId) }
+            };
         }
 
         private Entities.Area CreateEntityFromModel(AreaModel area, User user)
@@ -105,20 +106,12 @@ namespace HookHook.Backend.Controllers
             var reactionType = typeof(IReaction);
             var actionType = typeof(IAction);
 
-            foreach (var service in services) {
-
-                var parameters = service.GetConstructors()[0].GetParameters();
-                // * on esquive le serviceAccountId, c'est pas au user de le rentrer
-                /*var strParams = parameters.Where(x => x.ParameterType == stringType && x.Name != "accountId").ToArray();
-
-                var attr = service.GetCustomAttribute<ServiceAttribute>()!;
-
-                if (actionType.IsAssignableFrom(service))
-                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", strParams.Select(x => x.Name).ToArray()!));
-                if (reactionType.IsAssignableFrom(service))
-                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", strParams.Select(x => x.Name).ToArray()!));*/
-
-                var @params = parameters.Where(x => x.GetCustomAttribute<ParameterNameAttribute>() != null).Select(x => x.GetCustomAttribute<ParameterNameAttribute>()!.Name).ToArray();
+            foreach (var service in services)
+            {
+                var constructor = service.GetConstructors().SingleOrDefault(x => x.GetParameters().Any(x => x.GetCustomAttribute<ParameterNameAttribute>() != null));
+                var parameters = constructor?.GetParameters();
+                var @params = parameters?.Where(x => x.GetCustomAttribute<ParameterNameAttribute>() != null).Select(x => x.GetCustomAttribute<ParameterNameAttribute>()!.Name).ToArray();
+                @params ??= Array.Empty<string>();
 
                 var attr = service.GetCustomAttribute<ServiceAttribute>()!;
 

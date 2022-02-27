@@ -37,8 +37,6 @@ namespace HookHook.Backend.Services
 
     public class TwitchService
 	{
-        private readonly MongoService _db;
-
 		private readonly string _id;
 		private readonly string _secret;
 		private readonly string _redirect;
@@ -46,10 +44,8 @@ namespace HookHook.Backend.Services
         private readonly HttpClient _client = new();
 
 
-        public TwitchService(MongoService db, IConfiguration config)
+        public TwitchService(IConfiguration config)
 		{
-            _db = db;
-
 			_id = config["Twitch:ClientId"];
 			_secret = config["Twitch:ClientSecret"];
 			_redirect = config["Twitch:Redirect"];
@@ -94,7 +90,6 @@ namespace HookHook.Backend.Services
                 return null;
 
             user.ServicesAccounts[Providers.Twitch].Add(new(client.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken));
-            _db.SaveUser(user);
             return new(id, client.Login);
         }
 

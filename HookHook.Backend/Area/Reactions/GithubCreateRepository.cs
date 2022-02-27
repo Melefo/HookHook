@@ -4,47 +4,39 @@ using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Area.Reactions
 {
     [BsonIgnoreExtraElements]
     [Service(Providers.GitHub, "create a new repository")]
     public class GithubCreateRepository : IReaction
     {
         public string RepositoryName {get; private init;}
-
         public string Description {get; private init;}
-
-        [BsonIgnore]
-        public GitHubClient _githubClient;
-
         public string AccountId { get; set; }
 
-        public GithubCreateRepository([ParameterName("Repository name")] string repositoryName, [ParameterName("Repository description")] string description, string accountId)
+        private readonly GitHubClient _githubClient;
+
+        [BsonConstructor]
+        public GithubCreateRepository() =>
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+
+        public GithubCreateRepository([ParameterName("Repository name")] string repositoryName, [ParameterName("Repository description")] string description, string accountId) : this()
         {
             RepositoryName = repositoryName;
             Description = description;
-            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
             AccountId = accountId;
         }
 
         public async Task Execute(Entities.User user, string actionInfo)
         {
-            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-
-            // * https://octokitnet.readthedocs.io/en/latest/getting-started/
-
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
             var createRepository = new NewRepository(RepositoryName);
             createRepository.Description = Description;
             var repository = await _githubClient.Repository.Create(createRepository);
 
-            // ? add new repo to database ?
-
-            // ? error checks ?
-            if (repository == null) {
+            if (repository == null)
                 throw new Exceptions.ApiException("Failed to call API");
-            }
         }
     }
 }
