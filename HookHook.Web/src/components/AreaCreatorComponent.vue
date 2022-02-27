@@ -30,7 +30,7 @@
       reaction-index="-1"
       :service-details="serviceDetails"
       verb="When"
-      area-type="Action"
+      areaType="Action"
     />
 
     <div
@@ -196,7 +196,7 @@ export default defineComponent({
       action: null as any,
       reactions: [null] as any[],
       error: null as any,
-      minutes: 1 as number,
+      minutes: 5 as number,
       name: null,
     };
   },

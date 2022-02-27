@@ -1,7 +1,9 @@
 ﻿using System;
 using FluentScheduler;
+using HookHook.Backend.Controllers;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Utilities;
+using Microsoft.AspNetCore.SignalR;
 
 namespace HookHook.Backend.Services
 {
@@ -13,13 +15,17 @@ namespace HookHook.Backend.Services
         private readonly SpotifyService _spotify;
         private readonly TwitchService _twitch;
 
-        public AreaService(MongoService mongo, DiscordService discord, GoogleService google, SpotifyService spotify, TwitchService twitch)
+        private readonly IHubContext<AreaHub> _hubContext;
+
+        public AreaService(MongoService mongo, DiscordService discord, GoogleService google, SpotifyService spotify, TwitchService twitch, IHubContext<AreaHub> hubContext)
         {
             _mongo = mongo;
             _discord = discord;
             _google = google;
             _spotify = spotify;
             _twitch = twitch;
+
+            _hubContext = hubContext;
 
             Schedule(async () => await Execute()).ToRunEvery(1).Minutes();
         }
@@ -53,13 +59,21 @@ namespace HookHook.Backend.Services
             return true;
         }
 
+        private Task AreaExecuted(User user, Entities.Area area)
+        {
+            _hubContext.Clients.User(user.Id).SendAsync(area.Id, (long)(area.LastUpdate - DateTime.UnixEpoch).TotalSeconds);
+            return Task.CompletedTask;
+        }
+
         public async Task ExecuteUser(User user)
         {
             await RefreshTokenBeforeExecute(user);
 
-            foreach (var area in user.Areas)
+            foreach (Entities.Area area in user.Areas)
+            {
                 await area.Launch(user, _mongo);
-
+                await AreaExecuted(user, area);
+            }
             _mongo.SaveUser(user);
         }
 

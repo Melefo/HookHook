@@ -90,9 +90,22 @@ export default defineComponent({
       }
     },
   },
+  props: {
+    type: {
+      type: String,
+      required: true
+    }
+  },
   computed: {
     services() {
-      return this.$store.state.about.info?.server?.services || []
+      const services = this.$store.state.about.info?.server?.services;
+      if (services === undefined || services === null)
+        return [];
+      if (this.type.toLowerCase() === "action")
+        return services.filter((filter: any) => filter.actions !== null && filter.actions.length > 0);
+      if (this.type.toLowerCase() === "reaction")
+        return services.filter((filter: any) => filter.reactions !== null && filter.reactions.length > 0);
+      return services;
     }
   },
   data: function () {

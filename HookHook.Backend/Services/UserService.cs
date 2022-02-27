@@ -208,6 +208,7 @@ namespace HookHook.Backend.Services
             {
                 new(ClaimTypes.Role, user.Role),
                 new(ClaimTypes.Name, user.Id),
+                new(ClaimTypes.NameIdentifier, user.Id)
             };
             if (user.Email != null)
                 claims.Add(new(ClaimTypes.Email, user.Email));
