@@ -12,7 +12,7 @@
     <header class="flex flex-row justify-between">
       <div class="w-[90px] sm:flex hidden"/>
       <RouterLink to="/">
-        <HookHook class="lg:text-9xl md:text-7xl sm:text-6xl text-4xl" />
+        <HookHook class="lg:text-8xl md:text-7xl sm:text-6xl text-4xl" />
       </RouterLink>
       <div class="mt-0">
         <Switch @ToggleDarkMode="this.$emit('ToggleDarkMode')" />
