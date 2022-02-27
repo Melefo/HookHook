@@ -2,9 +2,9 @@
   <div class="mt-2">
     <span class="dark:text-white text-black">{{ verb }}: </span>
     <div class="flex flex-row items-center">
-      <ActionComponent @actionChange="changeOptions" />
+      <ActionComponent @actionChange="changeOptions" :type="areaType" />
       <Listbox v-if="seelctedService !== null" v-model="selectedPerson">
-        <div class="">
+        <div class="relative mt-1">
           <ListboxButton
             class="relative p-2 text-left text-black dark:text-white"
           >
@@ -57,7 +57,7 @@
         </div>
       </Listbox>
       <Listbox v-if="selectedPerson != null" v-model="currentService">
-        <div>
+        <div class="relative mt-1">
         <ListboxButton class="relative p-2 text-left text-black dark:text-white">
           <span
             v-if='currentService !== null && currentService.description !== ""'

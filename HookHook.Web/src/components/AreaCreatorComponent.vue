@@ -30,7 +30,7 @@
       reaction-index="-1"
       :service-details="serviceDetails"
       verb="When"
-      area-type="Action"
+      areaType="Action"
     />
 
     <div
