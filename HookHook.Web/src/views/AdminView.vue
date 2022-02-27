@@ -19,10 +19,10 @@
                 <th>{{ user.areas !== null ? user.areas.length : 0 }}</th>
                 <th>
                     <div class="grid grid-cols-3">
-                        <button class="justify-self-center" @click.prevent="refreshUser(user.id)"><RefreshIcon class="transition-colors duration-200 h-8 dark:bg-[#F9F9F9] bg-[#3B3F43] dark:text-[#3B3F43] text-[#F9F9F9] rounded-md p-0.5 mx-1" /></button>
-                        <button class="justify-self-center" v-if="user.role === 'Admin'" @click.prevent="promoteUser($event, user.id, key)"><ShieldExclamationIcon class="h-8 bg-[#B4E1DC] text-[#85B1AC] rounded-md p-0.5 mx-1" /></button>
-                        <button class="justify-self-center" v-if="user.role === 'User'" @click.prevent="promoteUser($event, user.id, key)"><ShieldCheckIcon class="h-8 bg-[#FFFFC7] text-[#C6C791] rounded-md p-0.5 mx-1" /></button>
-                        <button class="justify-self-center" v-if="user.role !== 'Admin'" @click.prevent="deleteUser($event, user.id, key)"><TrashIcon class="h-8 bg-[#F5CDCB] text-[#C49E9C] rounded-md p-0.5 mx-1" /></button>
+                        <button class="justify-self-center" @click.prevent="refreshUser(user.id)"><RefreshIcon class="transition-colors duration-200 h-8 dark:bg-[#f0f0f0] bg-[#3B3F43] dark:text-[#3B3F43] text-[#f0f0f0] rounded-md p-0.5 mx-1 hover:scale-105 transition duration-200" /></button>
+                        <button class="justify-self-center" v-if="user.role === 'Admin'" @click.prevent="promoteUser($event, user.id, key)"><ShieldExclamationIcon class="h-8 bg-[#B4E1DC] text-[#85B1AC] rounded-md p-0.5 mx-1 hover:scale-105 transition duration-200" /></button>
+                        <button class="justify-self-center" v-if="user.role === 'User'" @click.prevent="promoteUser($event, user.id, key)"><ShieldCheckIcon class="h-8 bg-[#FFFFC7] text-[#C6C791] rounded-md p-0.5 mx-1 hover:scale-105 transition duration-200" /></button>
+                        <button class="justify-self-center" v-if="user.role !== 'Admin'" @click.prevent="deleteUser($event, user.id, key)"><TrashIcon class="h-8 bg-[#F5CDCB] text-[#C49E9C] rounded-md p-0.5 mx-1 hover:scale-105 transition duration-200" /></button>
                     </div>
                 </th>
             </tr>

@@ -46,36 +46,10 @@
         <div>{{ formatDate(slide.date * 1000) }}</div>
         <div class="flex flex-row justify-end">
           <button @click.prevent="async () => await trigger(slide.id)">
-            <RefreshIcon
-              class="
-                h-10
-                dark:bg-[#181A1E]
-                bg-[#F9F9F9]
-                dark:text-[#F9F9F9]
-                text-[#181A1E]
-                rounded-md
-                p-1.5
-                mx-2
-                duration-500
-                hover:scale-105
-              "
-            />
+            <RefreshIcon class="h-10 dark:bg-[#181A1E] bg-[#f0f0f0] dark:text-[#f0f0f0] text-[#181A1E] rounded-md p-1.5 mx-2 duration-200 hover:scale-105" />
           </button>
-          <button @click.prevent="async () => await deleteArea(slide.id, key)">
-            <TrashIcon
-              class="
-                h-10
-                dark:bg-[#181A1E]
-                bg-[#F9F9F9]
-                dark:text-[#F9F9F9]
-                text-[#181A1E]
-                rounded-md
-                p-1.5
-                mx-2
-                duration-500
-                hover:scale-105
-              "
-            />
+          <button @click.prevent="async () => await deleteArea(slide.id, key)" >
+            <TrashIcon class="h-10 dark:bg-[#181A1E] bg-[#f0f0f0] dark:text-[#f0f0f0] text-[#181A1E] rounded-md p-1.5 mx-2 duration-200 hover:scale-105" />
           </button>
         </div>
       </div>
