@@ -12,6 +12,10 @@ namespace HookHook.Backend.Area.Actions
     {
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "album.id", "album.name", "album.artists", "like.date"
+        };
         public List<string> StoredLibrary { get; private init; } = new();
 
         private SpotifyClient? _spotifyClient;
@@ -35,7 +39,7 @@ namespace HookHook.Backend.Area.Actions
             return albums;
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var albums = await GetLikedAlbums(user);
 
@@ -43,9 +47,16 @@ namespace HookHook.Backend.Area.Actions
             {
                 if (StoredLibrary.Contains(item.Album.Id))
                     continue;
-
                 StoredLibrary.Add(item.Album.Id);
-                return (item.Album.Name, true);
+
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], item.Album.Id },
+                    { Formatters[1], item.Album.Name },
+                    { Formatters[2], string.Join(", ", item.Album.Artists.Select(x => x.Name)) },
+                    { Formatters[3], item.AddedAt.ToString("G") },
+                };
+                return (formatters, true);
             }
 
             return (null, false);

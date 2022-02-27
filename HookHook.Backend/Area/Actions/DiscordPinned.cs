@@ -15,6 +15,10 @@ namespace HookHook.Backend.Area.Actions
         public ulong ChannelId { get; private init; }
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "msg.content", "msg.id", "author.id", "author.name", "author.mention", "msg.date"
+        };
         public List<ulong> PinnedMessages { get; private init; } = new();
 
         private readonly string _botToken;
@@ -54,7 +58,7 @@ namespace HookHook.Backend.Area.Actions
             return await channel.GetPinnedMessagesAsync();
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User _)
         {
             var pinneds = await GetPinned();
             if (pinneds == null)
@@ -65,8 +69,17 @@ namespace HookHook.Backend.Area.Actions
                 if (PinnedMessages.Contains(message.Id))
                     continue;
                 PinnedMessages.Add(message.Id);
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], message.Content },
+                    { Formatters[1], message.Id },
+                    { Formatters[2], message.Author.Id },
+                    { Formatters[3], message.Author },
+                    { Formatters[4], message.Author.Mention },
+                    { Formatters[5], message.CreatedAt.ToString("G") }
+                };
 
-                return (message.Content, true);
+                return (formatters, true);
             }
             return (null, false);
         }

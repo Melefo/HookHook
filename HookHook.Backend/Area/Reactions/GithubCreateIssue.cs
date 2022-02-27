@@ -32,13 +32,18 @@ namespace HookHook.Backend.Area.Reactions
             AccountId = accountId;
         }
 
-        public async Task Execute(Entities.User user, string actionInfo)
+        public async Task Execute(Entities.User user, Dictionary<string, object?> formatters)
         {
+            var username = Username.FormatParam(formatters);
+            var repository = Repository.FormatParam(formatters);
+            var title = Title.FormatParam(formatters);
+            var body = Body.FormatParam(formatters);
+
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
-            var createIssue = new NewIssue(Title);
-            createIssue.Body = Body;
-            var issue = await _githubClient.Issue.Create(Username, Repository, createIssue);
+            var createIssue = new NewIssue(title);
+            createIssue.Body = body;
+            var issue = await _githubClient.Issue.Create(username, repository, createIssue);
 
             if (issue == null)
                 throw new Exceptions.ApiException("Failed to call API");

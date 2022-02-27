@@ -15,6 +15,10 @@ namespace HookHook.Backend.Area.Actions
         public string ClientId { get; set; }
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "channel.name", "channel.id"
+        };
         public List<string> FollowedUsers { get; private init; } = new();
 
         private readonly TwitchAPI _twitchClient;
@@ -51,16 +55,21 @@ namespace HookHook.Backend.Area.Actions
             return follows;
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var follows = await GetUserFollows(user);
 
             foreach (var follower in follows.Follows) {
                 if (FollowedUsers.Contains(follower.ToUserId))
                     continue;
-
                 FollowedUsers.Add(follower.ToUserId);
-                return (follower.ToUserName, true);
+
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], follower.ToUserName },
+                    { Formatters[1], follower.ToUserId }
+                };
+                return (formatters, true);
             }
             return (null, false);
         }

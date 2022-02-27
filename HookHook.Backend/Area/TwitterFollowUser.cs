@@ -1,7 +1,6 @@
 using CoreTweet;
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Services;
 using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using User = HookHook.Backend.Entities.User;
@@ -10,11 +9,15 @@ namespace HookHook.Backend.Area
 {
     [Service(Providers.Twitter, "Follow a twitter account")]
     [BsonIgnoreExtraElements]
-    public class TwitterFollowUser: IAction, IReaction
+    public class TwitterFollowUser : IAction, IReaction
     {
-        public string Username {get; set;}
+        public string Username { get; set; }
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "following.id", "following.name", "following.username"
+        };
         public List<long> Followers { get; private init; } = new();
 
         private Tokens? _twitterClient;
@@ -34,7 +37,8 @@ namespace HookHook.Backend.Area
 
             var existingFollowers = GetFollowers(user).GetAwaiter().GetResult();
 
-            foreach (var follower in existingFollowers) {
+            foreach (var follower in existingFollowers)
+            {
                 if (!follower.Id.HasValue)
                     continue;
                 Followers.Add(follower.Id.Value);
@@ -62,30 +66,38 @@ namespace HookHook.Backend.Area
             return followers;
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var followers = await GetFollowers(user);
 
-                foreach (var follower in followers)
-                {
-                    if (!follower.Id.HasValue)
-                        continue;
-                    if (Followers.Contains(follower.Id.Value))
-                        continue;
+            foreach (var follower in followers)
+            {
+                if (!follower.Id.HasValue)
+                    continue;
+                if (Followers.Contains(follower.Id.Value))
+                    continue;
+                Followers.Add(follower.Id.Value);
 
-                    Followers.Add(follower.Id.Value);
-                    return (follower.Name, true);
-                }
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], follower.Id },
+                    { Formatters[1], follower.Name },
+                    { Formatters[2], follower.ScreenName }
+                };
+                return (formatters, true);
+            }
             return (null, false);
         }
 
-        public async Task Execute(User user, string actionInfo)
+        public async Task Execute(User user, Dictionary<string, object?> formatters)
         {
+            var username = Username.FormatParam(formatters);
+
             var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
             var currentUser = await _twitterClient.Users.ShowAsync(_twitterClient.UserId);
-            await _twitterClient.Friendships.CreateAsync(Username);
+            await _twitterClient.Friendships.CreateAsync(username);
         }
     }
 }

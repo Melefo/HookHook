@@ -23,11 +23,14 @@ namespace HookHook.Backend.Area
             AccountId = accountId;
         }
 
-        public async Task Execute(User user, string actionInfo)
+        public async Task Execute(User user, Dictionary<string, object?> formatters)
         {
+            var title = AlbumTitle.FormatParam(formatters);
+            var artist = ArtistName.FormatParam(formatters);
+
             _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
-            SearchRequest searchRequest = new (SearchRequest.Types.Album, $"{AlbumTitle} {ArtistName}");
+            SearchRequest searchRequest = new (SearchRequest.Types.Album, $"{title} {artist}");
             var searchResults = await _spotifyClient.Search.Item(searchRequest);
 
             LibrarySaveAlbumsRequest saveAlbums = new(new List<string>()

@@ -15,6 +15,10 @@ namespace HookHook.Backend.Area.Actions
         public string Repository {get; private init;}
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "issue.title", "issue.id", "issue.body", "issue.date", "issue.url", "author.id", "author.name", "author.login"
+        };
         public List<int> StoredIssues { get; private init; } = new();
 
         private readonly GitHubClient _githubClient;
@@ -44,7 +48,7 @@ namespace HookHook.Backend.Area.Actions
             return issuesForRepository;
         }
 
-        public async Task<(string?, bool)> Check(Entities.User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(Entities.User user)
         {
             var issuesForRepository = await GetIssues(user);
 
@@ -54,8 +58,19 @@ namespace HookHook.Backend.Area.Actions
                     continue;
 
                 StoredIssues.Add(issue.Id);
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], issue.Title },
+                    { Formatters[1], issue.Id },
+                    { Formatters[2], issue.Body },
+                    { Formatters[3], issue.CreatedAt.ToString("G") },
+                    { Formatters[4], issue.Url },
+                    { Formatters[5], issue.User.Id },
+                    { Formatters[6], issue.User.Name },
+                    { Formatters[7], issue.User.Login }
+                };
 
-                return (issue.Title, true);
+                return (formatters, true);
             }
             return (null, false);
         }

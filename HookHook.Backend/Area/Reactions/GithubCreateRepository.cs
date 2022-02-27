@@ -27,12 +27,15 @@ namespace HookHook.Backend.Area.Reactions
             AccountId = accountId;
         }
 
-        public async Task Execute(Entities.User user, string actionInfo)
+        public async Task Execute(Entities.User user, Dictionary<string, object?> formatters)
         {
+            var name = RepositoryName.FormatParam(formatters);
+            var description = Description.FormatParam(formatters);
+
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
-            var createRepository = new NewRepository(RepositoryName);
-            createRepository.Description = Description;
+            var createRepository = new NewRepository(name);
+            createRepository.Description = description;
             var repository = await _githubClient.Repository.Create(createRepository);
 
             if (repository == null)

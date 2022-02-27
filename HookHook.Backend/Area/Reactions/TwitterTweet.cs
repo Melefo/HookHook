@@ -32,13 +32,14 @@ namespace HookHook.Backend.Area.Reactions
             AccountId = accountId;
         }
 
-        public async Task Execute(User user, string actionInfo)
+        public async Task Execute(User user, Dictionary<string, object?> formatters)
         {
+            var content = TweetContent.FormatParam(formatters);
             var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
 
             _twitterClient = Tokens.Create(_clientId, _clientSecret, oauth.AccessToken, oauth.Secret, long.Parse(oauth.UserId));
 
-            await _twitterClient.Statuses.UpdateAsync(status: $"{TweetContent}\n{actionInfo}");
+            await _twitterClient.Statuses.UpdateAsync(content);
         }
     }
 }

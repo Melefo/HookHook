@@ -52,7 +52,7 @@ namespace HookHook.Backend.Entities
             if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
                 return;
             LastUpdate = DateTime.UtcNow.AddMinutes(MinutesBetween);
-            (string? actionInfo, bool actionValue) = await Action.Check(user);
+            (var formatters, bool actionValue) = await Action.Check(user);
 
             if (!actionValue)
                 return;
@@ -60,7 +60,7 @@ namespace HookHook.Backend.Entities
             foreach (var reaction in Reactions) {
                 try
                 {
-                    await reaction.Execute(user, actionInfo ?? "null");
+                    await reaction.Execute(user, formatters!);
                 }
                 catch (Exception e)
                 {

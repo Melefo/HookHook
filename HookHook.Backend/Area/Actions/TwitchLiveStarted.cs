@@ -16,6 +16,10 @@ namespace HookHook.Backend.Area.Actions
 
         public bool IsLive { get; private set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "stream.game", "stream.id", "stream.date", "stream.thumbnail", "stream.title"
+        };
         private readonly TwitchAPI _twitchClient;
 
         public TwitchLiveStarted(string username, string accountId, string clientId) : this()
@@ -29,7 +33,7 @@ namespace HookHook.Backend.Area.Actions
         public TwitchLiveStarted() =>
             _twitchClient = new TwitchAPI();
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             _twitchClient.Settings.AccessToken = user.ServicesAccounts[Providers.Twitch].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken;
             _twitchClient.Settings.ClientId = ClientId;
@@ -39,8 +43,18 @@ namespace HookHook.Backend.Area.Actions
             if (streams.Streams.Length > 0) {
                 if (IsLive)
                     return (null, false);
+
                 IsLive = true;
-                return (streams.Streams[0].ThumbnailUrl, true);
+
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], streams.Streams[0].GameName },
+                    { Formatters[1], streams.Streams[0].Id },
+                    { Formatters[2], streams.Streams[0].StartedAt.ToString("G") },
+                    { Formatters[3], streams.Streams[0].ThumbnailUrl },
+                    { Formatters[4], streams.Streams[0].Title },
+                };
+                return (formatters, true);
             }
             else
                 IsLive = false;

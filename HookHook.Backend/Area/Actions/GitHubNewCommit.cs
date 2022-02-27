@@ -33,6 +33,10 @@ namespace HookHook.Backend.Area.Actions
         public string Repository {get; private init;}
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "commit.sha", "commit.msg", "author.id", "author.name", "author.login"
+        };
         public List<string> StoredCommitHashes { get; private init; } = new();
 
         private readonly GitHubClient _githubClient;
@@ -62,7 +66,7 @@ namespace HookHook.Backend.Area.Actions
             return commits;
         }
 
-        public async Task<(string?, bool)> Check(Entities.User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(Entities.User user)
         {
             var commits = await GetCommits(user);
 
@@ -72,8 +76,16 @@ namespace HookHook.Backend.Area.Actions
                     continue;
 
                 StoredCommitHashes.Add(commit.Sha);
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], commit.Sha },
+                    { Formatters[1], commit.Commit.Message },
+                    { Formatters[2], commit.Author?.Id },
+                    { Formatters[3], commit.Commit.Author.Name },
+                    { Formatters[4], commit.Author?.Login }
+                };
 
-                return (commit.Commit.Message, true);
+                return (formatters, true);
             }
             return (null, false);
         }

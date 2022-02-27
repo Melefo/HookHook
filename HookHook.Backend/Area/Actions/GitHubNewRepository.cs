@@ -13,6 +13,10 @@ namespace HookHook.Backend.Area.Actions
         public string Username {get; private init;}
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "repo.name", "repo.id", "repo.date", "repo.description", "repo.url"
+        };
         public List<long> StoredRepositories { get; private init; } = new();
 
         private GitHubClient _githubClient;
@@ -44,7 +48,7 @@ namespace HookHook.Backend.Area.Actions
             return repositoriesForUser.Items;
         }
 
-        public async Task<(string?, bool)> Check(Entities.User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(Entities.User user)
         {
             var repositoriesForUser = await GetRepositories(user);
 
@@ -53,8 +57,15 @@ namespace HookHook.Backend.Area.Actions
                     continue;
 
                 StoredRepositories.Add(repository.Id);
-
-                return (repository.Name, true);
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], repository.Name },
+                    { Formatters[1], repository.Id },
+                    { Formatters[2], repository.CreatedAt.ToString("D") },
+                    { Formatters[3], repository.Description },
+                    { Formatters[4], repository.Url }
+                };
+                return (formatters, true);
             }
             return (null, false);
         }

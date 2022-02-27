@@ -45,7 +45,7 @@ namespace HookHook.Backend.Controllers
 
             reactionTypes = new()
             {
-                { nameof(DiscordWebhook), (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], accountId) },
+                { nameof(DiscordWebhook), (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], args[2], accountId) },
                 { nameof(GithubCreateRepository), (string[] args, string accountId, User user) => new GithubCreateRepository(args[0], args[1], accountId) },
                 { nameof(GithubCreateIssue), (string[] args, string accountId, User user) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId) },
                 { nameof(SpotifyLikeAlbum), (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId) },

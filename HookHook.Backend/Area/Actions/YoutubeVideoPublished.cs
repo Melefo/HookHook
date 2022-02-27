@@ -10,11 +10,15 @@ namespace HookHook.Backend.Area.Actions
 {
     [Service(Providers.Google, "Video is published")]
     [BsonIgnoreExtraElements]
-    public class YoutubeVideoPublished: IAction
+    public class YoutubeVideoPublished : IAction
     {
-        public string Channel {get; set;}
+        public string Channel { get; set; }
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "video.title", "video.id", "video.description", "video.thumbnail"
+        };
         public List<string> Videos { get; private init; } = new();
 
         private readonly GoogleService _googleService;
@@ -56,19 +60,27 @@ namespace HookHook.Backend.Area.Actions
             return videos.Items;
         }
 
-        public Task<(string?, bool)> Check(User user)
+        public Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var videos = GetVideos(user);
 
-            foreach (var video in videos) {
+            foreach (var video in videos)
+            {
                 if (Videos.Contains(video.Id))
                     continue;
-
                 Videos.Add(video.Id);
-                return Task.FromResult<(string?, bool)>((video.Snippet.Title, true));
+
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], video.Snippet.Title },
+                    { Formatters[1], video.Id },
+                    { Formatters[2], video.Snippet.Description },
+                    { Formatters[3], video.Snippet.Thumbnails.High.Url }
+                };
+                return Task.FromResult<(Dictionary<string, object?>?, bool)>((formatters, true));
             }
 
-            return Task.FromResult<(string?, bool)>((null, false));
+            return Task.FromResult<(Dictionary<string, object?>?, bool)>((null, false));
         }
 
 

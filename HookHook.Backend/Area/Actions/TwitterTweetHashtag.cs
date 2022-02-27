@@ -4,17 +4,23 @@ using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
+using Tweetinvi.Core.Models;
+using Tweet = CoreTweet.V2.Tweet;
 using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area.Actions
 {
     [Service(Providers.Twitter, "Tweet containing an #hashtag")]
     [BsonIgnoreExtraElements]
-    public class TwitterTweetHashtag: IAction
+    public class TwitterTweetHashtag : IAction
     {
-        public string Hashtag {get; set;}
+        public string Hashtag { get; set; }
         public string AccountId { get; set; }
 
+        public string[] Formatters { get; } = new[]
+        {
+            "tweet.text", "tweet.date", "tweet.id", "tweet.source"
+        };
         public List<long> Tweets { get; private init; } = new();
 
         private Tokens? _twitterClient;
@@ -56,18 +62,26 @@ namespace HookHook.Backend.Area.Actions
             return res?.Data ?? Array.Empty<Tweet>();
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var oauth = user.ServicesAccounts[Providers.Twitter].SingleOrDefault(acc => acc.UserId == AccountId)!;
 
             var tweets = await GetTweets(oauth);
 
-            foreach (var tweet in tweets) {
+            foreach (var tweet in tweets)
+            {
                 if (Tweets.Contains(tweet.Id))
                     continue;
-
                 Tweets.Add(tweet.Id);
-                return (tweet.Text, true);
+
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], tweet.Text },
+                    { Formatters[1], tweet.CreatedAt?.ToString("G") },
+                    { Formatters[2], tweet.Id },
+                    { Formatters[3], tweet.Source },
+                };
+                return (formatters, true);
             }
 
             return (null, false);

@@ -27,26 +27,29 @@ namespace HookHook.Backend.Area.Reactions
             AccountId = accountId;
         }
 
-        public Task Execute(User user, string actionInfo)
+        public Task Execute(User user, Dictionary<string, object?> formatters)
         {
+            var videoId = VideoId.FormatParam(formatters);
+            var comment = Comment.FormatParam(formatters);
+
             var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == AccountId)!);
 
-            var comment = new CommentThread()
+            var commentThread = new CommentThread()
             {
                 Snippet = new CommentThreadSnippet()
                 {
-                    VideoId = VideoId,
+                    VideoId = videoId,
                     TopLevelComment = new Comment()
                     {
                         Snippet = new()
                         {
-                            TextOriginal = Comment
+                            TextOriginal = comment
                         }
                     }
                 }
             };
 
-            var insert = youtubeClient.CommentThreads.Insert(comment, "snippet");
+            var insert = youtubeClient.CommentThreads.Insert(commentThread, "snippet");
             var search = insert.Execute();
 
             return Task.CompletedTask;

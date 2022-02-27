@@ -1,6 +1,5 @@
 using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
-using HookHook.Backend.Services;
 using HookHook.Backend.Utilities;
 using MongoDB.Bson.Serialization.Attributes;
 using SpotifyAPI.Web;
@@ -15,6 +14,10 @@ namespace HookHook.Backend.Area.Actions
         public string AccountId { get; set; }
         public string ArtistName {get; set;}
 
+        public string[] Formatters { get; } = new[]
+        {
+            "track.id", "track.name", "track.artists", "like.date"
+        };
         public List<string> StoredLibrary { get; private init; } = new();
 
         private SpotifyClient? _spotifyClient;
@@ -39,16 +42,23 @@ namespace HookHook.Backend.Area.Actions
             return tracks;
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var tracks = await GetLikedSongs(user);
 
             foreach (var item in tracks.Items!) {
                 if (StoredLibrary.Contains(item.Track.Id))
                     continue;
-
                 StoredLibrary.Add(item.Track.Id);
-                return (item.Track.Name, true);
+
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], item.Track.Id },
+                    { Formatters[1], item.Track.Name },
+                    { Formatters[2], string.Join(", ", item.Track.Artists.Select(x => x.Name)) },
+                    { Formatters[3], item.AddedAt.ToString("G") }
+                };
+                return (formatters, true);
             }
 
             return (null, false);
