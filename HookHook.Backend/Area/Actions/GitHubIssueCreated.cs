@@ -11,14 +11,15 @@ namespace HookHook.Backend.Area.Actions
     [BsonDiscriminator("GithubIssueCreated")]
     public class GitHubIssueCreated : IAction
     {
+        public static string[] Formatters { get; } = new[]
+        {
+            "issue.title", "issue.id", "issue.body", "issue.date", "issue.url", "author.id", "author.name", "author.login"
+        };
+
         public string Username {get; private init;}
         public string Repository {get; private init;}
         public string AccountId { get; set; }
 
-        public string[] Formatters { get; } = new[]
-        {
-            "issue.title", "issue.id", "issue.body", "issue.date", "issue.url", "author.id", "author.name", "author.login"
-        };
         public List<int> StoredIssues { get; private init; } = new();
 
         private readonly GitHubClient _githubClient;

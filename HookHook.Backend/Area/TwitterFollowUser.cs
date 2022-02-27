@@ -11,13 +11,14 @@ namespace HookHook.Backend.Area
     [BsonIgnoreExtraElements]
     public class TwitterFollowUser : IAction, IReaction
     {
-        public string Username { get; set; }
-        public string AccountId { get; set; }
-
-        public string[] Formatters { get; } = new[]
+        public static string[] Formatters { get; } = new[]
         {
             "following.id", "following.name", "following.username"
         };
+
+        public string Username { get; set; }
+        public string AccountId { get; set; }
+
         public List<long> Followers { get; private init; } = new();
 
         private Tokens? _twitterClient;

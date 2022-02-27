@@ -11,14 +11,15 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class DiscordPinned : IAction
     {
+        public static string[] Formatters { get; } = new[]
+        {
+            "msg.content", "msg.id", "author.id", "author.name", "author.mention", "msg.date"
+        };
+
         public ulong GuildId { get; private init; }
         public ulong ChannelId { get; private init; }
         public string AccountId { get; set; }
 
-        public string[] Formatters { get; } = new[]
-        {
-            "msg.content", "msg.id", "author.id", "author.name", "author.mention", "msg.date"
-        };
         public List<ulong> PinnedMessages { get; private init; } = new();
 
         private readonly string _botToken;

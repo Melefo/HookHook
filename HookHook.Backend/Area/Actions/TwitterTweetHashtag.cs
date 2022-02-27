@@ -14,13 +14,14 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class TwitterTweetHashtag : IAction
     {
-        public string Hashtag { get; set; }
-        public string AccountId { get; set; }
-
-        public string[] Formatters { get; } = new[]
+        public static string[] Formatters { get; } = new[]
         {
             "tweet.text", "tweet.date", "tweet.id", "tweet.source"
         };
+
+        public string Hashtag { get; set; }
+        public string AccountId { get; set; }
+
         public List<long> Tweets { get; private init; } = new();
 
         private Tokens? _twitterClient;

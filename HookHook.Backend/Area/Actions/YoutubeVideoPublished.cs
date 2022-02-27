@@ -12,13 +12,14 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class YoutubeVideoPublished : IAction
     {
-        public string Channel { get; set; }
-        public string AccountId { get; set; }
-
-        public string[] Formatters { get; } = new[]
+        public static string[] Formatters { get; } = new[]
         {
             "video.title", "video.id", "video.description", "video.thumbnail"
         };
+
+        public string Channel { get; set; }
+        public string AccountId { get; set; }
+
         public List<string> Videos { get; private init; } = new();
 
         private readonly GoogleService _googleService;

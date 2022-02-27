@@ -11,14 +11,15 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class TwitchFollowChannel: IAction
     {
+        public static string[] Formatters { get; } = new[]
+        {
+            "channel.name", "channel.id"
+        };
+
         public string Username {get; set;}
         public string ClientId { get; set; }
         public string AccountId { get; set; }
 
-        public string[] Formatters { get; } = new[]
-        {
-            "channel.name", "channel.id"
-        };
         public List<string> FollowedUsers { get; private init; } = new();
 
         private readonly TwitchAPI _twitchClient;

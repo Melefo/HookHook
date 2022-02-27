@@ -10,16 +10,17 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class TwitchLiveStarted : IAction
     {
+        public static string[] Formatters { get; } = new[]
+        {
+            "stream.game", "stream.id", "stream.date", "stream.thumbnail", "stream.title"
+        };
+
         public string Username { get; private init; }
         public string ClientId { get; private init; }
         public string AccountId { get; set; }
 
         public bool IsLive { get; private set; }
 
-        public string[] Formatters { get; } = new[]
-        {
-            "stream.game", "stream.id", "stream.date", "stream.thumbnail", "stream.title"
-        };
         private readonly TwitchAPI _twitchClient;
 
         public TwitchLiveStarted(string username, string accountId, string clientId) : this()

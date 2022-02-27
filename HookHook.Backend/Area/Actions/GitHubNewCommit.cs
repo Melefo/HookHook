@@ -29,14 +29,15 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class GitHubNewCommit : IAction
     {
+        public static string[] Formatters { get; } = new[]
+        {
+            "commit.sha", "commit.msg", "author.id", "author.name", "author.login"
+        };
+
         public string Username {get; private init;}
         public string Repository {get; private init;}
         public string AccountId { get; set; }
 
-        public string[] Formatters { get; } = new[]
-        {
-            "commit.sha", "commit.msg", "author.id", "author.name", "author.login"
-        };
         public List<string> StoredCommitHashes { get; private init; } = new();
 
         private readonly GitHubClient _githubClient;

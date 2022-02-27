@@ -6,8 +6,7 @@ namespace HookHook.Backend.Entities
     {
         public Task<(Dictionary<string, object?>? Result, bool IsSuccess)> Check(User user);
 
-        [BsonIgnore]
-        public string[] Formatters { get; }
+        public static string[] Formatters => throw new NotImplementedException();
 
         public string AccountId { get; set; }
     }

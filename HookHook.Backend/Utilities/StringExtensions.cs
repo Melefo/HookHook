@@ -9,7 +9,7 @@ namespace HookHook.Backend.Utilities
 			var formatted = param;
 
 			foreach (var formatter in formatters)
-				formatted = param.Replace($"{{{formatter.Key}}}", formatter.Value?.ToString());
+				formatted = formatted.Replace($"{{{formatter.Key}}}", formatter.Value?.ToString());
 			return formatted;
 		}
 	}

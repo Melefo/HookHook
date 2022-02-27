@@ -10,13 +10,14 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class GitHubNewRepository : IAction
     {
-        public string Username {get; private init;}
-        public string AccountId { get; set; }
-
-        public string[] Formatters { get; } = new[]
+        public static string[] Formatters { get; } = new[]
         {
             "repo.name", "repo.id", "repo.date", "repo.description", "repo.url"
         };
+
+        public string Username {get; private init;}
+        public string AccountId { get; set; }
+
         public List<long> StoredRepositories { get; private init; } = new();
 
         private GitHubClient _githubClient;

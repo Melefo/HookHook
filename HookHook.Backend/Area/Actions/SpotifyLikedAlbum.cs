@@ -10,12 +10,13 @@ namespace HookHook.Backend.Area.Actions
     [BsonIgnoreExtraElements]
     public class SpotifyLikedAlbum : IAction
     {
-        public string AccountId { get; set; }
-
-        public string[] Formatters { get; } = new[]
+        public static string[] Formatters { get; } = new[]
         {
             "album.id", "album.name", "album.artists", "like.date"
         };
+
+        public string AccountId { get; set; }
+
         public List<string> StoredLibrary { get; private init; } = new();
 
         private SpotifyClient? _spotifyClient;

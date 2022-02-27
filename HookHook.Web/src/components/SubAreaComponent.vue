@@ -13,8 +13,11 @@
               v-if="selectedPerson !== null"
               >{{ selectedPerson.username }}</span
             >
-            <span class="block border-0 border-b-2 border-[#FD9524]" v-else-if="people.length > 0"
-              >Select an account</span>
+            <span
+              class="block border-0 border-b-2 border-[#FD9524]"
+              v-else-if="people.length > 0"
+              >Select an account</span
+            >
             <span v-else class="block border-0 border-b-2 border-[#A3E7EE]">
               No account
             </span>
@@ -48,9 +51,23 @@
                 :value="person"
                 as="template"
               >
-              <li class="cursor-pointer select-none relative py-2 pl-4 pr-4 hover:bg-[#EEEEEE]">
-                <span :class="[selected ? 'text-[#F09113]' : '']" class="relative py-2 pl-4 pr-4 hover:text-[#A3E7EE]">{{ person.username }}</span>
-              </li>
+                <li
+                  class="
+                    cursor-pointer
+                    select-none
+                    relative
+                    py-2
+                    pl-4
+                    pr-4
+                    hover:bg-[#EEEEEE]
+                  "
+                >
+                  <span
+                    :class="[selected ? 'text-[#F09113]' : '']"
+                    class="relative py-2 pl-4 pr-4 hover:text-[#A3E7EE]"
+                    >{{ person.username }}</span
+                  >
+                </li>
               </ListboxOption>
             </ListboxOptions>
           </transition>
@@ -58,80 +75,123 @@
       </Listbox>
       <Listbox v-if="selectedPerson != null" v-model="currentService">
         <div class="relative mt-1">
-        <ListboxButton class="relative p-2 text-left text-black dark:text-white">
-          <span
-            v-if='currentService !== null && currentService.description !== ""'
-            class="block border-0 border-b-2 border-[#A3E7EE]"
-            >{{ currentService.description }}</span>
-            <span v-else-if="possibleServices.length > 0" class="block border-0 border-b-2 border-[#FD9524]">Select a {{ areaType }}</span>
-            <span v-else class="block border-0 border-b-2 border-[#A3E7EE]">No {{ areaType }}</span>
-        </ListboxButton>
-        <ListboxOptions
-          class="
-                absolute
-                py-1
-                overflow-auto
-                z-10
-                text-base
-                bg-white
-                rounded-md
-                shadow-lg
-                max-h-60
-                ring-1 ring-black ring-opacity-5
-                focus:outline-none
-                sm:text-sm
-          "
-        >
-          <ListboxOption
-            v-slot="{ selected }"
-            v-for="possibleService in possibleServices"
-            :key="possibleService.name"
-            :value="possibleService"
-            as="template"
-            @click="serviceSelected(possibleService)"
+          <ListboxButton
+            class="relative p-2 text-left text-black dark:text-white"
+          >
+            <span
+              v-if="
+                currentService !== null && currentService.description !== ''
+              "
+              class="block border-0 border-b-2 border-[#A3E7EE]"
+              >{{ currentService.description }}</span
             >
-              <li class="cursor-pointer select-none relative py-2 pl-4 pr-4 hover:bg-[#EEEEEE]">
-                <span :class="[ selected ? 'text-[#F09113]' : '']" class="relative py-2 pl-4 pr-4 hover:text-[#A3E7EE]">{{ possibleService.description }}</span>
+            <span
+              v-else-if="possibleServices.length > 0"
+              class="block border-0 border-b-2 border-[#FD9524]"
+              >Select a {{ areaType }}</span
+            >
+            <span v-else class="block border-0 border-b-2 border-[#A3E7EE]"
+              >No {{ areaType }}</span
+            >
+          </ListboxButton>
+          <ListboxOptions
+            class="
+              absolute
+              py-1
+              overflow-auto
+              z-10
+              text-base
+              bg-white
+              rounded-md
+              shadow-lg
+              max-h-60
+              ring-1 ring-black ring-opacity-5
+              focus:outline-none
+              sm:text-sm
+            "
+          >
+            <ListboxOption
+              v-slot="{ selected }"
+              v-for="possibleService in possibleServices"
+              :key="possibleService.name"
+              :value="possibleService"
+              as="template"
+              @click="serviceSelected(possibleService)"
+            >
+              <li
+                class="
+                  cursor-pointer
+                  select-none
+                  relative
+                  py-2
+                  pl-4
+                  pr-4
+                  hover:bg-[#EEEEEE]
+                "
+              >
+                <span
+                  :class="[selected ? 'text-[#F09113]' : '']"
+                  class="relative py-2 pl-4 pr-4 hover:text-[#A3E7EE]"
+                  >{{ possibleService.description }}</span
+                >
               </li>
-          </ListboxOption>
-        </ListboxOptions>
+            </ListboxOption>
+          </ListboxOptions>
         </div>
       </Listbox>
     </div>
     <div v-for="(parameter, i) in currentParameters" :key="parameter">
       <div>
-      <label :for="i" class="dark:text-white text-black">{{ parameter }}:</label>
-      <input
-        :id="i"
-        :class="[
-          paramsToSend[i] != null && paramsToSend[i].length > 0
-            ? 'border-[#A3E7EE]'
-            : 'border-[#FD9524]',
-        ]"
-        v-model="paramsToSend[i]"
-        class="
-          dark:text-white
-          text-black
-          appearance-none
-          bg-transparent
-          border-0 border-b-2
-          w-1/2
-          py-1
-          px-2
-          focus:outline-none
-        "
-        type="text"
-        :placeholder="parameter"
-        @keyup="
-          $emit('updateInfo', {
-            type: currentService.name,
-            params: paramsToSend,
-            index: reactionIndex,
-            accountId: selectedPerson.userId
-          })
-        "
-      />
+        <label :for="i" class="dark:text-white text-black"
+          >{{ parameter }}:</label
+        >
+        <input
+          :id="i"
+          :class="[
+            paramsToSend[i] != null && paramsToSend[i].length > 0
+              ? 'border-[#A3E7EE]'
+              : 'border-[#FD9524]',
+          ]"
+          v-model="paramsToSend[i]"
+          class="
+            dark:text-white
+            text-black
+            appearance-none
+            bg-transparent
+            border-0 border-b-2
+            w-1/2
+            py-1
+            px-2
+            focus:outline-none
+          "
+          type="text"
+          :placeholder="parameter"
+          @keyup="
+            $emit('updateInfo', {
+              type: currentService.name,
+              params: paramsToSend,
+              index: reactionIndex,
+              accountId: selectedPerson.userId,
+            })
+          "
+        />
+      </div>
     </div>
+    <div
+      v-if="
+        currentService !== null &&
+        currentService.formatters !== null &&
+        currentService.formatters !== undefined &&
+        currentService.formatters.length > 0
+      "
+      class="text-[#00000080] dark:text-[#FFFFFF80] text-sm mt-2"
+    >
+      <p>You may use the following formatters to get data from your WHEN in your DO:</p>
+      <p>
+        <span v-for="formatter in currentService.formatters" :key="formatter">
+          {{ "{" + formatter + "} " }}
+        </span>
+      </p>
     </div>
   </div>
 </template>
@@ -171,11 +231,13 @@ export default defineComponent({
         const action = appropriateActions[i];
 
         // * find the service in the service details
-        const actionDetail = this.serviceDetails.find(
-          (x: any) => {
-              return (x.className === action.name && x.areaType.toLowerCase() === this.areaType.toLowerCase());
-          }
-        );
+        const actionDetail = this.serviceDetails.find((x: any) => {
+          return (
+            x.className === action.name &&
+            x.areaType.toLowerCase() === this.areaType.toLowerCase()
+          );
+        });
+        action.formatters = actionDetail.formatters;
 
         // * if the types are the same, add to possibles
         if (
@@ -195,33 +257,36 @@ export default defineComponent({
 
         if (serviceDetail["className"] === service.name) {
           this.currentParameters = [...serviceDetail["parameterNames"]];
-          this.paramsToSend = [...serviceDetail["parameterNames"].map(() => { return null })];
+          this.paramsToSend = [
+            ...serviceDetail["parameterNames"].map(() => {
+              return null;
+            }),
+          ];
           break;
         }
       }
-      this.$emit("updateInfo",
-      {
+      this.$emit("updateInfo", {
         type: service.name,
         params: this.paramsToSend,
         index: this.reactionIndex,
-        accountId: this.selectedPerson.userId
+        accountId: this.selectedPerson.userId,
       });
     },
   },
   computed: {
     accounts(): any {
       return this.$store.state.service.accounts;
-    }
+    },
   },
   data: function () {
     return {
       possibleServices: [] as string[],
       currentParameters: [] as string[],
       paramsToSend: [] as string[],
-      currentService: null as any|null,
+      currentService: null as any | null,
       people: [],
-      selectedPerson: null as any|null,
-      seelctedService: null as any|null
+      selectedPerson: null as any | null,
+      seelctedService: null as any | null,
     };
   },
   setup() {},
