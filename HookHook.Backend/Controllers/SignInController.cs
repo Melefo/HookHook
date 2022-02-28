@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// /signin controller route
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [AllowAnonymous]
@@ -103,6 +106,11 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get twitter authorization
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns>Verifier code</returns>
         [HttpGet("authorize/{provider}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -140,6 +148,10 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Verify an ID
+        /// </summary>
+        /// <param name="id"></param>
         [HttpPut("verify/{id}")]
         public ActionResult Verify([BindRequired] string id)
         {
@@ -158,7 +170,10 @@ namespace HookHook.Backend.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Recover password
+        /// </summary>
+        /// <param name="username"></param>
         [HttpPut("forgot/{username}")]
         public async Task<ActionResult> ForgotPassword(string username)
         {
@@ -166,6 +181,10 @@ namespace HookHook.Backend.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Confirm password
+        /// </summary>
+        /// <param name="form"></param>
         [HttpPut("confirm")]
         public ActionResult ConfirmPassword([FromBody] PasswordModel form)
         {
