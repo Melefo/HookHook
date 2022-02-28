@@ -12,6 +12,9 @@ using TwitchLib.Api;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// /service controller route
+    /// </summary>
 	[Route("[controller]")]
 	[ApiController]
 	[Authorize]
@@ -42,6 +45,11 @@ namespace HookHook.Backend.Controllers
             _twitchId = config["Twitch:ClientId"];
 		}
 
+        /// <summary>
+        /// Get user accounts for provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns>List of accounts</returns>
         [HttpGet("{provider}")]
         public async Task<ActionResult<List<ServiceAccount>>> Get(Providers provider)
         {
@@ -117,6 +125,13 @@ namespace HookHook.Backend.Controllers
             return list;
         }
 
+        /// <summary>
+        /// Add an account for a provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="code"></param>
+        /// <param name="verifier"></param>
+        /// <returns>The created account</returns>
         [HttpPost("{provider}")]
         public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
         {
@@ -158,6 +173,11 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete an account on provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="id"></param>
         [HttpDelete("{provider}")]
         public ActionResult Delete(Providers provider, [BindRequired] [FromQuery] string id)
         {
