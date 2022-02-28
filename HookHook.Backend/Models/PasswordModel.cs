@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HookHook.Backend.Models
 {
@@ -13,9 +12,17 @@ namespace HookHook.Backend.Models
 		[Required(ErrorMessage = "Password is required")]
 		public string Password { get; set; }
 
+		/// <summary>
+        /// Random ID
+        /// </summary>
 		[Required(ErrorMessage = "Id is required")]
 		public string Id { get; set; }
 
+		/// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="id">Random ID</param>
+        /// <param name="password">new Password</param>
 		public PasswordModel(string id, string password)
 		{
 			Id = id;

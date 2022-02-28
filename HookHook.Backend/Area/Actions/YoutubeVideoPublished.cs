@@ -8,25 +8,55 @@ using User = HookHook.Backend.Entities.User;
 
 namespace HookHook.Backend.Area.Actions
 {
+    /// <summary>
+    /// New YouTube video is published
+    /// </summary>
     [Service(Providers.Google, "Video is published")]
     [BsonIgnoreExtraElements]
     public class YoutubeVideoPublished : IAction
     {
+        /// <summary>
+        /// List of formatters for reactions
+        /// </summary>
         public static string[] Formatters { get; } = new[]
         {
             "video.title", "video.id", "video.description", "video.thumbnail"
         };
 
+        /// <summary>
+        /// YouTube channel name
+        /// </summary>
         public string Channel { get; set; }
+        /// <summary>
+        /// YouTube service account Id
+        /// </summary>
         public string AccountId { get; set; }
 
+        /// <summary>
+        /// List of saved videos
+        /// </summary>
         public List<string> Videos { get; private init; } = new();
 
+        /// <summary>
+        /// Service used to check on Google/YouTube API
+        /// </summary>
         private readonly GoogleService _googleService;
 
+        /// <summary>
+        /// YouTubeVideoPublished constructor used by Mongo
+        /// </summary>
+        /// <param name="service">Google servive</param>
+        /// <remarks>You should not use this constructor as not all members are initialized</remarks>
         public YoutubeVideoPublished(GoogleService service) =>
             _googleService = service;
 
+        /// <summary>
+        /// YouTubeVideoPublished constructor
+        /// </summary>
+        /// <param name="channel">YouTube channel name</param>
+        /// <param name="accountId">YouTube service account id</param>
+        /// <param name="user">HookHook user</param>
+        /// <param name="googleService">Google service</param>
         public YoutubeVideoPublished([ParameterName("Channel name")] string channel, string accountId, User user, GoogleService googleService) : this(googleService)
         {
             Channel = channel;
@@ -37,6 +67,11 @@ namespace HookHook.Backend.Area.Actions
                 Videos.Add(video.Id);
         }
 
+        /// <summary>
+        /// Get all channel videos
+        /// </summary>
+        /// <param name="user">HookHook user</param>
+        /// <returns>list of videos</returns>
         public IList<PlaylistItem> GetVideos(User user)
         {
             var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == AccountId)!);
@@ -61,6 +96,11 @@ namespace HookHook.Backend.Area.Actions
             return videos.Items;
         }
 
+        /// <summary>
+        /// Check if a new video is published
+        /// </summary>
+        /// <param name="user">HookHook user</param>
+        /// <returns>List of formatters</returns>
         public Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var videos = GetVideos(user);

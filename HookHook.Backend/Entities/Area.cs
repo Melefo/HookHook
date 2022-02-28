@@ -17,6 +17,9 @@ namespace HookHook.Backend.Entities
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; private init; } = ObjectId.GenerateNewId().ToString();
 
+        /// <summary>
+        /// Area name
+        /// </summary>
         public string Name { get; private init; }
 
         /// <summary>
@@ -39,6 +42,13 @@ namespace HookHook.Backend.Entities
         /// </summary>
         public List<IReaction> Reactions { get; private init; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="name">AREA Name</param>
+        /// <param name="action">Actions</param>
+        /// <param name="reactions">Reactions</param>
+        /// <param name="minutes">Minutes betweens check</param>
         public Area(string name, IAction action, IEnumerable<IReaction> reactions, int minutes)
         {
             Name = name;
@@ -47,7 +57,13 @@ namespace HookHook.Backend.Entities
             MinutesBetween = minutes;
         }
 
-        public async Task Launch(User user, MongoService _db)
+        /// <summary>
+        /// Launch AREA
+        /// </summary>
+        /// <param name="user">HookHook User</param>
+        /// <param name="db">Mongo service</param>
+        /// <returns></returns>
+        public async Task Launch(User user, MongoService db)
         {
             if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
                 return;
@@ -68,7 +84,7 @@ namespace HookHook.Backend.Entities
                     return;
                 }
             }
-            _db.SaveUser(user);
+            db.SaveUser(user);
         }
     }
 }

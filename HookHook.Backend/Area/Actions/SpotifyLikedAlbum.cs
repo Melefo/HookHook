@@ -6,21 +6,41 @@ using SpotifyAPI.Web;
 
 namespace HookHook.Backend.Area.Actions
 {
+    /// <summary>
+    /// Spotify user liked an album action
+    /// </summary>
     [Service(Providers.Spotify, "Liked a spotify album")]
     [BsonIgnoreExtraElements]
     public class SpotifyLikedAlbum : IAction
     {
+        /// <summary>
+        /// List of formatters for reactions
+        /// </summary>
         public static string[] Formatters { get; } = new[]
         {
             "album.id", "album.name", "album.artists", "like.date"
         };
 
+        /// <summary>
+        /// Spotify service account ID
+        /// </summary>
         public string AccountId { get; set; }
 
+        /// <summary>
+        /// List saved of album liked
+        /// </summary>
         public List<string> StoredLibrary { get; private init; } = new();
 
+        /// <summary>
+        /// Client used to check on Spotify API
+        /// </summary>
         private SpotifyClient? _spotifyClient;
 
+        /// <summary>
+        /// SpotifyLikedAlbum constructor
+        /// </summary>
+        /// <param name="accountId">Spotify service account ID</param>
+        /// <param name="user">HookHook user</param>
         public SpotifyLikedAlbum(string accountId, User user)
         {
             AccountId = accountId;
@@ -31,6 +51,11 @@ namespace HookHook.Backend.Area.Actions
                 StoredLibrary.Add(album.Album.Id);
         }
 
+        /// <summary>
+        /// Get all liked album list of user
+        /// </summary>
+        /// <param name="user">HookHook user</param>
+        /// <returns>list of album</returns>
         private async Task<Paging<SavedAlbum>> GetLikedAlbums(User user)
         {
             _spotifyClient ??= new SpotifyClient(user.ServicesAccounts[Providers.Spotify].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
@@ -40,6 +65,11 @@ namespace HookHook.Backend.Area.Actions
             return albums;
         }
 
+        /// <summary>
+        /// Check if a new album is liked
+        /// </summary>
+        /// <param name="user">HookHook user</param>
+        /// <returns>A list of formatters</returns>
         public async Task<(Dictionary<string, object?>?, bool)> Check(User user)
         {
             var albums = await GetLikedAlbums(user);
