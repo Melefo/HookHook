@@ -45,7 +45,7 @@ namespace HookHook.Backend.Controllers
 
             reactionTypes = new()
             {
-                { nameof(DiscordWebhook), (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], accountId) },
+                { nameof(DiscordWebhook), (string[] args, string accountId, User user) => new DiscordWebhook(args[0], args[1], args[2], accountId) },
                 { nameof(GithubCreateRepository), (string[] args, string accountId, User user) => new GithubCreateRepository(args[0], args[1], accountId) },
                 { nameof(GithubCreateIssue), (string[] args, string accountId, User user) => new GithubCreateIssue(args[0], args[1], args[2], args[3], accountId) },
                 { nameof(SpotifyLikeAlbum), (string[] args, string accountId, User user) => new SpotifyLikeAlbum(args[0], args[1], accountId) },
@@ -77,19 +77,20 @@ namespace HookHook.Backend.Controllers
             public Providers Name { get; set; }
             public string ClassName { get; set; }
             public string Description { get; set; }
-            // public int parameterCount { get; set; }
 
             public string[] ParameterNames { get; set; }
+            public string[]? Formatters { get; set; }
 
             public string AreaType { get; set; } // * ACTION or REACTION
 
-            public ServiceDescription(Providers name, string className, string description, string type, params string[] parameters)
+            public ServiceDescription(Providers name, string className, string description, string type, string[] parameters, string[]? formatters)
             {
                 Name = name;
                 ClassName = className;
                 Description = description;
                 AreaType = type;
                 ParameterNames = parameters;
+                Formatters = formatters;
             }
         }
 
@@ -116,9 +117,12 @@ namespace HookHook.Backend.Controllers
                 var attr = service.GetCustomAttribute<ServiceAttribute>()!;
 
                 if (actionType.IsAssignableFrom(service))
-                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", @params));
+                {
+                    string[]? formatters = (string[]?)service.GetProperty("Formatters")?.GetValue(null);
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Action", @params, formatters));
+                }
                 if (reactionType.IsAssignableFrom(service))
-                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", @params));
+                    servicesResponse.Add(new(attr.Name, service.Name, attr.Description, "Reaction", @params, null));
             }
             return Ok(servicesResponse);
         }

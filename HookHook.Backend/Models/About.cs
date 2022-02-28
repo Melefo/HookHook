@@ -1,5 +1,4 @@
-﻿
-using HookHook.Backend.Attributes;
+﻿using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Utilities;
 using System.Reflection;

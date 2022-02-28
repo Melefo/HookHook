@@ -1,5 +1,8 @@
 namespace HookHook.Backend.Exceptions
 {
+    /// <summary>
+    /// Exception thrown when there is a problem with an API
+    /// </summary>
     public class ApiException : Exception
     {
         public ApiException() : base()
