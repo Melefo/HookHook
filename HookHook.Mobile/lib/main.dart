@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:hookhook/views/login.dart';
+import 'package:hookhook/views/new_area.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/view.dart'
     show AppMVC, AppState, AppStatefulWidgetMVC;
@@ -42,6 +43,7 @@ class Hookhook extends AppMVC {
                   initialRoute: LoginView.routeName,
                   routes: {
                     HomeView.routeName: (context) => const HomeView(),
+                    NewAreaView.routeName: (context) => NewAreaView(),
                     LoginView.routeName: (context) => LoginView()
                   }
               )
