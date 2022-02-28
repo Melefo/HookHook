@@ -23,7 +23,7 @@
     text-2xl text-black
     dark:text-white
     "
-  >The best way to automate your work and make it more relaxing.</h2>
+  >Wanna try our service?</h2>
     <section
       class="
         flex flex-col justify-center items-center
@@ -37,18 +37,6 @@
         </div>
       </Bloc>
     </section>
-    <div class="flex flex-col xl:flex-row justify-evenly mt-20 hidden">
-      <img
-        class="object-contain w-40 h-40"
-        src="@/assets/pinguin/breakdance.gif"
-      />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/dance.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/clap.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/mop.gif" />
-      <img class="object-contain w-40 h-v" src="@/assets/pinguin/maracas.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/warp.gif" />
-      <img class="object-contain w-40 h-40" src="@/assets/pinguin/photo.gif" />
-    </div>
   </div>
 </template>
 
@@ -57,7 +45,7 @@ import Bloc from "@/components/BlocComponent.vue";
 import HookHook from "@/components/HookHookComponent.vue";
 import Register from "@/components/User/RegisterComponent.vue";
 import DiscordOauth from "@/components/OAuth/DiscordOAuthComponent.vue";
-import GithubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
+import GitHubOauth from "@/components/OAuth/GitHubOAuthComponent.vue";
 import SpotifyOauth from "@/components/OAuth/SpotifyOAuthComponent.vue";
 import TwitchOauth from "@/components/OAuth/TwitchOAuthComponent.vue";
 import TwitterOauth from '@/components/OAuth/TwitterOAuthComponent.vue';
@@ -67,18 +55,17 @@ import { defineComponent } from "vue";
 import { mapActions } from "vuex";
 
 export default defineComponent({
-  components: { Bloc, HookHook, Register, DiscordOauth, GithubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
+  components: { Bloc, HookHook, Register, DiscordOauth, GitHubOauth, SpotifyOauth, TwitchOauth, TwitterOauth, GoogleOauth },
   methods: {
     ...mapActions("about", ["get"])
   },
   data: function() {
     return {
-      services: []
+      services: this.$store.state.about.info?.server?.services || []
     }
   },
   created: async function() {
-    const { server: { services } } = await this.get();
-    this.services = services;
+    await this.get();
   }
 });
 </script>

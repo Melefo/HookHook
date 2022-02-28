@@ -36,18 +36,14 @@ namespace HookHook.Backend.Services
 
     public class DiscordService
 	{
-        private readonly MongoService _db;
-
         private readonly string _id;
 		private readonly string _secret;
 		private readonly string _redirect;
 
         private readonly HttpClient _client = new();
 
-        public DiscordService(MongoService db, IConfiguration config)
+        public DiscordService(IConfiguration config)
 		{
-            _db = db;
-
             _id = config["Discord:ClientId"];
 			_secret = config["Discord:ClientSecret"];
 			_redirect = config["Discord:Redirect"];
@@ -83,7 +79,6 @@ namespace HookHook.Backend.Services
                 return null;
 
             user.ServicesAccounts[Providers.Discord].Add(new(id, token.AccessToken, TimeSpan.FromSeconds(token.ExpiresIn), token.RefreshToken));
-            _db.SaveUser(user);
             return new(id, client.CurrentUser.ToString());
         }
 

@@ -10,18 +10,25 @@
         type="text"
         label="Username/Email"
         :reverse="true"
+        :required="true"
         v-model="username"
       />
       <span class="text-red-500" v-if="errors && errors.password">{{
         this.errors.password
       }}</span>
       <Input
-        class="pb-5"
+        class="pb-2"
         type="password"
         label="Password"
         :reverse="true"
+        :required="true"
         v-model="password"
       />
+      <RouterLink to="/forgot">
+        <div class="pb-5 text-black dark:text-white underline">
+          Forgot password?
+        </div>
+      </RouterLink>
       <Input type="submit" class="pb-5" value="Login" :reverse="true" />
       <RouterLink to="/register">
         <Input type="submit" value="Register"/>

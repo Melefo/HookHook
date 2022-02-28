@@ -9,7 +9,6 @@ namespace HookHook.Backend.Services
 	public class TwitterService
 	{
 		private readonly IConfiguration _configuration;
-		private readonly MongoService _db;
 
 		private readonly string _id;
 		private readonly string _secret;
@@ -17,10 +16,9 @@ namespace HookHook.Backend.Services
 
 		private Dictionary<string, OAuth.OAuthSession> _OAuthSessions = new();
 
-		public TwitterService(MongoService db, IConfiguration configuration)
+		public TwitterService(IConfiguration configuration)
 		{
 			_configuration = configuration;
-			_db = db;
 
 			_id = _configuration["Twitter:ClientId"];
 			_secret = _configuration["Twitter:ClientSecret"];
@@ -60,7 +58,6 @@ namespace HookHook.Backend.Services
 				return null;
 
 			user.ServicesAccounts[Providers.Twitter].Add(new(id, tokens.AccessToken, secret: tokens.AccessTokenSecret));
-			_db.SaveUser(user);
 			var current = await tokens.Users.ShowAsync(twitter.Id!.Value);
 			return new(id, $"@{current.ScreenName}");
 			

@@ -4,49 +4,74 @@ using Octokit;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Area.Reactions
 {
+    /// <summary>
+    /// Create a GitHub repository reaction
+    /// </summary>
     [BsonIgnoreExtraElements]
     [Service(Providers.GitHub, "create a new repository")]
     public class GithubCreateRepository : IReaction
     {
+        /// <summary>
+        /// GitHub repository name
+        /// </summary>
         public string RepositoryName {get; private init;}
-
+        /// <summary>
+        /// GitHub repository description
+        /// </summary>
         public string Description {get; private init;}
-
-        [BsonIgnore]
-        public GitHubClient _githubClient;
-        [BsonIgnore]
-        private readonly HttpClient _httpClient = new();
-
+        /// <summary>
+        /// GitHub service accoutn id
+        /// </summary>
         public string AccountId { get; set; }
 
-        public GithubCreateRepository(string repositoryName, string description, string accountId)
+        /// <summary>
+        /// Client used to check on GitHub API
+        /// </summary>
+        private readonly GitHubClient _githubClient;
+
+        /// <summary>
+        /// GithubCreateRepository constructor for Mongo
+        /// </summary>
+        /// <remarks>You should not use this constructor as not all members are initialized</remarks>
+        [BsonConstructor]
+        public GithubCreateRepository() =>
+            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
+
+        /// <summary>
+        /// GithubCreateRepository constructor
+        /// </summary>
+        /// <param name="repositoryName">GitHub repository name</param>
+        /// <param name="description">GitHub repository description</param>
+        /// <param name="accountId">GitHub service account Id</param>
+        public GithubCreateRepository([ParameterName("Repository name")] string repositoryName, [ParameterName("Repository description")] string description, string accountId) : this()
         {
             RepositoryName = repositoryName;
             Description = description;
-            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
             AccountId = accountId;
         }
 
-        public async Task Execute(Entities.User user, string actionInfo)
+        /// <summary>
+        /// Create Discord repository
+        /// </summary>
+        /// <param name="user">HookHook user</param>
+        /// <param name="formatters">List of formatters from reactions</param>
+        /// <returns></returns>
+        /// <exception cref="Exceptions.ApiException"></exception>
+        public async Task Execute(Entities.User user, Dictionary<string, object?> formatters)
         {
-            _githubClient = new GitHubClient(new ProductHeaderValue("HookHook"));
-
-            // * https://octokitnet.readthedocs.io/en/latest/getting-started/
+            var name = RepositoryName.FormatParam(formatters);
+            var description = Description.FormatParam(formatters);
 
             _githubClient.Credentials = new Credentials(user.ServicesAccounts[Providers.GitHub].SingleOrDefault(acc => acc.UserId == AccountId)!.AccessToken);
 
-            var createRepository = new NewRepository(RepositoryName);
-            createRepository.Description = Description;
+            var createRepository = new NewRepository(name);
+            createRepository.Description = description;
             var repository = await _githubClient.Repository.Create(createRepository);
 
-            // ? add new repo to database ?
-
-            // ? error checks ?
-            if (repository == null) {
+            if (repository == null)
                 throw new Exceptions.ApiException("Failed to call API");
-            }
         }
     }
 }

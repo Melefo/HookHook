@@ -1,5 +1,8 @@
 namespace HookHook.Backend.Exceptions
 {
+    /// <summary>
+    /// Exception thrown when there is a problem with Mongo
+    /// </summary>
     public class MongoException : Exception
     {
         public MongoException() : base()

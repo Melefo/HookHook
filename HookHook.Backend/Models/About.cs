@@ -1,5 +1,4 @@
-﻿
-using HookHook.Backend.Attributes;
+﻿using HookHook.Backend.Attributes;
 using HookHook.Backend.Entities;
 using HookHook.Backend.Utilities;
 using System.Reflection;
@@ -136,10 +135,9 @@ namespace HookHook.Backend.Models
 
             var services = Assembly.GetExecutingAssembly().GetTypes().Where(x => x.GetCustomAttribute<ServiceAttribute>() != null);
             var groupedServices = services.GroupBy(x => x.GetCustomAttribute<ServiceAttribute>()!.Name).ToDictionary(x => x.Key, x => x.ToList());
+
             foreach (var service in groupedServices)
-            {
                 Services.Add(new Service(service.Key, service.Value));
-            }
         }
 
         /// <summary>

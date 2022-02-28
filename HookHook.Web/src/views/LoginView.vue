@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-row justify-center items-center whitespace-nowrap">
-    <img class="w-20 h-20" src="@/assets/pinguin/breakdance.gif"/>
+    <img class="w-20 h-20" src="@/assets/pinguin/warp.gif"/>
     <h2 class="
         p-2
         font-medium
@@ -10,7 +10,7 @@
         duration-200
       "
     >Welcome to H<span class="blink">oo</span>kH<span class="blink">oo</span>k</h2>
-    <img class="w-20 h-20" src="@/assets/pinguin/breakdance.gif"/>
+    <img class="w-20 h-20" src="@/assets/pinguin/warp.gif"/>
   </div>
   <h2 class="
     flex
@@ -21,7 +21,7 @@
     text-2xl text-black
     dark:text-white
     "
-  >The best way to automate your work and make it more relaxing.</h2>
+  >Try to login!</h2>
   <section
     class="
       flex flex-col justify-center items-center
@@ -35,15 +35,6 @@
       </div>
     </Bloc>
   </section>
-  <div class="flex flex-col xl:flex-row justify-evenly mt-20 hidden">
-    <img class="object-contain w-40 h-40" src="@/assets/pinguin/breakdance.gif" />
-    <img class="object-contain w-40 h-40" src="@/assets/pinguin/dance.gif" />
-    <img class="object-contain w-40 h-40" src="@/assets/pinguin/clap.gif" />
-    <img class="object-contain w-40 h-40" src="@/assets/pinguin/mop.gif" />
-    <img class="object-contain w-40 h-v" src="@/assets/pinguin/maracas.gif" />
-    <img class="object-contain w-40 h-40" src="@/assets/pinguin/warp.gif" />
-    <img class="object-contain w-40 h-40" src="@/assets/pinguin/photo.gif" />
-  </div>
 </template>
 
 <style>

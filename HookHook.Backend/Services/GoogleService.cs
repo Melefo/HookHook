@@ -57,8 +57,6 @@ namespace HookHook.Backend.Services
 
     public class GoogleService
     {
-        private readonly MongoService _db;
-
         private readonly string _id;
         private readonly string _secret;
         private readonly string _key;
@@ -70,10 +68,8 @@ namespace HookHook.Backend.Services
         /// Youtube Service Constructor
         /// </summary>
         /// <param name="config"></param>
-        public GoogleService(MongoService db, IConfiguration config)
+        public GoogleService(IConfiguration config)
         {
-            _db = db;
-
             _id = config["Google:ClientId"];
             _secret = config["Google:ClientSecret"];
             _key = config["Google:ApiKey"];
@@ -133,7 +129,6 @@ namespace HookHook.Backend.Services
 
             OAuthAccount oauth = new(profile.Id, res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken);
             user.ServicesAccounts[Providers.Google].Add(oauth);
-            _db.SaveUser(user);
 
             var youtube = CreateYouTube(oauth);
             var req = youtube.Channels.List("snippet");

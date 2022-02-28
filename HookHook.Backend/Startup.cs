@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using HookHook.Backend.Services;
 using System.Text.Json.Serialization;
 using FluentScheduler;
+using HookHook.Backend.Controllers;
 
 namespace HookHook.Backend
 {
@@ -88,7 +89,21 @@ namespace HookHook.Backend
                     ValidateAudience = false
                 };
 
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/area/hub"))
+                            context.Token = accessToken;
+                        return Task.CompletedTask;
+                    }
+                };
             });
+
+            services.AddSignalR();
             services.AddRouting(x => x.LowercaseUrls = true);
         }
 
@@ -107,7 +122,10 @@ namespace HookHook.Backend
                 app.UseSwaggerUI();
             }
 
-            app.UseWebSockets();
+            app.UseWebSockets(new()
+            {
+                KeepAliveInterval = TimeSpan.FromMinutes(1)
+            });
 
             app.UseRouting();
 
@@ -116,6 +134,7 @@ namespace HookHook.Backend
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<AreaHub>("/area/hub");
                 endpoints.MapControllers();
             });
         }

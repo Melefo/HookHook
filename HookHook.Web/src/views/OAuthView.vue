@@ -6,7 +6,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-    beforeCreate() {
+    setup() {
         if (window.opener) {
             window.opener.postMessage(window.location.search);
         }

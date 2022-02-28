@@ -5,6 +5,9 @@ import Register from '@/views/RegisterView.vue'
 import Dashboard from '@/views/DashboardView.vue'
 import OAuth from '@/views/OAuthView.vue'
 import Admin from '@/views/AdminView.vue'
+import Verify from "@/views/VerifyView.vue"
+import Forgot from "@/views/ForgotPasswordView.vue"
+import Confirm from "@/views/ConfirmPasswordView.vue"
 import store from '@/store'
 
 const routes = [
@@ -52,7 +55,33 @@ const routes = [
     meta: {
       onlyAdmin: true
     }
-  }
+  },
+  {
+    path: '/verify/:id',
+    name: 'verify',
+    component: Verify,
+    meta: {
+      onlyGuest: true
+    },
+    props: true
+  },
+  {
+    path: '/forgot',
+    name: 'forgot',
+    component: Forgot,
+    meta: {
+      onlyGuest: true
+    }
+  },
+  {
+    path: '/confirm/:id',
+    name: 'confirm',
+    component: Confirm,
+    meta: {
+      onlyGuest: true
+    },
+    props: true
+  },
 ]
 
 const router = createRouter({
@@ -74,9 +103,6 @@ router.beforeEach((to, from, next) => {
   }
   if (to.meta && to.meta.onlyUser && !store.getters["signIn/isLoggedIn"]) {
     return next('/login');
-  }
-  if (to.meta && to.meta.onlyUser && !store.getters["signIn/isLoggedIn"]) {
-    return next('/register');
   }
   if (to.meta && to.meta.onlyGuest && store.getters["signIn/isLoggedIn"]) {
     return next('/');

@@ -7,64 +7,125 @@ using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Area.Actions
 {
+    /// <summary>
+    /// Discord pinned action
+    /// </summary>
     [Service(Providers.Discord, "message is pinned")]
     [BsonIgnoreExtraElements]
     public class DiscordPinned : IAction
     {
-        public ulong Guild { get; private init; }
-        public ulong Channel { get; private init; }
-        public List<ulong> PinnedMessages { get; private init; } = new();
+        /// <summary>
+        /// List of formatters used in reaction
+        /// </summary>
+        public static string[] Formatters { get; } = new[]
+        {
+            "msg.content", "msg.id", "author.id", "author.name", "author.mention", "msg.date"
+        };
 
+        /// <summary>
+        /// Guild ID to where channel is
+        /// </summary>
+        public ulong GuildId { get; private init; }
+        /// <summary>
+        /// Channel ID to where check if a new pinned
+        /// </summary>
+        public ulong ChannelId { get; private init; }
+        /// <summary>
+        /// Service OAtuh associated with this action
+        /// </summary>
         public string AccountId { get; set; }
 
-        [BsonIgnore]
-        private DiscordRestClient _client = new();
+        /// <summary>
+        /// List of saved pinned messages
+        /// </summary>
+        public List<ulong> PinnedMessages { get; private init; } = new();
 
-        public DiscordPinned(string guildId, string channelId, string accountId)
+        /// <summary>
+        /// Bot token used to check on Discord API
+        /// </summary>
+        private readonly string _botToken;
+        /// <summary>
+        /// Client used to check Discord API
+        /// </summary>
+        private readonly DiscordRestClient _client;
+
+        /// <summary>
+        /// DiscordPinned constructor
+        /// </summary>
+        /// <param name="guildId">Discord Guild ID</param>
+        /// <param name="channelId">Discord Channel ID</param>
+        /// <param name="accountId">Discord service accoutn ID</param>
+        /// <param name="botToken">Discord bot Token</param>
+        public DiscordPinned([ParameterName("Guild ID")] ulong guildId, [ParameterName("Channel ID")] ulong channelId, string accountId, string botToken) : this(botToken)
         {
-            Guild = ulong.Parse(guildId);
-            Channel = ulong.Parse(channelId);
+            GuildId = guildId;
+            ChannelId = channelId;
             AccountId = accountId;
 
-            _client = new();
-
-            _client.LoginAsync(TokenType.Bot, AccountId).GetAwaiter().GetResult();
-
-            var guild = _client.GetGuildAsync(Guild).GetAwaiter().GetResult();
-            if (guild == null)
+            var pinneds = GetPinned().GetAwaiter().GetResult();
+            if (pinneds == null)
                 return;
-            var channel = guild.GetTextChannelAsync(Channel).GetAwaiter().GetResult();
-            if (channel == null)
-                return;
-
-            var pinneds = channel.GetPinnedMessagesAsync().GetAwaiter().GetResult();
             foreach (var pinned in pinneds)
                 PinnedMessages.Add(pinned.Id);
         }
 
-        public async Task<(string?, bool)> Check(User user)
+        /// <summary>
+        /// DiscordPinned constructor used by Mongo
+        /// </summary>
+        /// <param name="botToken">Discord bot Token</param>
+        /// <remarks>You should not use this constructor as not all members are initialized</remarks>
+        public DiscordPinned(string botToken)
         {
-            _client ??= new();
-            await _client.LoginAsync(TokenType.Bot, AccountId);
+            _botToken = botToken;
+            _client = new();
+        }
 
-            var guild = await _client.GetGuildAsync(Guild);
+        /// <summary>
+        /// Get list of pinned messages
+        /// </summary>
+        /// <returns>list of pinned messages</returns>
+        public async Task<IReadOnlyCollection<RestMessage>?> GetPinned()
+        {
+            await _client.LoginAsync(TokenType.Bot, _botToken);
+
+            var guild = await _client.GetGuildAsync(GuildId);
             if (guild == null)
-                return (null, false);
-            var channel = await guild.GetTextChannelAsync(Channel);
+                return null;
+
+            var channel = await guild.GetTextChannelAsync(ChannelId);
             if (channel == null)
+                return null;
+
+            return await channel.GetPinnedMessagesAsync();
+        }
+
+        /// <summary>
+        /// Check if a neww message is pinned
+        /// </summary>
+        /// <param name="_">HookHook User</param>
+        /// <returns>List of formatters</returns>
+        public async Task<(Dictionary<string, object?>?, bool)> Check(User _)
+        {
+            var pinneds = await GetPinned();
+            if (pinneds == null)
                 return (null, false);
 
-            var pinned = await channel.GetPinnedMessagesAsync();
-            foreach (var message in pinned)
+            foreach (var message in pinneds)
             {
                 if (PinnedMessages.Contains(message.Id))
                     continue;
-
-                // await reaction.Execute();
                 PinnedMessages.Add(message.Id);
+                var formatters = new Dictionary<string, object?>()
+                {
+                    { Formatters[0], message.Content },
+                    { Formatters[1], message.Id },
+                    { Formatters[2], message.Author.Id },
+                    { Formatters[3], message.Author },
+                    { Formatters[4], message.Author.Mention },
+                    { Formatters[5], message.CreatedAt.ToString("G") }
+                };
 
-                // * send message.id to database ?
-                return (message.Content, true);
+                return (formatters, true);
             }
             return (null, false);
         }

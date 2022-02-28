@@ -3,43 +3,87 @@ using HookHook.Backend.Entities;
 using HookHook.Backend.Services;
 using HookHook.Backend.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
+using Google.Apis.YouTube.v3.Data;
 
-namespace HookHook.Backend.Reactions
+namespace HookHook.Backend.Area.Reactions
 {
+    /// <summary>
+    /// Post a comment on a youtube video reaction
+    /// </summary>
     [BsonIgnoreExtraElements]
     [Service(Providers.Google, "post a comment")]
     public class YoutubePostComment : IReaction
     {
-        public string VideoName {get; private init;}
-        public string Comment {get; private init;}
-
-        [BsonIgnore]
-        private GoogleService _googleService;
-
+        /// <summary>
+        /// Video ID
+        /// </summary>
+        public string VideoId { get; private init; }
+        /// <summary>
+        /// Comment content
+        /// </summary>
+        public string Comment { get; private init; }
+        /// <summary>
+        /// YouTube service Account id
+        /// </summary>
         public string AccountId { get; set; }
 
-        // * faudrait prendre le channelName aussi pour être sûr
-        // * ou le lien plutôt... et à la limite on parse l'id dessus
-        public YoutubePostComment(string videoName, string comment, GoogleService googleService, string accountId)
+        /// <summary>
+        /// Service used to check on Google/YouTube API
+        /// </summary>
+        private readonly GoogleService _googleService;
+
+        /// <summary>
+        /// YoutubePostComment used by mondo
+        /// </summary>
+        /// <param name="service">Google service</param>
+        /// <remarks>You should not use this constructor as not all members are initialized</remarks>
+        public YoutubePostComment(GoogleService service) =>
+            _googleService = service;
+
+        /// <summary>
+        /// YoutubePostComment constructor
+        /// </summary>
+        /// <param name="videoId">Video ID</param>
+        /// <param name="comment">Comment content</param>
+        /// <param name="googleService">Google service</param>
+        /// <param name="accountId">Google service account ID</param>
+        public YoutubePostComment([ParameterName("Video ID")] string videoId, [ParameterName("Comment content")] string comment, GoogleService googleService, string accountId) : this(googleService)
         {
-            VideoName = videoName;
+            VideoId = videoId;
             Comment = comment;
-            _googleService = googleService;
             AccountId = accountId;
         }
 
-        public Task Execute(User user, string actionInfo)
+        /// <summary>
+        /// Post the comment
+        /// </summary>
+        /// <param name="user">HookHook user</param>
+        /// <param name="formatters">Formatters from action</param>
+        /// <returns></returns>
+        public Task Execute(User user, Dictionary<string, object?> formatters)
         {
+            var videoId = VideoId.FormatParam(formatters);
+            var comment = Comment.FormatParam(formatters);
+
             var youtubeClient = _googleService.CreateYouTube(user.ServicesAccounts[Providers.Google].SingleOrDefault(acc => acc.UserId == AccountId)!);
 
-            var searchRequest = youtubeClient.Search.List(VideoName);
-            var search = searchRequest.Execute();
+            var commentThread = new CommentThread()
+            {
+                Snippet = new CommentThreadSnippet()
+                {
+                    VideoId = videoId,
+                    TopLevelComment = new Comment()
+                    {
+                        Snippet = new()
+                        {
+                            TextOriginal = comment
+                        }
+                    }
+                }
+            };
 
-            var commentObject = new Google.Apis.YouTube.v3.Data.Comment();
-            commentObject.Snippet.TextOriginal = Comment;
-            // ! vraiment pas sûr que ceci fonctionne
-            var commentRequest = youtubeClient.Comments.Update(commentObject, search.Items[0].Id.ToString());
-            var commentResult = commentRequest.Execute();
+            var insert = youtubeClient.CommentThreads.Insert(commentThread, "snippet");
+            var search = insert.Execute();
 
             return Task.CompletedTask;
         }

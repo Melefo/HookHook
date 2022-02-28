@@ -1,5 +1,8 @@
 namespace HookHook.Backend.Exceptions
 {
+    /// <summary>
+    /// Type of user exception
+    /// </summary>
     public enum TypeUserException
     {
         Username,
@@ -7,6 +10,9 @@ namespace HookHook.Backend.Exceptions
         Password
     }
 
+    /// <summary>
+    /// Exception thrown hen there is a problem with an User
+    /// </summary>
     public class UserException : Exception
     {
         public TypeUserException Type;
