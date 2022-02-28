@@ -10,7 +10,9 @@ class AreaItem extends StatelessWidget {
   final String reaction;
 
 
-  const AreaItem({Key? key, this.areaName = "Area Name", this.action  = "default", this.reaction  = "default"}) : super(key: key);
+  const AreaItem(
+      {Key? key, this.areaName = "Area Name", this.action = "default", this.reaction = "default"})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +46,9 @@ class AreaItem extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 20, right: 5, left: 5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget> [
-                    Text('14h03 : 15 decembre', style: TextStyle(color: Colors.white)),
+                  children: <Widget>[
+                    Text('14h03 : 15 decembre',
+                        style: TextStyle(color: Colors.white)),
                   ],
                 ),
               ),
@@ -68,12 +71,27 @@ class AreaItem extends StatelessWidget {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: HookHookColors.light,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: HookHookColors.light,
                       ),
                       child: IconButton(
                         onPressed: () {
-                          print("Press");
+                          showDialog<String>(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                              content: const Text('You will delete this area'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                                  child: Text('Cancel', style: TextStyle(color: HookHookColors.orange)),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, 'Yes'),
+                                  child: Text('Yes', style: TextStyle(color: HookHookColors.blue)),
+                                ),
+                              ],
+                            )
+                          );
                         },
                         icon: Icon(Icons.delete, color: Colors.black),
                       ),
