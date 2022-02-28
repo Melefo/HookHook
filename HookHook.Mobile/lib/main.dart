@@ -1,6 +1,7 @@
 import "package:hookhook/views/home.dart";
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hookhook/views/login.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/view.dart'
     show AppMVC, AppState, AppStatefulWidgetMVC;
@@ -24,9 +25,10 @@ class Hookhook extends AppMVC {
           theme: ThemeData(
               fontFamily: 'Comfortaa'
           ),
-          initialRoute: HomeView.routeName,
+          initialRoute: LoginView.routeName,
           routes: {
             HomeView.routeName: (context) => const HomeView(),
+            LoginView.routeName: (context) => LoginView()
           }
       );
 
