@@ -27,6 +27,10 @@ namespace HookHook.Backend.Controllers
             _area = area;
         }
 
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        /// <returns>A list of users</returns>
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<List<User>> All() =>
@@ -58,6 +62,10 @@ namespace HookHook.Backend.Controllers
             return Accepted();
         }
 
+        /// <summary>
+        /// Execute a user's areas
+        /// </summary>
+        /// <param name="id"></param>
         [HttpGet("trigger/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
