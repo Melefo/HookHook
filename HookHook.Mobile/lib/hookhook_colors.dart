@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Colors {
+class HookHookColors {
   static final Map<int, Color> _orangeLuminance = {
     50: const Color.fromRGBO(240, 144, 19, .1),
     100: const Color.fromRGBO(240, 144, 19, .2),
@@ -60,4 +60,19 @@ class Colors {
   };
 
   static MaterialColor dark = MaterialColor(0xFF181A1E, _darkLuminance);
+
+  static final Map<int, Color> _grayLuminance = {
+    50: const Color.fromRGBO(59, 63, 67, .1),
+    100: const Color.fromRGBO(59, 63, 67, .2),
+    200: const Color.fromRGBO(59, 63, 67, .3),
+    300: const Color.fromRGBO(59, 63, 67, .4),
+    400: const Color.fromRGBO(59, 63, 67, .5),
+    500: const Color.fromRGBO(59, 63, 67, .6),
+    600: const Color.fromRGBO(59, 63, 67, .7),
+    700: const Color.fromRGBO(59, 63, 67, .8),
+    800: const Color.fromRGBO(59, 63, 67, .9),
+    900: const Color.fromRGBO(59, 63, 67, 1),
+  };
+  
+  static MaterialColor gray = MaterialColor(0xFF3B3F43, _grayLuminance);
 }

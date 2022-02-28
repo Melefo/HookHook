@@ -38,6 +38,7 @@ dependencies:
   thememode_selector: ^0.1.0
   http: ^0.13.4
   flutter_svg: ^1.0.3
+  adaptive_theme: ^2.3.0
 
 dev_dependencies:
   flutter_test:

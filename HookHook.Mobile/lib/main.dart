@@ -1,6 +1,8 @@
+import 'package:hookhook/hookhook_colors.dart';
 import "package:hookhook/views/home.dart";
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:hookhook/views/login.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/view.dart'
@@ -19,17 +21,30 @@ class Hookhook extends AppMVC {
 
   @override
   Widget build(BuildContext context) =>
-      MaterialApp(
-          debugShowCheckedModeBanner: kReleaseMode,
-          title: "HookHook",
-          theme: ThemeData(
-              fontFamily: 'Comfortaa'
+      AdaptiveTheme(
+          light: ThemeData(
+            fontFamily: 'Comfortaa',
+            brightness: Brightness.light,
+            primaryColor: HookHookColors.light,
           ),
-          initialRoute: LoginView.routeName,
-          routes: {
-            HomeView.routeName: (context) => const HomeView(),
-            LoginView.routeName: (context) => LoginView()
-          }
+          dark: ThemeData(
+              fontFamily: 'Comfortaa',
+              brightness: Brightness.dark,
+              primaryColor: HookHookColors.dark
+          ),
+          initial: AdaptiveThemeMode.system,
+          builder: (theme, dark) =>
+              MaterialApp(
+                  debugShowCheckedModeBanner: kReleaseMode,
+                  title: "HookHook",
+                  theme: theme,
+                  darkTheme: dark,
+                  initialRoute: LoginView.routeName,
+                  routes: {
+                    HomeView.routeName: (context) => const HomeView(),
+                    LoginView.routeName: (context) => LoginView()
+                  }
+              )
       );
 
   @override
