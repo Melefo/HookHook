@@ -9,26 +9,24 @@
           <span class="inline-block h-screen align-middle" aria-hidden="true"/>
           <TransitionChild as="template">
             <div
-              :class="`inline-block w-full sm:max-w-[35%] max-w-[75%] h-[400px] p-4 my-8 overflow-hidden text-center align-middle transition-all transform shadow-xl rounded-2xl`"
+              :class="`inline-block w-full lg:max-w-[40%] max-w-[75%] h-[400px] p-4 my-8 overflow-hidden text-center align-middle transition-all transform shadow-xl rounded-2xl`"
               :style="{ 'background-color': bgColor }"
             >
-              <DialogTitle as="h3" class=" text-lg font-bold leading-6 text-grey-80 capitalize">
+              <DialogTitle as="h3" class="flex justify-between items-center text-lg font-bold leading-6 text-grey-80 capitalize">
+                <div class="w-[75px]"/>
                 {{ text }}
+                <button
+                  type="button"
+                  class="w-[75px] px-4 py-2 text-sm font-medium text-black bg-neutral-200 border border-transparent rounded-md hover:bg-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-500"
+                  @click="closeModal"
+                >
+                  Close
+                </button>
               </DialogTitle>
               <div class="mt-2">
                 <slot />
               </div>
-
-                <div class="mt-4">
-                  <button
-                    type="button"
-                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-black bg-neutral-200 border border-transparent rounded-md hover:bg-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-neutral-500"
-                    @click="closeModal"
-                  >
-                    Close this popup
-                  </button>
-                </div>
-              </div>
+            </div>
             </TransitionChild>
           </div>
         </div>
