@@ -6,12 +6,28 @@ using SpotifyAPI.Web;
 
 namespace HookHook.Backend.Services
 {
+    /// <summary>
+    /// Service used by areaservice
+    /// </summary>
 	public class SpotifyService
 	{
+        /// <summary>
+        /// Client ID
+        /// </summary>
 		private readonly string _id;
+        /// <summary>
+        /// Client secret
+        /// </summary>
 		private readonly string _secret;
+        /// <summary>
+        /// Redirect url
+        /// </summary>
 		private readonly string _redirect;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="config">Environment variables</param>
 		public SpotifyService(IConfiguration config)
 		{
 			_id = config["Spotify:ClientId"];
@@ -19,6 +35,11 @@ namespace HookHook.Backend.Services
 			_redirect = config["Spotify:Redirect"];
 		}
 
+        /// <summary>
+        /// OAuth
+        /// </summary>
+        /// <param name="code">OAuth code</param>
+        /// <returns>SpotifyClient, AuthorizationCodeToken</returns>
 		public async Task<(SpotifyClient, AuthorizationCodeTokenResponse)> OAuth(string code)
 		{
 			var client = new OAuthClient();
@@ -33,6 +54,12 @@ namespace HookHook.Backend.Services
 			return (spotify, response);
 		}
 
+        /// <summary>
+        /// Add new service account
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="code"></param>
+        /// <returns>New ServiceAccount</returns>
 		public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
 			(var client, var token) = await OAuth(code);
@@ -48,6 +75,10 @@ namespace HookHook.Backend.Services
 			return new(id, current.DisplayName);
 		}
 
+        /// <summary>
+        /// Refresh spotify account tokens
+        /// </summary>
+        /// <param name="account"></param>
 		public async Task Refresh(OAuthAccount account)
         {
 			if (account.ExpiresIn == null || account.ExpiresIn > DateTime.UtcNow)
