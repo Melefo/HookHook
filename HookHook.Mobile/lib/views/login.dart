@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:hookhook/services_icons.dart';
 import 'package:hookhook/wrapper/backend.dart';
 
 class LoginView extends StatelessWidget {
@@ -9,11 +9,7 @@ class LoginView extends StatelessWidget {
   List<Widget> generateFromServices() {
     List<Widget> list = [];
     for (var service in Backend().about.server.services) {
-      final String name = "assets/img/${service.name.toLowerCase()}.svg";
-      list.add(SvgPicture.asset(name,
-        width: 50,
-        height: 50,
-      ));
+      list.add(ServicesIcons.custom(service.name.toLowerCase(), 50));
     }
     return list;
   }
