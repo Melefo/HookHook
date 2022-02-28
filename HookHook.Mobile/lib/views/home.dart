@@ -58,6 +58,26 @@ class _Home extends StateMVC<HomeView> {
                 padding: EdgeInsets.fromLTRB(0, 13, 0, 4),
                 child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontSize: 15)),
               ),
+              ListView(
+                padding: const EdgeInsets.all(8),
+                children: <Widget>[
+                  Container(
+                    height: 50,
+                    color: Colors.amber[600],
+                    child: const Center(child: Text('Entry A')),
+                  ),
+                  Container(
+                    height: 50,
+                    color: Colors.amber[500],
+                    child: const Center(child: Text('Entry B')),
+                  ),
+                  Container(
+                    height: 50,
+                    color: Colors.amber[100],
+                    child: const Center(child: Text('Entry C')),
+                  ),
+                ],
+              ),
             ],
           ),
       );
