@@ -5,9 +5,18 @@ abstract class AdaptiveState<T extends StatefulWidget> extends State {
   bool darkMode = false;
   dynamic _savedThemeMode;
 
+  @override
   void initState() {
     super.initState();
     _getCurrentTheme();
+    AdaptiveTheme
+        .of(context)
+        .modeChangeNotifier
+        .addListener(() {
+      setState(() {
+        darkMode = !darkMode;
+      });
+    });
   }
 
   void _getCurrentTheme() {
