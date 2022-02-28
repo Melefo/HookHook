@@ -53,7 +53,7 @@ namespace HookHook.Backend.Services
     }
 
     /// <summary>
-    /// Service used by discord areas & areaservice
+    /// Service used by areaservice
     /// </summary>
     public class DiscordService
 	{
@@ -133,9 +133,7 @@ namespace HookHook.Backend.Services
         /// <summary>
         /// Refresh discord account tokens
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="code"></param>
-        /// <returns>DiscordRestClient, DiscordToken</returns>
+        /// <param name="account"></param>
         public async Task Refresh(OAuthAccount account)
         {
             if (account.ExpiresIn == null || account.ExpiresIn > DateTime.UtcNow)

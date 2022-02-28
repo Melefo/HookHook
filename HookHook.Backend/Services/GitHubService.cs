@@ -8,7 +8,7 @@ using Octokit;
 namespace HookHook.Backend.Services
 {
     /// <summary>
-    /// Service used by github areas & areaservice
+    /// Service used by areaservice
     /// </summary>
 	public class GitHubService
 	{
