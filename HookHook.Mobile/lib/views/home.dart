@@ -1,3 +1,6 @@
+import 'package:hookhook/hookhook_colors.dart';
+import 'package:hookhook/views/new_area.dart';
+import 'package:hookhook/widgets/area_item.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
@@ -21,26 +24,29 @@ class _Home extends StateMVC<HomeView> {
   @override
   Widget build(BuildContext context) =>
       Scaffold(
+          backgroundColor: HookHookColors.light,
           body: Column(
             children: <Widget>[
               const Padding(
                 padding: EdgeInsets.only(top: 70),
                 child: Text('HookHook', textAlign: TextAlign.left,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45)),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: Text('Services', style: TextStyle(fontSize: 15)),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(25, 30, 0, 10),
+                  child: Text('Services', style: TextStyle(fontSize: 15)),
+                ),
               ),
               const HList(height: 70, widget: ServicesList(itemWidth: 60)),
-
               Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(25)),
-                    color: Color(0xFF3B3F43)
+                    color: Colors.white
                 ),
                 child: TextButton(
                   onPressed: () {
-                    // Respond to button press
+                    Navigator.pushNamed(context, NewAreaView.routeName);
                   },
                   child: const Padding(
                     padding: EdgeInsets.fromLTRB(120.0, 15.0, 120.0, 15.0),
@@ -48,16 +54,33 @@ class _Home extends StateMVC<HomeView> {
                       "New Area",
                       style: TextStyle(
                           fontSize: 20,
-                          color: Colors.white,
+                          color: Colors.black,
                           fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 13, 0, 4),
-                child: Text('Your AREAs', textAlign: TextAlign.left, style: TextStyle(fontSize: 15)),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(25, 20, 0, 20),
+                  child: Text('Your AREAs', style: TextStyle(fontSize: 15)),
+                ),
               ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.all(0),
+                  scrollDirection: Axis.vertical,
+                  children: <Widget>[
+                    Column(
+                      children: [
+                        AreaItem(areaName: "Ronaldo"),
+                        AreaItem(areaName: "Benzema"),
+                      ],
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
       );
