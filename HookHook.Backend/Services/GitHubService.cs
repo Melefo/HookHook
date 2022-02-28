@@ -7,17 +7,35 @@ using Octokit;
 
 namespace HookHook.Backend.Services
 {
+    /// <summary>
+    /// Service used by github areas & areaservice
+    /// </summary>
 	public class GitHubService
 	{
+        /// <summary>
+        /// Client ID
+        /// </summary>
 		private readonly string _id;
+        /// <summary>
+        /// Client secret
+        /// </summary>
 		private readonly string _secret;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="config">Environment variables</param>
 		public GitHubService(IConfiguration config)
 		{
 			_id = config["GitHub:ClientId"];
 			_secret = config["GitHub:ClientSecret"];
 		}
 
+        /// <summary>
+        /// OAuth
+        /// </summary>
+        /// <param name="code">OAuth code</param>
+        /// <returns>GithubClient, OauthToken</returns>
 		public async Task<(GitHubClient, OauthToken)> OAuth(string code)
         {
 			var client = new GitHubClient(new ProductHeaderValue("HookHook"));
@@ -33,6 +51,12 @@ namespace HookHook.Backend.Services
 			return (client, res);
 		}
 
+        /// <summary>
+        /// Add new service account
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="code">OAuth code</param>
+        /// <returns>New ServiceAccount</returns>
 		public async Task<ServiceAccount?> AddAccount(Entities.User user, string code)
         {
 			(var client, var res) = await OAuth(code);

@@ -116,7 +116,7 @@ namespace HookHook.Backend.Services
         /// </summary>
         /// <param name="user"></param>
         /// <param name="code"></param>
-        /// <returns>DiscordRestClient, DiscordToken</returns>
+        /// <returns>New ServiceAccount</returns>
         public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
             (DiscordRestClient client, DiscordToken token) = await OAuth(code);
