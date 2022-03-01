@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/hookhook_colors.dart';
 
 import '../adaptive_state.dart';
@@ -34,38 +35,44 @@ class _WelcomeHookHook extends AdaptiveState<WelcomeHookHook> with SingleTickerP
       Padding(
         padding: const EdgeInsets.only(bottom: 16),
         child: RichText(
-          textScaleFactor: 1.7,
           text: TextSpan(
-            style: DefaultTextStyle.of(context).style,
+            style: DefaultTextStyle
+                .of(context)
+                .style,
             children: <TextSpan>[
               TextSpan(
                   text: "Welcome to H",
                   style: TextStyle(
-                      color: darkMode ? Colors.white : Colors.black
+                      color: darkMode ? Colors.white : Colors.black,
+                      fontSize: 20.sp
                   )
               ),
               TextSpan(
                   text: "oo",
                   style: TextStyle(
-                      color: animation.value
+                      color: animation.value,
+                      fontSize: 20.sp
                   )
               ),
               TextSpan(
                   text: "kH",
                   style: TextStyle(
-                      color: darkMode ? Colors.white : Colors.black
+                      color: darkMode ? Colors.white : Colors.black,
+                      fontSize: 20.sp
                   )
               ),
               TextSpan(
                   text: "oo",
                   style: TextStyle(
-                      color: animation.value
+                      color: animation.value,
+                      fontSize: 20.sp
                   )
               ),
               TextSpan(
                   text: "k!",
                   style: TextStyle(
-                      color: darkMode ? Colors.white : Colors.black
+                      color: darkMode ? Colors.white : Colors.black,
+                      fontSize: 20.sp
                   )
               )
             ],

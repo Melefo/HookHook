@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import "package:hookhook/views/home.dart";
 import 'package:flutter/foundation.dart';
@@ -22,30 +23,44 @@ class Hookhook extends AppMVC {
 
   @override
   Widget build(BuildContext context) =>
-      AdaptiveTheme(
-          light: ThemeData(
-            fontFamily: 'Comfortaa',
-            brightness: Brightness.light,
-            primaryColor: HookHookColors.light,
-          ),
-          dark: ThemeData(
-              fontFamily: 'Comfortaa',
-              brightness: Brightness.dark,
-              primaryColor: HookHookColors.dark
-          ),
-          initial: AdaptiveThemeMode.system,
-          builder: (theme, dark) =>
-              MaterialApp(
-                  debugShowCheckedModeBanner: kReleaseMode,
-                  title: "HookHook",
-                  theme: theme,
-                  darkTheme: dark,
-                  initialRoute: LoginView.routeName,
-                  routes: {
-                    HomeView.routeName: (context) => const HomeView(),
-                    NewAreaView.routeName: (context) => NewAreaView(),
-                    LoginView.routeName: (context) => LoginView()
-                  }
+      ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: () =>
+              AdaptiveTheme(
+                  light: ThemeData(
+                    fontFamily: 'Comfortaa',
+                    brightness: Brightness.light,
+                    primaryColor: HookHookColors.light,
+                  ),
+                  dark: ThemeData(
+                      fontFamily: 'Comfortaa',
+                      brightness: Brightness.dark,
+                      primaryColor: HookHookColors.dark
+                  ),
+                  initial: AdaptiveThemeMode.system,
+                  builder: (theme, dark) =>
+                      MaterialApp(
+                          debugShowCheckedModeBanner: kReleaseMode,
+                          title: "HookHook",
+                          theme: theme,
+                          darkTheme: dark,
+                          initialRoute: LoginView.routeName,
+                          routes: {
+                            HomeView.routeName: (context) => const HomeView(),
+                            NewAreaView.routeName: (context) => const NewAreaView(),
+                            LoginView.routeName: (context) => const LoginView()
+                          },
+                          builder: (context, widget) {
+                            ScreenUtil.setContext(context);
+                            return MediaQuery(
+                                data: MediaQuery.of(context).copyWith(
+                                    textScaleFactor: 1.0),
+                                child: widget!
+                            );
+                          }
+                      )
               )
       );
 
