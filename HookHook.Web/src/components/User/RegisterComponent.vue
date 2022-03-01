@@ -4,7 +4,7 @@
       >You are successfully registered!<br />Please check your email inbox for verification link</span
     >
     <span class="text-red-500" v-if="error">{{ this.error }}</span>
-    <form class="flex flex-col" @submit.prevent="send" ref="registerForm">
+    <form class="flex flex-col" @submit.prevent="send">
       <span class="text-red-500" v-if="errors && errors.firstname">{{
         this.errors.firstname
       }}</span>
