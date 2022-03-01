@@ -16,6 +16,12 @@ class _WelcomeHookHook extends AdaptiveState<WelcomeHookHook> with SingleTickerP
   late AnimationController controller;
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     controller =
