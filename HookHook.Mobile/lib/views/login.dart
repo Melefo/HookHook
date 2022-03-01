@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/services_icons.dart';
@@ -33,9 +34,9 @@ class _LoginView extends AdaptiveState<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Image.asset("assets/pinguin/warp.gif", height: 100, width: 100),
+                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw, width: 0.15.sw),
                   WelcomeHookHook(),
-                  Image.asset("assets/pinguin/warp.gif", height: 100, width: 100)
+                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw, width: 0.15.sw)
                 ],
               ),
               Padding(
