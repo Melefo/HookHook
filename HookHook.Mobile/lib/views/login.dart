@@ -7,6 +7,8 @@ import 'package:hookhook/views/home.dart';
 import 'package:hookhook/widgets/welcome_hookhook.dart';
 import 'package:hookhook/wrapper/backend.dart';
 
+import '../main.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
@@ -17,16 +19,15 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginView extends AdaptiveState<LoginView> {
-  Backend backend = Backend();
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
   List<Widget> generateFromServices() {
     List<Widget> list = [];
-    if (backend.about == null) {
+    if (HookHook.backend.about == null) {
       return [];
     }
-    for (var service in backend.about!.server.services) {
+    for (var service in HookHook.backend.about!.server.services) {
       list.add(ServicesIcons.custom(service.name.toLowerCase(), 0.08.sw));
     }
     return list;
@@ -98,9 +99,9 @@ class _LoginView extends AdaptiveState<LoginView> {
                     ),
                     TextButton(
                         onPressed: () async {
-                          backend.signIn.login(username.value.text, password.value.text);
-                          if (backend.signIn.token != null) {
-                            Navigator.pushNamed(context, HomeView.routeName);
+                          HookHook.backend.signIn.login(username.value.text, password.value.text);
+                          if (HookHook.backend.signIn.token != null) {
+                            Navigator.pushReplacementNamed(context, HomeView.routeName);
                           }
                         },
                         child: Text(

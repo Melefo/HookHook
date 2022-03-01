@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:http/http.dart' as http;
 
+import '../main.dart';
+
 class _Login
 {
   final Map<String, dynamic> _data;
@@ -33,6 +35,8 @@ class SignIn {
       token = _Login
           ._(jsonDecode(res.body))
           .token;
+      await HookHook.storage.write(key: Backend.tokenKey, value: token);
+      await HookHook.storage.write(key: Backend.instanceKey, value: Backend.apiEndpoint);
     }
   }
 }

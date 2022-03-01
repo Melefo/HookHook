@@ -1,4 +1,5 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import "package:hookhook/views/home.dart";
 import 'package:flutter/foundation.dart';
@@ -12,14 +13,17 @@ import 'package:mvc_application/view.dart'
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final backend = await Backend.init();
-  runApp(Hookhook(backend: backend));
+  String? token = await HookHook.storage.read(key: Backend.tokenKey);
+  String? instance = await HookHook.storage.read(key: Backend.instanceKey);
+  await Backend.init(token: token, instance: instance);
+  runApp(HookHook());
 }
 
-class Hookhook extends AppMVC {
-  Hookhook({Key? key, required this.backend}) : super(key: key);
+class HookHook extends AppMVC {
+  HookHook({Key? key}) : super(key: key);
 
-  Backend backend;
+  static const FlutterSecureStorage storage = FlutterSecureStorage();
+  static Backend backend = Backend();
 
   @override
   Widget build(BuildContext context) =>
@@ -46,7 +50,7 @@ class Hookhook extends AppMVC {
                           title: "HookHook",
                           theme: theme,
                           darkTheme: dark,
-                          initialRoute: LoginView.routeName,
+                          initialRoute: backend.signIn.token != null ? HomeView.routeName : LoginView.routeName,
                           routes: {
                             HomeView.routeName: (context) => const HomeView(),
                             NewAreaView.routeName: (context) => const NewAreaView(),
