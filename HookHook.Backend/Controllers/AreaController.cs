@@ -108,6 +108,7 @@ namespace HookHook.Backend.Controllers
         /// </summary>
         /// <returns>Array of services (with parameters, formatters, etc...)</returns>
         [HttpGet("getServices")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult getServices()
         {
             // * retrieve classes that have the Service attribute, get their constructor and argument list
