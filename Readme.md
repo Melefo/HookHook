@@ -1,6 +1,16 @@
 # HookHook
 
 ## List services
+
+| Services | Events |
+|----------|---------|
+| Spotify | <ul> <li>SpotifyLikedAlbum (action/reaction)</li> Parameters: <ul> <li>Album title</li> <li>Artist name</li> </ul> Formatters: <ul> <li>album.id</li> <li>album.name</li> <li>album.artists</li> <li>like.date</li> </ul> <li>SpotifyLikedMusic (action/reaction)</li> Parameters: <ul> <li>Song title</li> <li>Artist name</li> </ul> Formatters: <ul> <li>track.id</li> <li>track.name</li> <li>track.artists</li> <li>like.date</li> </ul></ul>
+| Twitter | <ul><li>TwitterFollowUser (action/reaction)</li>Parameters:<ul><li>Username (When user follows an account)</li></ul>Formatters:<ul><li>following.id</li><li>following.name</li><li>following.username</li></ul><li>Tweet (reaction)</li>Parameters:<ul><li>Tweet content</li></ul>Formatters:<ul><li>track.id</li><li>track.name</li><li>track.artists</li><li>like.date</li></ul><li>TweetHashtag (action)</li>Parameters:<ul><li>Hashtag</li></ul>Formatters: <ul> <li>tweet.text</li> <li>tweet.date</li> <li>tweet.id</li> <li>tweet.source</li> </ul>
+| Discord |
+| GitHub |
+| Google |
+| Twitch |
+
 ---
 ## Admins
 
@@ -34,10 +44,10 @@ This file will be read by docker to create environment variables and must contai
 ### The Mongo database:
 <ul>
     <li>
-    MONGO_USERNAME = Mongo root user
+        MONGO_USERNAME = Mongo root user
     </li>
     <li>
-    MONGO_PASSWORD = Root password
+        MONGO_PASSWORD = Root password
     </li>
     <li>
         MONGO_DATABASE = Name of Database used by the backend
