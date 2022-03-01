@@ -99,7 +99,7 @@ class _LoginView extends AdaptiveState<LoginView> {
                     ),
                     TextButton(
                         onPressed: () async {
-                          HookHook.backend.signIn.login(username.value.text, password.value.text);
+                          await HookHook.backend.signIn.login(username.value.text, password.value.text);
                           if (HookHook.backend.signIn.token != null) {
                             Navigator.pushReplacementNamed(context, HomeView.routeName);
                           }
