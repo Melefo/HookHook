@@ -133,6 +133,11 @@ namespace HookHook.Backend.Services
             return result.IsAcknowledged && result.DeletedCount == 1;
         }
 
+        /// <summary>
+        /// Save an user account inside database
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>true if successful</returns>
         public bool SaveUser(User user)
         {
             var result = _usersCollection.ReplaceOne(x => x.Id == user.Id, user);
