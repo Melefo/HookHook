@@ -45,8 +45,8 @@ class _Home extends StateMVC<HomeView> {
                     color: Colors.white
                 ),
                 child: TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, NewAreaView.routeName);
+                  onPressed: () async {
+                    await Navigator.pushNamed(context, NewAreaView.routeName);
                   },
                   child: const Padding(
                     padding: EdgeInsets.fromLTRB(120.0, 15.0, 120.0, 15.0),

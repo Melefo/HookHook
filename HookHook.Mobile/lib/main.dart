@@ -1,6 +1,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hookhook/hookhook_colors.dart';
+import 'package:hookhook/views/forgot_password.dart';
 import "package:hookhook/views/home.dart";
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,8 @@ class HookHook extends AppMVC {
                           routes: {
                             HomeView.routeName: (context) => const HomeView(),
                             NewAreaView.routeName: (context) => const NewAreaView(),
-                            LoginView.routeName: (context) => const LoginView()
+                            LoginView.routeName: (context) => const LoginView(),
+                            ForgotPassword.routeName: (context) => const ForgotPassword()
                           },
                           builder: (context, widget) {
                             ScreenUtil.setContext(context);

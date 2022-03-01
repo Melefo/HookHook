@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/services_icons.dart';
+import 'package:hookhook/views/forgot_password.dart';
 import 'package:hookhook/views/home.dart';
 import 'package:hookhook/widgets/welcome_hookhook.dart';
 import 'package:hookhook/wrapper/backend.dart';
@@ -71,7 +72,9 @@ class _LoginView extends AdaptiveState<LoginView> {
                       obscureText: true
                     ),
                     TextButton(
-                      onPressed: () => {},
+                      onPressed: () async {
+                        await Navigator.pushNamed(context, ForgotPassword.routeName);
+                      },
                       child: Text(
                         "Forgot password?",
                         style: TextStyle(
@@ -101,7 +104,7 @@ class _LoginView extends AdaptiveState<LoginView> {
                         onPressed: () async {
                           await HookHook.backend.signIn.login(username.value.text, password.value.text);
                           if (HookHook.backend.signIn.token != null) {
-                            Navigator.pushReplacementNamed(context, HomeView.routeName);
+                            await Navigator.pushReplacementNamed(context, HomeView.routeName);
                           }
                         },
                         child: Text(
