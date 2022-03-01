@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/services_icons.dart';
+import 'package:hookhook/views/home.dart';
 import 'package:hookhook/widgets/welcome_hookhook.dart';
 import 'package:hookhook/wrapper/backend.dart';
 
@@ -16,10 +17,17 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginView extends AdaptiveState<LoginView> {
+  Backend backend = Backend();
+  TextEditingController username = TextEditingController();
+  TextEditingController password = TextEditingController();
+
   List<Widget> generateFromServices() {
     List<Widget> list = [];
-    for (var service in Backend().about.server.services) {
-      list.add(ServicesIcons.custom(service.name.toLowerCase(), 50));
+    if (backend.about == null) {
+      return [];
+    }
+    for (var service in backend.about!.server.services) {
+      list.add(ServicesIcons.custom(service.name.toLowerCase(), 0.08.sw));
     }
     return list;
   }
@@ -27,33 +35,39 @@ class _LoginView extends AdaptiveState<LoginView> {
   @override
   Widget build(BuildContext context) =>
       Scaffold(
-        backgroundColor: darkMode ? HookHookColors.dark : HookHookColors.light,
+          backgroundColor: darkMode ? HookHookColors.dark : HookHookColors
+              .light,
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw, width: 0.15.sw),
+                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw,
+                      width: 0.15.sw),
                   WelcomeHookHook(),
-                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw, width: 0.15.sw)
+                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw,
+                      width: 0.15.sw)
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 92),
+                padding: EdgeInsets.symmetric(horizontal: 0.15.sw),
                 child: Column(
                   children: [
                     TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: "Username/Email"
-                        )
+                        ),
+                      controller: username,
                     ),
                     TextFormField(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: "Password"
-                        )
+                        ),
+                      controller: password,
+                      obscureText: true
                     ),
                     TextButton(
                       onPressed: () => {},
@@ -66,21 +80,29 @@ class _LoginView extends AdaptiveState<LoginView> {
                       ),
                     ),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: UnderlineInputBorder(),
                         labelText: "HookHook Instance",
                       ),
                       initialValue: Backend.apiEndpoint,
                       onChanged: (text) async {
-                        Backend.apiEndpoint = text;
-                        await Backend.init();
+                          Backend.apiEndpoint = text;
+                          await Backend.init();
+                          setState(() {
+
+                          });
                       },
                     ),
                     const Padding(
                       padding: EdgeInsets.all(8),
                     ),
                     TextButton(
-                        onPressed: () => {},
+                        onPressed: () async {
+                          backend.signIn.login(username.value.text, password.value.text);
+                          if (backend.signIn.token != null) {
+                            Navigator.pushNamed(context, HomeView.routeName);
+                          }
+                        },
                         child: Text(
                           "Login",
                           style: TextStyle(
@@ -98,7 +120,9 @@ class _LoginView extends AdaptiveState<LoginView> {
                                     borderRadius: BorderRadius.circular(10)
                                 )
                             ),
-                          minimumSize: MaterialStateProperty.all(Size(150, 0))
+                            minimumSize: MaterialStateProperty.all(
+                                const Size(150, 0)
+                            )
                         )
                     ),
                     const Padding(
@@ -123,7 +147,9 @@ class _LoginView extends AdaptiveState<LoginView> {
                                     borderRadius: BorderRadius.circular(10)
                                 )
                             ),
-                            minimumSize: MaterialStateProperty.all(Size(150, 0))
+                            minimumSize: MaterialStateProperty.all(
+                                const Size(150, 0)
+                            )
                         )
                     ),
                   ],

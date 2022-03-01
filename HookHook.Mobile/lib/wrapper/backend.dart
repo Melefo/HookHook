@@ -1,3 +1,5 @@
+import 'package:hookhook/wrapper/signIn.dart';
+
 import 'about.dart';
 
 class Backend {
@@ -6,12 +8,13 @@ class Backend {
   factory Backend() =>
       _this ??= Backend._();
 
-  static String apiEndpoint = const String.fromEnvironment(
+  static String apiEndpoint = String.fromEnvironment(
       "BACKEND_URL",
       defaultValue: "http://localhost:8080/"
   );
 
-  late About about;
+  About? about;
+  SignIn signIn = SignIn();
 
   Backend._();
 
