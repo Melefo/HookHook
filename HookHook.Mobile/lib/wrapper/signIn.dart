@@ -19,7 +19,11 @@ class SignIn {
   String? token;
 
   static String loginUrl = baseUrl + "login";
+  static String forgotUrl = baseUrl + "forgot/";
   static String baseUrl = Backend.apiEndpoint + "signin/";
+
+  Future<void> forgotPassword(String username) async =>
+      await http.put(Uri.parse(forgotUrl + username));
 
   Future<void> login(String username, String password) async {
     final res = await http.post(Uri.parse(loginUrl),

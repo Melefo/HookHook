@@ -4,6 +4,8 @@ import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/widgets/welcome_hookhook.dart';
 
+import '../main.dart';
+
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
 
@@ -15,6 +17,8 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPassword extends AdaptiveState<ForgotPassword> {
   TextEditingController username = TextEditingController();
+
+  bool _visible = false;
 
   @override
   Widget build(BuildContext context) =>
@@ -36,11 +40,23 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
             Text(
                 "Forgot your password?",
                 style: TextStyle(
-                  fontSize: 14.sp
+                    fontSize: 14.sp
                 )
             ),
+            if (_visible)
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 0.05.sw, vertical: 16),
+                child: Text(
+                    "If an account with this email or username exists an email has been sent to recover your password",
+                    style: TextStyle(
+                        fontSize: 12.sp
+                    ),
+                    textAlign: TextAlign.center
+                ),
+              ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0.15.sw, vertical: 32),
+              padding: EdgeInsets.symmetric(horizontal: 0.15.sw, vertical: 16),
               child: TextFormField(
                 decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
@@ -51,7 +67,13 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
             ),
 
             TextButton(
-                onPressed: () => {},
+                onPressed: () async {
+                  await HookHook.backend.signIn.forgotPassword(
+                      username.value.text);
+                  setState(() {
+                    _visible = true;
+                  });
+                },
                 child: Text(
                   "Send",
                   style: TextStyle(
