@@ -51,16 +51,33 @@ This file will be read by docker to create environment variables and must contai
     </li>
 </ul>
 
+### SMTP
+
+<ul>
+    <li>
+        SMTP_EMAIL = Email address of your SMTP server
+    </li>
+    <li>
+        SMTP_PASSWORD = Password of your SMTP server
+    </li>
+</ul>
+
 ### The services:
 
 
 ([Create a Google App](https://console.cloud.google.com/apis/credentials)):
 <ul>
     <li>
-        GOOGLE_CLIENTID = ClientId of your google app
+        GOOGLE_CLIENTID = ClientId of your Google app
     </li>
     <li>
-        GOOGLE_CLIENTSECRET = Client secret of your google app
+        GOOGLE_CLIENTSECRET = Client secret of your Google app
+    </li>
+    <li>
+        GOOGLE_APIKEY = API key of your Google app
+    </li>
+    <li>
+        GOOGLE_REDIRECT = Redirect URL for Google OAuth
     </li>
 </ul>
 
@@ -73,7 +90,10 @@ This file will be read by docker to create environment variables and must contai
         DISCORD_CLIENTSECRET = Client secret of your discord app
     </li>
     <li>
-        DISCORD_REDIRECT = Redirect url for Discord oauth
+        DISCORD_REDIRECT = Redirect URL for Discord OAuth
+    </li>
+    <li>
+        DISCORD_BOTTOKEN = Bot token
     </li>
 </ul>
 
@@ -95,6 +115,9 @@ This file will be read by docker to create environment variables and must contai
     <li>
         SPOTIFY_CLIENTSECRET = Client secret of your Spotify app
     </li>
+    <li>
+        SPOTIFY_REDIRECT = Redirect URL for Spotify OAuth
+    </li>
 </ul>
 
 ([Create a Twitch App](https://dev.twitch.tv/)):
@@ -105,6 +128,9 @@ This file will be read by docker to create environment variables and must contai
     <li>
         TWITCH_CLIENTSECRET = Client secret of your Twitch app
     </li>
+    <li>
+        TWITCH_REDIRECT = Redirect URL for Twitch OAuth
+    </li>
 </ul>
 
 ([Create a Twitter App](https://developer.twitter.com/en)):
@@ -114,6 +140,9 @@ This file will be read by docker to create environment variables and must contai
     </li>
     <li>
         TWITTER_CLIENTSECRET = Client secret of your Twitter app
+    </li>
+    <li>
+        TWITTER_REDIRECT = Redirect URL for Twitter OAuth
     </li>
 </ul>
 
