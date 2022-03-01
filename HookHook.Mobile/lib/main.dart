@@ -40,7 +40,7 @@ class Hookhook extends AppMVC {
                   title: "HookHook",
                   theme: theme,
                   darkTheme: dark,
-                  initialRoute: LoginView.routeName,
+                  initialRoute: HomeView.routeName,
                   routes: {
                     HomeView.routeName: (context) => const HomeView(),
                     NewAreaView.routeName: (context) => NewAreaView(),
