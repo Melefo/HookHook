@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// Websocket for areas
+    /// </summary>
 	[Authorize]
 	public class AreaHub : Hub
 	{

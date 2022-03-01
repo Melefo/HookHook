@@ -8,20 +8,38 @@ using TwitchLib.Api;
 
 namespace HookHook.Backend.Services
 {
+    /// <summary>
+    /// Utility class
+    /// </summary>
     public class TwitchToken
     {
+        /// <summary>
+        /// Access token
+        /// </summary>
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
+        /// <summary>
+        /// Access token expiration
+        /// </summary>
         [JsonPropertyName("expires_in")]
         public int ExpiresIn { get; set; }
 
+        /// <summary>
+        /// Refresh token
+        /// </summary>
         [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
 
+        /// <summary>
+        /// Scope
+        /// </summary>
         [JsonPropertyName("scope")]
         public string[] Scope { get; set; }
 
+        /// <summary>
+        /// Token type
+        /// </summary>
         [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
 
@@ -35,15 +53,33 @@ namespace HookHook.Backend.Services
         }
     }
 
+    /// <summary>
+    /// Service used by areaservice
+    /// </summary>
     public class TwitchService
 	{
+        /// <summary>
+        /// Client ID
+        /// </summary>
 		private readonly string _id;
+        /// <summary>
+        /// Client secret
+        /// </summary>
 		private readonly string _secret;
+        /// <summary>
+        /// redirect url
+        /// </summary>
 		private readonly string _redirect;
 
+        /// <summary>
+        /// Http client
+        /// </summary>
         private readonly HttpClient _client = new();
 
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="config">Environment variables</param>
         public TwitchService(IConfiguration config)
 		{
 			_id = config["Twitch:ClientId"];
@@ -51,6 +87,11 @@ namespace HookHook.Backend.Services
 			_redirect = config["Twitch:Redirect"];
         }
 
+        /// <summary>
+        /// OAuth
+        /// </summary>
+        /// <param name="code">OAuth code</param>
+        /// <returns>User, Twitch</returns>
 		public async Task<(TwitchLib.Api.Helix.Models.Users.GetUsers.User, TwitchToken)> OAuth(string code)
         {
             var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
@@ -80,6 +121,12 @@ namespace HookHook.Backend.Services
             return (client, res);
         }
 
+        /// <summary>
+        /// Add new service account
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="code"></param>
+        /// <returns>New ServiceAccount</returns>
         public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
             (var client, TwitchToken res) = await OAuth(code);
@@ -93,6 +140,10 @@ namespace HookHook.Backend.Services
             return new(id, client.Login);
         }
 
+        /// <summary>
+        /// Refresh twitch account tokens
+        /// </summary>
+        /// <param name="account"></param>
 		public async Task Refresh(OAuthAccount account)
         {
             if (account.ExpiresIn == null || account.ExpiresIn > DateTime.UtcNow)

@@ -8,7 +8,7 @@ using User = HookHook.Backend.Entities.User;
 namespace HookHook.Backend.Area
 {
     /// <summary>
-    /// Follow a twitter accoutn action & reaction
+    /// Follow a twitter account action & reaction
     /// </summary>
     [Service(Providers.Twitter, "Follow a twitter account")]
     [BsonIgnoreExtraElements]

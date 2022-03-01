@@ -12,6 +12,9 @@ using TwitchLib.Api;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// /service controller route
+    /// </summary>
 	[Route("[controller]")]
 	[ApiController]
 	[Authorize]
@@ -42,7 +45,14 @@ namespace HookHook.Backend.Controllers
             _twitchId = config["Twitch:ClientId"];
 		}
 
+        /// <summary>
+        /// Get user accounts for provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns>List of accounts</returns>
         [HttpGet("{provider}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<ServiceAccount>>> Get(Providers provider)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
@@ -102,7 +112,7 @@ namespace HookHook.Backend.Controllers
                         acc = new(account.UserId, search.Items[0].Snippet.Title);
                         break;
                     case Providers.GitHub:
-                        var github = new GitHubClient(new ProductHeaderValue("HookHook")); 
+                        var github = new GitHubClient(new ProductHeaderValue("HookHook"));
                         github.Credentials = new Credentials(account.AccessToken);
                         var current = await github.User.Current();
 
@@ -117,7 +127,17 @@ namespace HookHook.Backend.Controllers
             return list;
         }
 
+        /// <summary>
+        /// Add an account for a provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="code"></param>
+        /// <param name="verifier"></param>
+        /// <returns>The created account</returns>
         [HttpPost("{provider}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
         public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
@@ -158,7 +178,13 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete an account on provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="id"></param>
         [HttpDelete("{provider}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Delete(Providers provider, [BindRequired] [FromQuery] string id)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;

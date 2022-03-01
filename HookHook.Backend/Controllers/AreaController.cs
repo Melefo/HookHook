@@ -12,6 +12,9 @@ using HookHook.Backend.Utilities;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// /area controller route
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [Authorize]
@@ -56,6 +59,12 @@ namespace HookHook.Backend.Controllers
             };
         }
 
+        /// <summary>
+        /// Create entity from model
+        /// </summary>
+        /// <param name="area"></param>
+        /// <param name="user"></param>
+        /// <returns>Area entity</returns>
         private Entities.Area CreateEntityFromModel(AreaModel area, User user)
         {
             // * create an IAction from area.Action.type
@@ -94,7 +103,12 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get services
+        /// </summary>
+        /// <returns>Array of services (with parameters, formatters, etc...)</returns>
         [HttpGet("getServices")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult getServices()
         {
             // * retrieve classes that have the Service attribute, get their constructor and argument list
@@ -128,7 +142,11 @@ namespace HookHook.Backend.Controllers
         }
 
 
-        // * create a new area
+        /// <summary>
+        /// Create a new area
+        /// </summary>
+        /// <param name="area"></param>
+        /// <returns>The created area</returns>
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -147,8 +165,12 @@ namespace HookHook.Backend.Controllers
             return Ok(userArea);
         }
 
-        // * modify -> add/remove reactions/action, so a new area ??
-        // * PUT vu qu'on envoie un nouveau AREA je dirais
+        /// <summary>
+        /// Modify an area
+        /// </summary>
+        /// <param name="area"></param>
+        /// <param name="id"></param>
+        /// <returns>The modified area</returns>
         [HttpPut("modify/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -170,7 +192,10 @@ namespace HookHook.Backend.Controllers
             return Ok(areaEntity);
         }
 
-        // * delete -> rm area by ID
+        /// <summary>
+        /// Delete an area
+        /// </summary>
+        /// <param name="id"></param>
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -190,7 +215,10 @@ namespace HookHook.Backend.Controllers
             return NoContent();
         }
 
-        // * trigger all areas
+        /// <summary>
+        /// Trigger the areas of a user
+        /// </summary>
+        /// <param name="id"></param>
         [HttpGet("trigger/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -222,6 +250,10 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get the areas of a user
+        /// </summary>
+        /// <returns>The areas</returns>
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
