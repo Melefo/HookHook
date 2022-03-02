@@ -15,6 +15,7 @@
 ## Admins
 
 If you are an administrator user you will have access to the admin area:
+<br/>
 ![adminArea](./docs/examples/admin_btn.png)
 
 On the admin area page, you can:
@@ -29,6 +30,7 @@ On the admin area page, you can:
         Modify a user's role (Admin/User)
     </li>
 </ul>
+<br/>
 
 ![adminAreaPage](./docs/examples/admin_table.png)
 
