@@ -163,7 +163,7 @@ Once you have all your environment variables set you can perform the following c
 docker-compose up --build
 ```
 
-Frontend will be available at: http://localhost:80/
+Frontend will be available at: http://localhost:8081/
 
 Backend will be available at: http://localhost:8080/
 
