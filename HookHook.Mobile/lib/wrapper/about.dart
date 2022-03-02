@@ -84,7 +84,9 @@ class About
   static const String url = "about.json";
 
   static Future<About> init() async {
-    final res = await http.get(Uri.parse(Backend.apiEndpoint + url));
+    final res = await http.get(Uri.parse(Backend.apiEndpoint + url)).timeout(const Duration(
+      seconds: 3
+    ));
 
     if (res.statusCode == 200) {
       return About._(jsonDecode(res.body));

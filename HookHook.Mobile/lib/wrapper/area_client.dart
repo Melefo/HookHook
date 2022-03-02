@@ -10,7 +10,9 @@ class AreaClient {
   static const String urlAll = "/area/all";
 
   static Future<String> updateAll() async {
-    final res = await http.get(Uri.parse(Backend.apiEndpoint + urlAll));
+    final res = await http.get(Uri.parse(Backend.apiEndpoint + urlAll)).timeout(const Duration(
+        seconds: 3
+    ));
 
     return ("Test");
     throw Exception();

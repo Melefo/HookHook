@@ -30,11 +30,17 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image.asset("assets/pinguin/clap.gif", height: 0.15.sw,
-                    width: 0.15.sw),
+                Image.asset(
+                    "assets/pinguin/clap.gif",
+                    height: 0.15.sw,
+                    width: 0.15.sw
+                ),
                 WelcomeHookHook(),
-                Image.asset("assets/pinguin/clap.gif", height: 0.15.sw,
-                    width: 0.15.sw)
+                Image.asset(
+                    "assets/pinguin/clap.gif",
+                    height: 0.15.sw,
+                    width: 0.15.sw
+                )
               ],
             ),
             Text(
@@ -46,7 +52,9 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
             if (_visible)
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: 0.05.sw, vertical: 16),
+                    horizontal: 0.05.sw,
+                    vertical: 16
+                ),
                 child: Text(
                     "If an account with this email or username exists an email has been sent to recover your password",
                     style: TextStyle(
@@ -56,7 +64,10 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
                 ),
               ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0.15.sw, vertical: 16),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 0.15.sw,
+                  vertical: 16
+              ),
               child: TextFormField(
                 decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
