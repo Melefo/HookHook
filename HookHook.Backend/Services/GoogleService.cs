@@ -158,8 +158,6 @@ namespace HookHook.Backend.Services
         {
             var res = await _client.PostAsync<GoogleAuth>($"https://oauth2.googleapis.com/token?code={code}&client_id={_id}&client_secret={_secret}&redirect_uri={_redirect}&grant_type=authorization_code");
 
-            if (res == null)
-                throw new ApiException("Failed to call API");
 
             JwtSecurityTokenHandler tokenHandler = new();
             string? id = tokenHandler.ReadJwtToken(res.IdToken).Payload["sub"].ToString();
