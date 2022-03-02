@@ -215,7 +215,14 @@ namespace HookHook.Backend.Services
                 new("refresh_token", account.RefreshToken),
             });
 
+            // * https://www.googleapis.com/oauth2/v4/token
+            // * https://oauth2.googleapis.com/token
+
             var res = await _client.PostAsync<GoogleAuth>($"https://oauth2.googleapis.com/token", content);
+            if (res == null) {
+                Console.WriteLine("REQUEST RESULT IS NULL FOR GOOGLE REFRESH");
+                return;
+            }
             account.AccessToken = res!.AccessToken;
             account.ExpiresIn = DateTime.UtcNow.Add(TimeSpan.FromSeconds(res.ExpiresIn));
         }
