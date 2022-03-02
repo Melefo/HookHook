@@ -6,10 +6,10 @@
 |----------|---------|
 | Spotify | <ul> <li>SpotifyLikedAlbum (action/reaction)</li> Parameters: <ul> <li>Album title</li> <li>Artist name</li> </ul> Formatters: <ul> <li>album.id</li> <li>album.name</li> <li>album.artists</li> <li>like.date</li> </ul> <li>SpotifyLikedMusic (action/reaction)</li> Parameters: <ul> <li>Song title</li> <li>Artist name</li> </ul> Formatters: <ul> <li>track.id</li> <li>track.name</li> <li>track.artists</li> <li>like.date</li> </ul></ul>
 | Twitter | <ul><li>TwitterFollowUser (action/reaction)</li>Parameters:<ul><li>Username (When user follows an account)</li></ul>Formatters:<ul><li>following.id</li><li>following.name</li><li>following.username</li></ul><li>Tweet (reaction)</li>Parameters:<ul><li>Tweet content</li></ul>Formatters:<ul><li>track.id</li><li>track.name</li><li>track.artists</li><li>like.date</li></ul><li>TweetHashtag (action)</li>Parameters:<ul><li>Hashtag</li></ul>Formatters: <ul> <li>tweet.text</li> <li>tweet.date</li> <li>tweet.id</li> <li>tweet.source</li> </ul>
-| Discord |
-| GitHub |
-| Google |
-| Twitch |
+| Discord | <ul> <li>DiscordWebhook (reaction)</li> Parameters <ul> <li>Webhook URL</li> <li>Message title</li> <li>Message content</li> </ul> <li>DiscordPinned (action)</li> Parameters <ul> <li>Guild ID</li> <li>Channel ID</li> </ul> Formatters <ul> <li>msg.content</li> <li>msg.id</li> <li>author.id</li> <li>author.name</li> <li>author.mention</li> <li>msg.date</li> </ul></ul>
+| GitHub | <ul> <li>GithubCreateIssue (reaction)</li> Parameters <ul> <li>Username</li> <li>Repository</li> <li>Issue title</li> <li>Issue body</li> </ul> <li>GithubCreateRepository (reaction)</li> Parameters <ul> <li>Repository name</li> <li>Repository description</li> </ul> <li>GithubIssueCreated (action)</li> Parameters <ul> <li>Username</li> <li>Repository name</li> </ul> Formatters <ul> <li>issue.title</li> <li>issue.id</li> <li>issue.body</li> <li>issue.date</li> <li>issue.url</li> <li>author.id</li> <li>author.name</li> <li>author.login</li> </ul> <li>GithubNewCommit (action)</li> Parameters <ul> <li>Username</li> <li>Repository name</li> </ul> Formatters <ul><li>commit.sha</li> <li>commit.msg</li> <li>author.id</li> <li>author.name</li> <li>author.name</li> <li>author.login</li> </ul> <li>GithubNewRepository (action)</li> Parameters <ul> <li>Username</li> </ul> Formatters <ul> <li>repo.name</li> <li>repo.id</li> <li>repo.date</li> <li>repo.description</li> <li>repo.url</li> </ul></ul>
+| Google | <ul> <li>YoutubePostComment (reaction)</li> Parameters <ul> <li>Video ID</li> <li>Comment content</li> </ul> <li>YoutubeVideoPublished (action)</li> Parameters <ul> <li>Channel name</li> </ul> Formatters <ul> <li>video.title</li> <li>video.id</li> <li>video.description</li> <li>video.thumbnail</li> </ul></ul>
+| Twitch | <ul> <li>TwitchLiveStarted (action)</li> Parameters <ul> <li>Username</li> </ul> Formatters <ul> <li>stream.game</li> <li>stream.id</li> <li>stream.date</li> <li>stream.thumbnail</li> <li>stream.title</li> </ul></ul>
 
 ---
 ## Admins
@@ -166,3 +166,14 @@ Frontend will be available at: http://localhost:80/
 Backend will be available at: http://localhost:8080/
 
 Mongo will be available at: mongodb://MONGO_USERNAME:MONGO_PASSWORD@localhost:27017/
+
+## API limits
+
+Be warned of the following API limitations:
+### <u>Google</u>:
+
+10'000 requests per day
+
+### <u>Twitter</u>:
+
+You may not tweet the same message twice.
