@@ -9,6 +9,14 @@
           {{errors.Name[0]}}
           <br/>
       </span>
+      <span class="text-red-500" v-if="errors && errors.Action">
+          {{errors.Action[0]}}
+          <br/>
+      </span>
+      <span class="text-red-500" v-if="errors && errors.Reaction">
+          {{errors.Reaction[0]}}
+          <br/>
+      </span>
       <label for="name" class="dark:text-white text-black">AREA name :</label>
       <input
         id="name"

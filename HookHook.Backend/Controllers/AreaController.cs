@@ -158,8 +158,12 @@ namespace HookHook.Backend.Controllers
             if (user == null)
                 return BadRequest();
 
-            // todo check if the account id is missing
-            // todo check if the type itself is missing
+            // * if account id/type is missing, reaction will be set to null
+            if (Array.Exists(area.Reactions, reaction => reaction == null)) {
+                return (BadRequest(new {
+                    error = "Please fill out reaction details"
+                }));
+            }
 
             // * check for empty arguments
             if (Array.Exists(area.Action.Arguments, arg => arg == null) || Array.Exists(area.Action.Arguments, arg => arg == "")) {
@@ -173,6 +177,11 @@ namespace HookHook.Backend.Controllers
                 if (Array.Exists(reaction.Arguments, arg => arg == null) || Array.Exists(reaction.Arguments, arg => arg == "")) {
                     return BadRequest(new {
                         error = "Please fill out all the reaction arguments"
+                    });
+                }
+                if (String.IsNullOrEmpty(reaction.AccountId)) {
+                    return BadRequest(new {
+                        error = "Please select an account for your reaction"
                     });
                 }
             }
