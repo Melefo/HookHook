@@ -11,7 +11,8 @@ module.exports = defineConfig({
             }
         }
     },
-    port: 80
+    port: 80,
+    allowedHosts: 'all'
   },
   configureWebpack: {
     resolve: {

@@ -13,6 +13,9 @@ class AreaClient {
   Future<List<AreaModel>> fetchAreas() async {
     const String url = "area/all";
 
+    final res = await http.get(Uri.parse(Backend.apiEndpoint + url)).timeout(const Duration(
+      seconds: 3
+    ));
     final response = await http.get(
       Uri.parse(Backend.apiEndpoint + url),
       headers: {

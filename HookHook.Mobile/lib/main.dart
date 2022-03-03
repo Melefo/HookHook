@@ -1,6 +1,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hookhook/hookhook_colors.dart';
+import 'package:hookhook/views/confirm_password.dart';
 import 'package:hookhook/views/forgot_password.dart';
 import "package:hookhook/views/home.dart";
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:hookhook/views/login.dart';
 import 'package:hookhook/views/new_area.dart';
+import 'package:hookhook/views/register.dart';
+import 'package:hookhook/views/verify.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/view.dart'
     show AppMVC, AppState, AppStatefulWidgetMVC;
@@ -25,6 +28,26 @@ class HookHook extends AppMVC {
 
   static const FlutterSecureStorage storage = FlutterSecureStorage();
   static Backend backend = Backend();
+
+  MaterialPageRoute? constructRoutes(RouteSettings settings) {
+    if (settings.name!.startsWith(ConfirmPassword.routeName)) {
+      var parts = settings.name!.split('/');
+      if (parts.length == 3) {
+        return MaterialPageRoute(
+            builder: (context) => ConfirmPassword(id: parts[parts.length - 1])
+        );
+      }
+    }
+    if (settings.name!.startsWith(Verify.routeName)) {
+      var parts = settings.name!.split('/');
+      if (parts.length == 3) {
+        return MaterialPageRoute(
+            builder: (context) => Verify(id: parts[parts.length -1])
+        );
+      }
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) =>
@@ -56,8 +79,11 @@ class HookHook extends AppMVC {
                             HomeView.routeName: (context) => HomeView(),
                             NewAreaView.routeName: (context) => const NewAreaView(),
                             LoginView.routeName: (context) => const LoginView(),
-                            ForgotPassword.routeName: (context) => const ForgotPassword()
+                            ForgotPassword.routeName: (context) => const ForgotPassword(),
+                            RegisterView.routeName: (context) => const RegisterView()
                           },
+                          onGenerateRoute: (settings) =>
+                              constructRoutes(settings),
                           builder: (context, widget) {
                             ScreenUtil.setContext(context);
                             return MediaQuery(

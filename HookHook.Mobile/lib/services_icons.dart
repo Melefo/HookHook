@@ -2,8 +2,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class ServicesIcons {
   static SvgPicture custom(String name, double size) {
-    print(name);
-    print(size);
     return (
       SvgPicture.asset("assets/img/${name.toLowerCase()}.svg",
           width: size,

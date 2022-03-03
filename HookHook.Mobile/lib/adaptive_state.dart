@@ -1,7 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 
-abstract class AdaptiveState<T extends StatefulWidget> extends State {
+abstract class AdaptiveState<T extends StatefulWidget> extends State<T> {
   bool darkMode = false;
   dynamic _savedThemeMode;
 

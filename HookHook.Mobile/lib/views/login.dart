@@ -5,6 +5,7 @@ import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/services_icons.dart';
 import 'package:hookhook/views/forgot_password.dart';
 import 'package:hookhook/views/home.dart';
+import 'package:hookhook/views/register.dart';
 import 'package:hookhook/widgets/welcome_hookhook.dart';
 import 'package:hookhook/wrapper/backend.dart';
 
@@ -45,22 +46,36 @@ class _LoginView extends AdaptiveState<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw,
-                      width: 0.15.sw),
+                  Image.asset(
+                      "assets/pinguin/warp.gif",
+                      height: 0.15.sw,
+                      width: 0.15.sw
+                  ),
                   WelcomeHookHook(),
-                  Image.asset("assets/pinguin/warp.gif", height: 0.15.sw,
-                      width: 0.15.sw)
+                  Image.asset(
+                      "assets/pinguin/warp.gif",
+                      height: 0.15.sw,
+                      width: 0.15.sw
+                  )
                 ],
               ),
+              Text(
+                  "Try to login!",
+                  style: TextStyle(
+                      fontSize: 14.sp
+                  )
+              ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 0.15.sw),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 0.15.sw
+                ),
                 child: Column(
                   children: [
                     TextFormField(
-                        decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: "Username/Email"
-                        ),
+                      decoration: const InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: "Username/Email"
+                      ),
                       controller: username,
                     ),
                     TextFormField(
@@ -68,13 +83,13 @@ class _LoginView extends AdaptiveState<LoginView> {
                             border: UnderlineInputBorder(),
                             labelText: "Password"
                         ),
-                      controller: password,
-                      obscureText: true
+                        controller: password,
+                        obscureText: true
                     ),
                     TextButton(
-                      onPressed: () async {
-                        await Navigator.pushNamed(context, ForgotPassword.routeName);
-                      },
+                      onPressed: () async =>
+                      await Navigator.pushNamed(
+                          context, ForgotPassword.routeName),
                       child: Text(
                         "Forgot password?",
                         style: TextStyle(
@@ -90,11 +105,16 @@ class _LoginView extends AdaptiveState<LoginView> {
                       ),
                       initialValue: Backend.apiEndpoint,
                       onChanged: (text) async {
-                          Backend.apiEndpoint = text;
-                          await Backend.init();
-                          setState(() {
+                        if (text[text.length - 1] != '/') {
+                          text += '/';
+                        }  
+                        await Backend.init(instance: text);
+                        await HookHook.storage.write(
+                            key: Backend.instanceKey, value: Backend.apiEndpoint
+                        );
+                        setState(() {
 
-                          });
+                        });
                       },
                     ),
                     const Padding(
@@ -102,9 +122,11 @@ class _LoginView extends AdaptiveState<LoginView> {
                     ),
                     TextButton(
                         onPressed: () async {
-                          await HookHook.backend.signIn.login(username.value.text, password.value.text);
+                          await HookHook.backend.signIn.login(
+                              username.value.text, password.value.text);
                           if (HookHook.backend.signIn.token != null) {
-                            await Navigator.pushReplacementNamed(context, HomeView.routeName);
+                            await Navigator.pushReplacementNamed(
+                                context, HomeView.routeName);
                           }
                         },
                         child: Text(
@@ -133,7 +155,9 @@ class _LoginView extends AdaptiveState<LoginView> {
                       padding: EdgeInsets.all(4),
                     ),
                     TextButton(
-                        onPressed: () => {},
+                        onPressed: () async =>
+                        await Navigator.pushNamed(
+                            context, RegisterView.routeName),
                         child: Text(
                           "Register",
                           style: TextStyle(
