@@ -16,8 +16,7 @@
     >
       <div>{{ slide.name }}</div>
 
-        <div class="text-red-500" v-if="slide.error !== '' && slide.error !== undefined" >
-            {{ slide.error }}
+        <div class="text-red-500" v-if="(slide.error !== '' && slide.error !== undefined) || slide.LastLaunchFailed" >
             <ExclamationIcon
                 class="
                 h-10
@@ -90,6 +89,7 @@ export default defineComponent({
     RefreshIcon,
     TrashIcon,
     ArrowNarrowRightIcon,
+    ExclamationIcon
   },
   computed: {
     blocs() {
@@ -132,7 +132,8 @@ export default defineComponent({
     };
   },
   created: async function () {
-      console.log("Carousel created");
+    if (this.blocs)
+        console.log(this.blocs[0]);
     await this.get();
     await this.ws.start();
     for (var area in this.blocs) {

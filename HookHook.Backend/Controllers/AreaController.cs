@@ -191,7 +191,7 @@ namespace HookHook.Backend.Controllers
             user.Areas.Add(areaEntity);
             _db.SaveUser(user);
 
-            UserArea userArea = new(areaEntity.Id, areaEntity.Name, areaEntity.Action.GetProvider(), areaEntity.Reactions.Select(x => x.GetProvider()).ToArray(), areaEntity.LastUpdate);
+            UserArea userArea = new(areaEntity.Id, areaEntity.Name, areaEntity.Action.GetProvider(), areaEntity.Reactions.Select(x => x.GetProvider()).ToArray(), areaEntity.LastUpdate, areaEntity.LastLaunchFailed);
             return Ok(userArea);
         }
 
@@ -270,13 +270,16 @@ namespace HookHook.Backend.Controllers
             public Providers[] To { get; set; }
             public long Date { get; set; }
 
-            public UserArea(string id, string name, Providers from, Providers[] to, DateTime date)
+            public bool LastLaunchFailed { get; set; }
+
+            public UserArea(string id, string name, Providers from, Providers[] to, DateTime date, bool lastLaunchFailed)
             {
                 Id = id;
                 Name = name;
                 From = from;
                 To = to;
                 Date = (long)(date - DateTime.UnixEpoch).TotalSeconds;
+                LastLaunchFailed = lastLaunchFailed;
             }
         }
 
@@ -295,7 +298,7 @@ namespace HookHook.Backend.Controllers
 
             List<UserArea> list = new();
             foreach (var area in user.Areas)
-                list.Add(new(area.Id, area.Name, area.Action.GetProvider(), area.Reactions.Select(x => x.GetProvider()).ToArray(), area.LastUpdate));
+                list.Add(new(area.Id, area.Name, area.Action.GetProvider(), area.Reactions.Select(x => x.GetProvider()).ToArray(), area.LastUpdate, area.LastLaunchFailed));
 
             return list;
         }
