@@ -15,6 +15,9 @@
       "
     >
       <div>{{ slide.name }}</div>
+
+      <div class="text-red-500" v-if="slide.error !== '' && slide.error !== undefined" >{{ slide.error }}</div>
+
       <div class="flex flex-row items-center my-2">
         <div
           class="flex w-[40px] h-[40px] rounded-xl"
@@ -115,11 +118,15 @@ export default defineComponent({
     };
   },
   created: async function () {
+      console.log("Carousel created");
     await this.get();
     await this.ws.start();
     for (var area in this.blocs) {
-      this.ws.on(this.blocs[area].id, (e) => {
+      this.ws.on(this.blocs[area].id, (e, errorMessage) => {
+          console.log("WS content2: ", errorMessage);
+
         this.blocs[area].date = e;
+        this.blocs[area].error = errorMessage;
       });
 
     }

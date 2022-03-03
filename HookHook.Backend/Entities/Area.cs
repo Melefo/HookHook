@@ -80,8 +80,9 @@ namespace HookHook.Backend.Entities
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine($"{e.Source}: {e.Message}");
-                    return;
+                    throw e;
+                    // Console.WriteLine($"{e.Source}: {e.Message}");
+                    // return;
                 }
             }
             db.SaveUser(user);
