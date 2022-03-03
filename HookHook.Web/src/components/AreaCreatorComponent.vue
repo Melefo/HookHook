@@ -1,6 +1,14 @@
 <template>
   <div class="p-2">
     <div>
+      <span class="text-red-500" v-if="error !== null">
+          {{ error }}
+          <br/>
+      </span>
+      <span class="text-red-500" v-if="errors && errors.Name">
+          {{errors.Name[0]}}
+          <br/>
+      </span>
       <label for="name" class="dark:text-white text-black">AREA name :</label>
       <input
         id="name"
@@ -163,13 +171,14 @@ export default defineComponent({
     },
     async createArea() {
       // todo call the store, check for errors
-      const { error } = await this.createAreaRequest({
+      const { error, errors } = await this.createAreaRequest({
         action: this.action,
         reactions: this.reactions,
         minutes: this.minutes,
         name: this.name
       });
       this.error = error || null;
+      this.errors = errors || null;
     },
     addReaction() {
       this.reactions.push(null);
@@ -196,6 +205,7 @@ export default defineComponent({
       action: null as any,
       reactions: [null] as any[],
       error: null as any,
+      errors: [null] as any[],
       minutes: 5 as number,
       name: null,
     };

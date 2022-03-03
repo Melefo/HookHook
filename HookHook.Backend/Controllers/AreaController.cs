@@ -153,8 +153,17 @@ namespace HookHook.Backend.Controllers
         public ActionResult<UserArea> CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity!.Name!);
+
             if (user == null)
                 return BadRequest();
+
+            // todo check for empty arguments
+            if (area.Action.Arguments.First(arg => String.IsNullOrEmpty(arg)).Length > 0) {
+                return BadRequest(new {
+                    error = "Please fill out all the arguments"
+                });
+            }
+            // todo check for invalid/empty reaction
 
             Entities.Area areaEntity = CreateEntityFromModel(area, user);
 

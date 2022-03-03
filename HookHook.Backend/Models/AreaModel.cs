@@ -7,6 +7,7 @@ namespace HookHook.Backend.Models
     /// </summary>
     public class AreaModel
     {
+        [Required(ErrorMessage = "Name is required")]
         public string Name { get; set; }
 
         /// <summary>
@@ -28,8 +29,10 @@ namespace HookHook.Backend.Models
         /// <summary>
         /// Area constructor
         /// </summary>
+        /// <param name="name">Name</param>
         /// <param name="action">Action</param>
         /// <param name="reactions">Reactions</param>
+        /// <param name="minutes">Minutes</param>
         public AreaModel(string name, AreaComponent action, AreaComponent[] reactions, int minutes = 1)
         {
             Name = name;
