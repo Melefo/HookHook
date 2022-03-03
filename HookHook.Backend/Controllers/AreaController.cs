@@ -9,6 +9,7 @@ using HookHook.Backend.Models;
 using HookHook.Backend.Attributes;
 using System.Reflection;
 using HookHook.Backend.Utilities;
+using System.Linq;
 
 namespace HookHook.Backend.Controllers
 {
@@ -153,8 +154,37 @@ namespace HookHook.Backend.Controllers
         public ActionResult<UserArea> CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity!.Name!);
+
             if (user == null)
                 return BadRequest();
+
+            // * if account id/type is missing, reaction will be set to null
+            if (Array.Exists(area.Reactions, reaction => reaction == null)) {
+                return (BadRequest(new {
+                    error = "Please fill out reaction details"
+                }));
+            }
+
+            // * check for empty arguments
+            if (Array.Exists(area.Action.Arguments, arg => arg == null) || Array.Exists(area.Action.Arguments, arg => arg == "")) {
+                return BadRequest(new {
+                    error = "Please fill out all the action arguments"
+                });
+            }
+            // * check for invalid/empty reaction
+            foreach (var reaction in area.Reactions) {
+
+                if (Array.Exists(reaction.Arguments, arg => arg == null) || Array.Exists(reaction.Arguments, arg => arg == "")) {
+                    return BadRequest(new {
+                        error = "Please fill out all the reaction arguments"
+                    });
+                }
+                if (String.IsNullOrEmpty(reaction.AccountId)) {
+                    return BadRequest(new {
+                        error = "Please select an account for your reaction"
+                    });
+                }
+            }
 
             Entities.Area areaEntity = CreateEntityFromModel(area, user);
 

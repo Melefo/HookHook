@@ -55,8 +55,9 @@ const area = {
             if (contentType && (contentType.indexOf("application/json") !== -1 || contentType.indexOf("application/problem+json") !== -1)) {
                 const json = await res.json();
 
-                if (json.error !== undefined || json.erors !== undefined)
+                if (json.error !== undefined || json.errors !== undefined) {
                     return json;
+                }
                 commit('addArea', json);
             }
             return {};
