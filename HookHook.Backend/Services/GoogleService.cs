@@ -13,22 +13,43 @@ using HookHook.Backend.Models;
 
 namespace HookHook.Backend.Services
 {
+    /// <summary>
+    /// Utility class
+    /// </summary>
     public class GoogleAuth
     {
+        /// <summary>
+        /// Access token
+        /// </summary>
         [JsonPropertyName("access_token")]
         public string AccessToken { get; set; }
 
+        /// <summary>
+        /// Refresh token
+        /// </summary>
         [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
 
+        /// <summary>
+        /// Access token expiration date
+        /// </summary>
         [JsonPropertyName("expire_in")]
         public int ExpiresIn { get; set; }
 
+        /// <summary>
+        /// Scope of access granted by token
+        /// </summary>
         public string Scope { get; set; }
 
+        /// <summary>
+        /// Token type
+        /// </summary>
         [JsonPropertyName("token_type")]
         public string TokenType { get; set; }
 
+        /// <summary>
+        /// ID token
+        /// </summary>
         [JsonPropertyName("id_token")]
         public string IdToken { get; set; }
 
@@ -43,9 +64,18 @@ namespace HookHook.Backend.Services
         }
     }
 
+    /// <summary>
+    /// Utility class
+    /// </summary>
     public class GoogleProfile
     {
+        /// <summary>
+        /// Email
+        /// </summary>
         public string Email { get; set; }
+        /// <summary>
+        /// User's Id
+        /// </summary>
         public string Id { get; set; }
 
         public GoogleProfile(string id, string email)
@@ -55,13 +85,30 @@ namespace HookHook.Backend.Services
         }
     }
 
+    /// <summary>
+    /// Service used by areaservice
+    /// </summary>
     public class GoogleService
     {
+        /// <summary>
+        /// Client ID
+        /// </summary>
         private readonly string _id;
+        /// <summary>
+        /// Client Secret
+        /// </summary>
         private readonly string _secret;
+        /// <summary>
+        /// API Key
+        /// </summary>
         private readonly string _key;
+        /// <summary>
+        /// Redirect URL
+        /// </summary>
         private readonly string _redirect;
-
+        /// <summary>
+        /// HTTP Client
+        /// </summary>
         private readonly HttpClient _client = new();
 
         /// <summary>
@@ -93,7 +140,7 @@ namespace HookHook.Backend.Services
                         ClientId = _id,
                         ClientSecret = _secret
                     },
-                    // ! jsp quel scope permet de commenter quelque chose
+
                     Scopes = new[] { Scope.YoutubeReadonly, Scope.Youtube, Scope.Youtubepartner, Scope.YoutubeUpload, Scope.YoutubeForceSsl }
                 }), account.UserId, new TokenResponse()
                 {
@@ -102,12 +149,15 @@ namespace HookHook.Backend.Services
             });
         }
 
+        /// <summary>
+        /// OAuth
+        /// </summary>
+        /// <param name="code">OAuth code</param>
+        /// <returns>Googleprofile, GoogleAuth</returns>
         public async Task<(GoogleProfile, GoogleAuth)> OAuth(string code)
         {
             var res = await _client.PostAsync<GoogleAuth>($"https://oauth2.googleapis.com/token?code={code}&client_id={_id}&client_secret={_secret}&redirect_uri={_redirect}&grant_type=authorization_code");
 
-            if (res == null)
-                throw new ApiException("Failed to call API");
 
             JwtSecurityTokenHandler tokenHandler = new();
             string? id = tokenHandler.ReadJwtToken(res.IdToken).Payload["sub"].ToString();
@@ -119,6 +169,12 @@ namespace HookHook.Backend.Services
             return (new GoogleProfile(id, email), res);
         }
 
+        /// <summary>
+        /// Add new service account
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="code">OAuth code</param>
+        /// <returns>New ServiceAccount</returns>
         public async Task<ServiceAccount?> AddAccount(User user, string code)
         {
             (var profile, var res) = await OAuth(code);
@@ -138,6 +194,10 @@ namespace HookHook.Backend.Services
             return new(profile.Id, search.Items[0].Snippet.Title);
         }
 
+        /// <summary>
+        /// Refresh google account tokens
+        /// </summary>
+        /// <param name="account"></param>
         public async Task Refresh(OAuthAccount account)
         {
             if (account.ExpiresIn == null || account.ExpiresIn > DateTime.UtcNow)

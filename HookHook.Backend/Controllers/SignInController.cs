@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// /signin controller route
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [AllowAnonymous]
@@ -74,6 +77,7 @@ namespace HookHook.Backend.Controllers
         /// <param name="form">User informations</param>
         /// <returns>return newly created if succesfully registered</returns>
         [HttpPost("oauth/{provider}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult> OAuth(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier)
@@ -103,6 +107,11 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get twitter authorization
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns>Verifier code</returns>
         [HttpGet("authorize/{provider}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -121,6 +130,7 @@ namespace HookHook.Backend.Controllers
         [HttpPost("login")]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult Login([FromBody] LoginForm form)
         {
             if (!ModelState.IsValid)
@@ -140,7 +150,13 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Verify an ID
+        /// </summary>
+        /// <param name="id"></param>
         [HttpPut("verify/{id}")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult Verify([BindRequired] string id)
         {
             try
@@ -158,15 +174,26 @@ namespace HookHook.Backend.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Recover password
+        /// </summary>
+        /// <param name="username"></param>
         [HttpPut("forgot/{username}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<ActionResult> ForgotPassword(string username)
         {
             await _service.RecoverPassword(username, Request.Headers.Origin);
             return NoContent();
         }
 
+        /// <summary>
+        /// Confirm password
+        /// </summary>
+        /// <param name="form"></param>
         [HttpPut("confirm")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult ConfirmPassword([FromBody] PasswordModel form)
         {
             if (!ModelState.IsValid)

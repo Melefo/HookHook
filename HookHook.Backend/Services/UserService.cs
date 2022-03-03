@@ -14,7 +14,7 @@ using System.Net;
 namespace HookHook.Backend.Services
 {
     /// <summary>
-    /// User realted service
+    /// User related service
     /// </summary>
     public class UserService
     {
@@ -22,11 +22,29 @@ namespace HookHook.Backend.Services
         /// Database access
         /// </summary>
         private readonly MongoService _db;
+        /// <summary>
+        /// Twitter service
+        /// </summary>
         private readonly TwitterService _twitter;
+        /// <summary>
+        /// Discord service
+        /// </summary>
         private readonly DiscordService _discord;
+        /// <summary>
+        /// Twitch service
+        /// </summary>
         private readonly TwitchService _twitch;
+        /// <summary>
+        /// Spotify service
+        /// </summary>
         private readonly SpotifyService _spotify;
+        /// <summary>
+        /// Github service
+        /// </summary>
         private readonly GitHubService _github;
+        /// <summary>
+        /// Google service
+        /// </summary>
         private readonly GoogleService _google;
 
         /// <summary>
@@ -34,9 +52,26 @@ namespace HookHook.Backend.Services
         /// </summary>
         private readonly string _key;
 
+        /// <summary>
+        /// SMTP server
+        /// </summary>
         private readonly SmtpClient _smtp;
+        /// <summary>
+        /// MailAddress
+        /// </summary>
         private readonly MailAddress _from;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="twitter">Service</param>
+        /// <param name="discord">Service</param>
+        /// <param name="twitch">Service</param>
+        /// <param name="spotify">Service</param>
+        /// <param name="github">Service</param>
+        /// <param name="google">Service</param>
+        /// <param name="config">Environment variables</param>
         public UserService(MongoService db, TwitterService twitter, DiscordService discord, TwitchService twitch, SpotifyService spotify, GitHubService github, GoogleService google, IConfiguration config)
         {
             _db = db;
@@ -57,6 +92,12 @@ namespace HookHook.Backend.Services
             _key = config["JwtKey"];
         }
 
+        /// <summary>
+        /// Send confirmation mail
+        /// </summary>
+        /// <param name="To"></param>
+        /// <param name="Subject"></param>
+        /// <param name="Body"></param>
         public async Task SendMail(string to, string subject, string body)
         {
             var mail = new MailMessage(_from, new(to))
@@ -89,6 +130,10 @@ namespace HookHook.Backend.Services
             _db.CreateUser(user);
         }
 
+        /// <summary>
+        /// Delete a user
+        /// </summary>
+        /// <param name="id"></param>
         public void Delete(string id) =>
             _db.DeleteUser(id);
 
@@ -96,7 +141,7 @@ namespace HookHook.Backend.Services
         /// Promote an User to Admin
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>True/False</returns>
         public bool Promote(string id)
         {
             User user = _db.GetUser(id)!;
@@ -105,6 +150,11 @@ namespace HookHook.Backend.Services
             return _db.SaveUser(user);
         }
 
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>The new user</returns>
         public User Register(User user)
         {
             var existing = _db.GetUserByIdentifier(user.Email);
@@ -146,6 +196,11 @@ namespace HookHook.Backend.Services
             return CreateJwt(user);
         }
 
+        /// <summary>
+        /// Verify user after registration
+        /// </summary>
+        /// <param name="id">User username or email</param>
+        /// <returns>JWT</returns>
         public string Verify(string id)
         {
             var user = _db.GetUserByRandomId(id);
@@ -162,6 +217,11 @@ namespace HookHook.Backend.Services
             return CreateJwt(user);
         }
 
+        /// <summary>
+        /// Recover a user's password
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="origin"></param>
         public async Task RecoverPassword(string username, string origin)
         {
             var user = _db.GetUserByIdentifier(username);
@@ -182,6 +242,12 @@ namespace HookHook.Backend.Services
             await SendMail(user.Email, "Recover your password", html);
         }
 
+        /// <summary>
+        /// Confirm and cross-check a password
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="password"></param>
+        /// <returns>JWT</returns>
         public string ConfirmPassword(string id, string password)
         {
             var user = _db.GetUserByRandomId(id);
@@ -198,6 +264,11 @@ namespace HookHook.Backend.Services
             return CreateJwt(user);
         }
 
+        /// <summary>
+        /// Confirm and cross-check a password
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>JWT</returns>
         public string CreateJwt(User user)
         {
             JwtSecurityTokenHandler tokenHandler = new();
@@ -228,6 +299,12 @@ namespace HookHook.Backend.Services
             return tokenHandler.WriteToken(token);
         }
 
+        /// <summary>
+        /// OAuth with google
+        /// </summary>
+        /// <param name="code">Auth code</param>
+        /// <param name="ctx"></param>
+        /// <returns>JWT</returns>
         public async Task<string> GoogleOAuth(string code, HttpContext ctx)
         {
             (var profile, var res) = await _google.OAuth(code);
@@ -236,6 +313,12 @@ namespace HookHook.Backend.Services
             return OAuth(ctx, Providers.Google, profile.Email, account);
         }
 
+        /// <summary>
+        /// OAuth with discord
+        /// </summary>
+        /// <param name="code">Auth code</param>
+        /// <param name="ctx"></param>
+        /// <returns>JWT</returns>
         public async Task<string> DiscordOAuth(string code, HttpContext ctx)
         {
             (DiscordRestClient client, DiscordToken res) = await _discord.OAuth(code);
@@ -244,9 +327,20 @@ namespace HookHook.Backend.Services
             return OAuth(ctx, Providers.Discord, client.CurrentUser.Email, account);
         }
 
+        /// <summary>
+        /// Twitter authorize
+        /// </summary>
+        /// <returns>Authorization code</returns>
         public string TwitterAuthorize() =>
             _twitter.Authorize();
 
+        /// <summary>
+        /// OAuth with twitter
+        /// </summary>
+        /// <param name="code">Auth code</param>
+        /// <param name="verifier">Verifier code</param>
+        /// <param name="ctx"></param>
+        /// <returns>JWT</returns>
         public async Task<string> TwitterOAuth(string code, string verifier, HttpContext ctx)
         {
             (UserResponse twitter, Tokens tokens) = await _twitter.OAuth(code, verifier);
@@ -255,6 +349,12 @@ namespace HookHook.Backend.Services
             return OAuth(ctx, Providers.Twitch, twitter.Email, account);
         }
 
+        /// <summary>
+        /// OAuth with twitch
+        /// </summary>
+        /// <param name="code">Auth code</param>
+        /// <param name="ctx"></param>
+        /// <returns>JWT</returns>
         public async Task<string> TwitchOAuth(string code, HttpContext ctx)
         {
             (var client, TwitchToken res) = await _twitch.OAuth(code);
@@ -263,6 +363,12 @@ namespace HookHook.Backend.Services
             return OAuth(ctx, Providers.Twitch, client.Email, account);
         }
 
+        /// <summary>
+        /// OAuth with spotify
+        /// </summary>
+        /// <param name="code">Auth code</param>
+        /// <param name="ctx"></param>
+        /// <returns>JWT</returns>
         public async Task<string> SpotifyOAuth(string code, HttpContext ctx)
         {
             (var spotify, var res) = await _spotify.OAuth(code);
@@ -272,6 +378,12 @@ namespace HookHook.Backend.Services
             return OAuth(ctx, Providers.Spotify, spotifyUser.Email, account);
         }
 
+        /// <summary>
+        /// OAuth with github
+        /// </summary>
+        /// <param name="code">Auth code</param>
+        /// <param name="ctx"></param>
+        /// <returns>JWT</returns>
         public async Task<string> GitHubOAuth(string code, HttpContext ctx)
         {
             (var client, var res) = await _github.OAuth(code);
@@ -284,6 +396,14 @@ namespace HookHook.Backend.Services
             return OAuth(ctx, Providers.GitHub, primary!.Email, account);
         }
 
+        /// <summary>
+        /// OAuth with provider
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="provider"></param>
+        /// <param name="email"></param>
+        /// <param name="account"></param>
+        /// <returns>JWT</returns>
         private string OAuth(HttpContext ctx, Providers provider, string email, OAuthAccount account)
         {
             User? user = null;

@@ -11,7 +11,7 @@ namespace HookHook.Backend.Exceptions
     }
 
     /// <summary>
-    /// Exception thrown hen there is a problem with an User
+    /// Exception thrown when there is a problem with an User
     /// </summary>
     public class UserException : Exception
     {
