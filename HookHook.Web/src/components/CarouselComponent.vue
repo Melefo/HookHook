@@ -16,7 +16,21 @@
     >
       <div>{{ slide.name }}</div>
 
-      <div class="text-red-500" v-if="slide.error !== '' && slide.error !== undefined" >{{ slide.error }}</div>
+        <div class="text-red-500" v-if="slide.error !== '' && slide.error !== undefined" >
+            {{ slide.error }}
+            <ExclamationIcon
+                class="
+                h-10
+                dark:bg-[#181A1E]
+                bg-[#f0f0f0]
+                dark:text-[#f0f0f0]
+                text-[#181A1E]
+                rounded-md
+                p-1.5
+                mx-2
+                duration-200
+                hover:scale-105"/>
+        </div>
 
       <div class="flex flex-row items-center my-2">
         <div
@@ -64,7 +78,7 @@
 import { defineComponent } from "vue";
 import Bloc from "@/components/BlocComponent.vue";
 import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline";
-import { TrashIcon } from "@heroicons/vue/solid";
+import { TrashIcon, ExclamationIcon } from "@heroicons/vue/solid";
 import dayjs from "dayjs";
 import { mapActions } from "vuex";
 import { HubConnectionBuilder } from "@microsoft/signalr";
