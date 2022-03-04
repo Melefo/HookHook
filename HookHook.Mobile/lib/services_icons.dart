@@ -1,11 +1,14 @@
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ServicesIcons {
-  static SvgPicture custom(String name, double size) =>
-      SvgPicture.asset("assets/img/$name.svg",
+  static SvgPicture custom(String name, double size) {
+    return (
+      SvgPicture.asset("assets/img/${name.toLowerCase()}.svg",
           width: size,
           height: size
-      );
+      )
+    );
+  }
 
   static SvgPicture gitHub(double size) =>
       SvgPicture.asset("assets/img/github.svg",

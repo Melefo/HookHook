@@ -1,6 +1,10 @@
 import 'package:hookhook/hookhook_colors.dart';
+import 'package:hookhook/models/area_model.dart';
 import 'package:hookhook/views/new_area.dart';
 import 'package:hookhook/widgets/area_item.dart';
+import 'package:hookhook/widgets/area_list.dart';
+import 'package:hookhook/wrapper/area_client.dart';
+import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
@@ -67,20 +71,7 @@ class _Home extends StateMVC<HomeView> {
                   child: Text('Your AREAs', style: TextStyle(fontSize: 15)),
                 ),
               ),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.all(0),
-                  scrollDirection: Axis.vertical,
-                  children: <Widget>[
-                    Column(
-                      children: [
-                        AreaItem(areaName: "Ronaldo"),
-                        AreaItem(areaName: "Benzema"),
-                      ],
-                    ),
-                  ],
-                ),
-              )
+              AreaList()
             ],
           ),
       );

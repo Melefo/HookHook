@@ -3,15 +3,17 @@ import 'package:hookhook/hookhook_colors.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 
+import '../services_icons.dart';
+
 class AreaItem extends StatelessWidget {
 
   final String areaName;
-  final String action;
-  final String reaction;
-
+  final String datetime;
+  final String from;
+  final List<String> to;
 
   const AreaItem(
-      {Key? key, this.areaName = "Area Name", this.action = "default", this.reaction = "default"})
+      {Key? key, this.areaName = "Area Name", this.datetime = "dateTime", this.from = "Action", this.to = const ["Reactions"]})
       : super(key: key);
 
   @override
@@ -36,9 +38,9 @@ class AreaItem extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Icon(Icons.category, color: HookHookColors.blue),
+                    ServicesIcons.custom(from, 20),
                     Icon(Icons.arrow_right_alt_rounded, color: Colors.black),
-                    Icon(Icons.category, color: HookHookColors.orange)
+                    for (String elem in to) ServicesIcons.custom(elem, 20),
                   ],
                 ),
               ),
@@ -47,8 +49,8 @@ class AreaItem extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('14h03 : 15 decembre',
-                        style: TextStyle(color: Colors.white)),
+                    Text(datetime,
+                        style: TextStyle(color: Colors.black)),
                   ],
                 ),
               ),
@@ -64,7 +66,6 @@ class AreaItem extends StatelessWidget {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          print("Press");
                         },
                         icon: Icon(Icons.refresh, color: Colors.black),
                       ),

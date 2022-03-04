@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hookhook/wrapper/area_client.dart';
 import 'package:hookhook/wrapper/sign_in.dart';
-
 import 'about.dart';
 
 class Backend {
@@ -15,6 +15,7 @@ class Backend {
 
   About? about;
   SignIn signIn = SignIn();
+  late AreaClient area;
 
   Backend._();
 
@@ -30,6 +31,7 @@ class Backend {
     try {
       var about = await About.init();
       backend.about = about;
+      backend.area = AreaClient();
     }
     on Exception {
       print("Failed to call backend");
