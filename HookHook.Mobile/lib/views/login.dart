@@ -34,6 +34,33 @@ class _LoginView extends AdaptiveState<LoginView> {
     }
   }
 
+  Widget constructGitHub() =>
+    IconButton(
+      onPressed: () async {
+        final listener = linkStream.listen(null);
+        listener.onData((String? response) async {
+          if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
+            final url = Uri.parse(response);
+            await HookHook.backend.signIn.github(url.queryParameters["code"]!);
+          }
+          if (HookHook.backend.signIn.token != null) {
+            await Navigator.pushReplacementNamed(
+                context, HomeView.routeName
+            );
+          }
+          listener.cancel();
+        });
+
+        final scopes = [
+          "user",
+          "repo"
+        ];
+        await redirect("https://github.com/login/oauth/authorize?client_id=${dotenv.env["GITHUB_CLIENTID"]}&redirect_uri=${dotenv.env["GITHUB_REDIRECT"]}&response_type=code&scope=${scopes.join(' ')}");
+      },
+      icon: ServicesIcons.gitHub(100),
+      iconSize: 0.08.sw,
+    );
+
   Widget constructSpotify() =>
       IconButton(
         onPressed: () async {
@@ -111,6 +138,10 @@ class _LoginView extends AdaptiveState<LoginView> {
         }
         case "discord": {
           list.add(constructDiscord());
+          break;
+        }
+        case "github": {
+          list.add(constructGitHub());
           break;
         }
       }
