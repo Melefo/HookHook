@@ -106,8 +106,8 @@ const signIn = {
             state.area.services = [];
             state.area.areas = [];
         },
-        async discord({ commit }: any, code: String) {
-            const res = await fetch("/api/signin/oauth/discord?code=" + code, {
+        async discord({ commit }: any, { code, redirect }: any) {
+            const res = await fetch(`/api/signin/oauth/discord?code=${code}&redirect=${redirect}`, {
                 method: 'POST',
             });
             if (res.status === 500) {
@@ -140,7 +140,7 @@ const signIn = {
             }
             return {};
         },
-        async spotify({ commit }: any, {code, redirect}: any) {
+        async spotify({ commit }: any, { code, redirect }: any) {
             const res = await fetch(`/api/signin/oauth/spotify?code=${code}&redirect=${redirect}`, {
                 method: 'POST',
             });

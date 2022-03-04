@@ -65,10 +65,6 @@ namespace HookHook.Backend.Services
         /// Client secret
         /// </summary>
 		private readonly string _secret;
-        /// <summary>
-        /// Redirect url
-        /// </summary>
-		private readonly string _redirect;
 
         /// <summary>
         /// HTTP client
@@ -83,7 +79,6 @@ namespace HookHook.Backend.Services
 		{
             _id = config["Discord:ClientId"];
 			_secret = config["Discord:ClientSecret"];
-			_redirect = config["Discord:Redirect"];
 		}
 
         /// <summary>
@@ -91,16 +86,21 @@ namespace HookHook.Backend.Services
         /// </summary>
         /// <param name="code">OAuth code</param>
         /// <returns>DiscordRestClient, DiscordToken</returns>
-        public async Task<(DiscordRestClient, DiscordToken)> OAuth(string code)
+        public async Task<(DiscordRestClient, DiscordToken)> OAuth(string code, string? verifier, string redirect)
         {
-            var content = new FormUrlEncodedContent(new KeyValuePair<string, string>[]
+            var col = new List<KeyValuePair<string, string>>
             {
                 new("client_id", _id),
                 new("client_secret", _secret),
                 new("grant_type", "authorization_code"),
                 new("code", code),
-                new("redirect_uri", _redirect),
-            });
+                new("redirect_uri", redirect),
+                new("scope", "identify guilds email bot")
+            };
+            if (verifier != null)
+                col.Add(new("code_verifier", verifier));
+
+            var content = new FormUrlEncodedContent(col);
             var res = await _client.PostAsync<DiscordToken>("https://discord.com/api/oauth2/token", content);
 
             if (res == null)
@@ -117,9 +117,9 @@ namespace HookHook.Backend.Services
         /// <param name="user"></param>
         /// <param name="code"></param>
         /// <returns>New ServiceAccount</returns>
-        public async Task<ServiceAccount?> AddAccount(User user, string code)
+        public async Task<ServiceAccount?> AddAccount(User user, string code, string? verifier, string redirect)
         {
-            (DiscordRestClient client, DiscordToken token) = await OAuth(code);
+            (DiscordRestClient client, DiscordToken token) = await OAuth(code, verifier, redirect);
             var id = client.CurrentUser.Id.ToString();
 
             user.ServicesAccounts.TryAdd(Providers.Discord, new());

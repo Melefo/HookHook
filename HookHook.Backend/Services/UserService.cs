@@ -319,9 +319,9 @@ namespace HookHook.Backend.Services
         /// <param name="code">Auth code</param>
         /// <param name="ctx"></param>
         /// <returns>JWT</returns>
-        public async Task<string> DiscordOAuth(string code, HttpContext ctx)
+        public async Task<string> DiscordOAuth(string code, string? verifier, string redirect, HttpContext ctx)
         {
-            (DiscordRestClient client, DiscordToken res) = await _discord.OAuth(code);
+            (DiscordRestClient client, DiscordToken res) = await _discord.OAuth(code, verifier, redirect);
             OAuthAccount account = new(client.CurrentUser.Id.ToString(), res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken);
 
             return OAuth(ctx, Providers.Discord, client.CurrentUser.Email, account);

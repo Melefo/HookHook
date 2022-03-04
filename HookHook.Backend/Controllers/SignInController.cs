@@ -86,7 +86,7 @@ namespace HookHook.Backend.Controllers
             {
                 string token = provider switch
                 {
-                    Providers.Discord => await _service.DiscordOAuth(code, HttpContext),
+                    Providers.Discord => await _service.DiscordOAuth(code, verifier, redirect!, HttpContext),
                     Providers.Spotify => await _service.SpotifyOAuth(code, redirect!, HttpContext),
                     Providers.Twitch => await _service.TwitchOAuth(code, HttpContext),
                     Providers.GitHub => await _service.GitHubOAuth(code, HttpContext),

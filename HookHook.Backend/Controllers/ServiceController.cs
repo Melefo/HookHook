@@ -147,7 +147,7 @@ namespace HookHook.Backend.Controllers
                 switch (provider)
                 {
                     case Providers.Discord:
-                        account = await _discord.AddAccount(user, code);
+                        account = await _discord.AddAccount(user, code, verifier, redirect!);
                         break;
                     case Providers.Twitter:
                         account = await _twitter.AddAccount(user, code, verifier!);

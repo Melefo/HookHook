@@ -49,8 +49,8 @@ const service = {
             commit('deleteAccount', { provider, key });
             return {};
         },
-        async addDiscord({ commit }: any, code: String) {
-            const res = await fetch("/api/service/discord?code=" + code, {
+        async addDiscord({ commit }: any, { code, redirect }: any) {
+            const res = await fetch(`/api/service/discord?code=${code}&redirect=${redirect}`, {
                 method: 'POST',
                 headers: authHeader()
             });

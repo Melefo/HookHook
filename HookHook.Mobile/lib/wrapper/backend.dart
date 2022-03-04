@@ -15,7 +15,7 @@ class Backend {
 
   About? about;
   SignIn signIn = SignIn();
-  late AreaClient area;
+  AreaClient area = AreaClient();
 
   Backend._();
 
@@ -31,7 +31,6 @@ class Backend {
     try {
       var about = await About.init();
       backend.about = about;
-      backend.area = AreaClient();
     }
     on Exception {
       print("Failed to call backend");

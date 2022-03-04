@@ -1,3 +1,4 @@
+import 'package:pkce/pkce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,23 +28,6 @@ class _LoginView extends AdaptiveState<LoginView> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    linkStream.listen(onListen);
-  }
-
-  void onListen(String? response) async {
-    if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
-      final url = Uri.parse(response);
-      await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
-    }
-    if (HookHook.backend.signIn.token != null) {
-      await Navigator.pushReplacementNamed(
-          context, HomeView.routeName);
-    }
-  }
-
   Future<void> redirect(String authUri) async {
     if (await canLaunch(authUri)) {
       await launch(authUri);
@@ -53,6 +37,20 @@ class _LoginView extends AdaptiveState<LoginView> {
   Widget constructSpotify() =>
       IconButton(
         onPressed: () async {
+          final listener = linkStream.listen(null);
+          listener.onData((String? response) async {
+            if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
+              final url = Uri.parse(response);
+              await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
+            }
+            if (HookHook.backend.signIn.token != null) {
+              await Navigator.pushReplacementNamed(
+                  context, HomeView.routeName
+              );
+            }
+            listener.cancel();
+          });
+
           final scopes = [
             "user-read-email",
             "user-read-private",
@@ -64,9 +62,40 @@ class _LoginView extends AdaptiveState<LoginView> {
           ];
           await redirect("https://accounts.spotify.com/authorize?client_id=${dotenv.env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv.env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes.join(" ")}");
         },
-        icon: ServicesIcons.custom("spotify", 100),
+        icon: ServicesIcons.spotify(100),
         iconSize: 0.08.sw,
       );
+
+  Widget constructDiscord() {
+    final pkcePair = PkcePair.generate();
+
+    return IconButton(
+        onPressed: () async {
+          final listener = linkStream.listen(null);
+          listener.onData((String? response) async {
+            if (response!.startsWith(dotenv.env["DISCORD_REDIRECT"]!)) {
+              final url = Uri.parse(response);
+              await HookHook.backend.signIn.discord(url.queryParameters["code"]!, pkcePair.codeVerifier);
+            }
+            if (HookHook.backend.signIn.token != null) {
+              await Navigator.pushReplacementNamed(
+                  context, HomeView.routeName);
+            }
+            listener.cancel();
+          });
+
+          final scopes = [
+            "identify",
+            "guilds",
+            "email",
+            "bot"
+          ];
+          await redirect("https://discord.com/oauth2/authorize?code_challenge=${pkcePair.codeChallenge}&code_challenge_method=S256&client_id=${dotenv.env["DISCORD_CLIENTID"]}&redirect_uri=${dotenv.env["DISCORD_REDIRECT"]}&response_type=code&scope=${scopes.join(' ')}&permissions=66568");
+        },
+        icon: ServicesIcons.discord(100),
+      iconSize: 0.08.sw,
+    );
+  }
 
   List<Widget> generateFromServices() {
     List<Widget> list = [];
@@ -78,6 +107,11 @@ class _LoginView extends AdaptiveState<LoginView> {
       switch (service.name.toLowerCase()) {
         case "spotify": {
           list.add(constructSpotify());
+          break;
+        }
+        case "discord": {
+          list.add(constructDiscord());
+          break;
         }
       }
     }

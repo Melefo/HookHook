@@ -19,6 +19,7 @@ class SignIn {
 
   static String loginUrl = baseUrl + "login";
   static String spotifyUrl = baseUrl + "oauth/spotify";
+  static String discordUrl = baseUrl + "oauth/discord";
   static String verifyUrl = baseUrl + "verify/";
   static String confirmUrl = baseUrl + "confirm";
   static String registerUrl = baseUrl + "register";
@@ -108,6 +109,25 @@ class SignIn {
     ).timeout(const Duration(
         seconds: 3
     ));
+  }
+
+  Future<void> discord(String code, String verifier) async {
+    final res = await http.post(Uri.parse(
+        "$discordUrl?code=$code&verifier=$verifier&redirect=${dotenv.env["DISCORD_REDIRECT"]!}"))
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      token = _Login
+          ._(jsonDecode(res.body))
+          .token;
+      await HookHook.storage.write(key: Backend.tokenKey, value: token);
+      await HookHook.storage.write(
+          key: Backend.instanceKey, value: Backend.apiEndpoint
+      );
+    }
   }
 
   Future<void> spotify(String code) async {

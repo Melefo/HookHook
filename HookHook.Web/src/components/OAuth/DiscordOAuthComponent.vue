@@ -34,7 +34,7 @@ export default defineComponent({
 
       const oauth = new DiscordOauth2({
         clientId: process.env.VUE_APP_DISCORD_CLIENTID,
-        redirectUri: window.location.origin + '/oauth',
+        redirectUri: process.env.VUE_APP_DISCORD_REDIRECT,
       });
 
       const url = oauth.generateAuthUrl({
@@ -64,7 +64,7 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveDiscord);
-      const info = this.oauth ? await this.discord(data.code) : await this.addDiscord(data.code);
+      const info = this.oauth ? await this.discord({ code: data.code, redirect: process.env.VUE_APP_DISCORD_REDIRECT }) : await this.addDiscord({ code: data.code, redirect: process.env.VUE_APP_DISCORD_REDIRECT });
       this.errors = info.errors || null;
       this.error = info.error || null;
       if (this.oauth) {
