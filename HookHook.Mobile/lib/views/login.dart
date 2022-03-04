@@ -1,3 +1,4 @@
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pkce/pkce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -28,11 +29,50 @@ class _LoginView extends AdaptiveState<LoginView> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    google.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
+      await HookHook.backend.signIn.google(account!.serverAuthCode!);
+      if (HookHook.backend.signIn.token != null) {
+        await Navigator.pushReplacementNamed(
+            context, HomeView.routeName
+        );
+      }
+    });
+  }
+
+  GoogleSignIn google = GoogleSignIn(
+    // Optional clientId
+    clientId: dotenv.env["GOOGLE_CLIENTID"],
+    scopes: [
+      "openid",
+      "email",
+      "profile",
+      "https://www.googleapis.com/auth/youtube",
+      "https://www.googleapis.com/auth/youtube.readonly",
+      "https://www.googleapis.com/auth/youtube.force-ssl"
+    ],
+  );
+
   Future<void> redirect(String authUri) async {
     if (await canLaunch(authUri)) {
       await launch(authUri);
     }
   }
+
+  Widget constructGoogle() =>
+  IconButton(
+    onPressed: () async {
+      try {
+        await google.signIn();
+      } catch (error) {
+        print(error);
+      }
+    },
+    icon: ServicesIcons.google(100),
+    iconSize: 0.08.sw
+  );
 
   Widget constructGitHub() =>
     IconButton(
@@ -142,6 +182,11 @@ class _LoginView extends AdaptiveState<LoginView> {
         }
         case "github": {
           list.add(constructGitHub());
+          break;
+        }
+        case "google":
+        case "youtube": {
+          list.add(constructGoogle());
           break;
         }
       }

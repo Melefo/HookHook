@@ -23,7 +23,7 @@ class ServicesIcons {
       );
 
   static SvgPicture google(double size) =>
-      SvgPicture.asset("assets/img/github.svg",
+      SvgPicture.asset("assets/img/google.svg",
         width: size,
         height: size,
       );
