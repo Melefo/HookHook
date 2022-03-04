@@ -50,7 +50,7 @@ namespace HookHook.Backend.Area.Actions
         /// <param name="username">Twitch user</param>
         /// <param name="accountId">Twitch service account Id</param>
         /// <param name="clientId">Twitch client Id</param>
-        public TwitchLiveStarted(string username, string accountId, string clientId) : this()
+        public TwitchLiveStarted([ParameterName("Username")]string username, string accountId, string clientId) : this()
         {
             Username = username;
             AccountId = accountId;

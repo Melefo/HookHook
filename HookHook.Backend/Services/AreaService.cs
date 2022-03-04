@@ -94,7 +94,21 @@ namespace HookHook.Backend.Services
                 return false;
 
             await RefreshTokenBeforeExecute(user);
-            await area.Launch(user, _mongo);
+
+            // * get errors from the launch
+            string errorMessage = "";
+            try
+            {
+                await area.Launch(user, _mongo);
+            }
+            catch (Exception e)
+            {
+                errorMessage = e.Message;
+                // errorMessage = "This area has caused a server-side error !";
+            }
+            // * send errors to areaexecuted
+            await AreaExecuted(user, area, errorMessage);
+
             _mongo.SaveUser(user);
             return true;
         }
@@ -105,9 +119,11 @@ namespace HookHook.Backend.Services
         /// <param name="user">HookHook user</param>
         /// <param name="area">AREA</param>
         /// <returns></returns>
-        private Task AreaExecuted(User user, Entities.Area area)
+        private Task AreaExecuted(User user, Entities.Area area, String errorMessage)
         {
-            _hubContext.Clients.User(user.Id).SendAsync(area.Id, (long)(area.LastUpdate - DateTime.UnixEpoch).TotalSeconds);
+            _hubContext.Clients.User(user.Id).SendAsync(area.Id,
+                                                       (long)(area.LastUpdate - DateTime.UnixEpoch).TotalSeconds,
+                                                       errorMessage);
             return Task.CompletedTask;
         }
 
@@ -122,8 +138,20 @@ namespace HookHook.Backend.Services
 
             foreach (Entities.Area area in user.Areas)
             {
-                await area.Launch(user, _mongo);
-                await AreaExecuted(user, area);
+                // * get errors from the launch
+                string errorMessage = "";
+                try
+                {
+                    await area.Launch(user, _mongo);
+                }
+                catch (Exception e)
+                {
+                    // errorMessage = "This area has caused a server-side error !";
+                    errorMessage = e.Message;
+                    // Console.WriteLine("Exception in execute user");
+                }
+                // * send errors to areaexecuted
+                await AreaExecuted(user, area, errorMessage);
             }
             _mongo.SaveUser(user);
         }

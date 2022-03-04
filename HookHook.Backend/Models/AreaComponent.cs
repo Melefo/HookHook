@@ -29,6 +29,7 @@ namespace HookHook.Backend.Models
         /// </summary>
         /// <param name="type">Type</param>
         /// <param name="arguments">Arguments</param>
+        /// <param name="accountId">AccountID</param>
         public AreaComponent(string type, string[] arguments, string accountId)
         {
             Type = type;
