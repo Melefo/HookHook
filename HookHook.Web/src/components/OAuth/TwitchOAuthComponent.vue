@@ -47,8 +47,8 @@ export default defineComponent({
       }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes.join(' ')}`;
       let popup = window.open(
         url,
-        "_blank",
-        "width=500, height=750, left=20, top=20, popup=true"
+        "oauthWindow",
+        "width=500, height=750, left=20, top=20"
       );
       if (popup == null) {
         return;

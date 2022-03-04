@@ -45,8 +45,8 @@ export default defineComponent({
 
       let popup = window.open(
         url,
-        "_blank",
-        "width=500, height=750, left=20, top=20, popup=true"
+        "oauthwindow",
+        "width=500, height=750, left=20, top=20"
       );
 
       if (popup == null) {
