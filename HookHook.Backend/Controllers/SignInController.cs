@@ -80,14 +80,14 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> OAuth(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier)
+        public async Task<ActionResult> OAuth(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null, [FromQuery] string? redirect = null)
         {
             try
             {
                 string token = provider switch
                 {
                     Providers.Discord => await _service.DiscordOAuth(code, HttpContext),
-                    Providers.Spotify => await _service.SpotifyOAuth(code, HttpContext),
+                    Providers.Spotify => await _service.SpotifyOAuth(code, redirect!, HttpContext),
                     Providers.Twitch => await _service.TwitchOAuth(code, HttpContext),
                     Providers.GitHub => await _service.GitHubOAuth(code, HttpContext),
                     Providers.Twitter => await _service.TwitterOAuth(code, verifier!, HttpContext),

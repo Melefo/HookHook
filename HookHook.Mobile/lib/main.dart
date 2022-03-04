@@ -14,9 +14,11 @@ import 'package:hookhook/views/verify.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/view.dart'
     show AppMVC, AppState, AppStatefulWidgetMVC;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   String? token = await HookHook.storage.read(key: Backend.tokenKey);
   String? instance = await HookHook.storage.read(key: Backend.instanceKey);
   await Backend.init(token: token, instance: instance);

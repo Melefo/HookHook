@@ -25,7 +25,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" android:host="hookhook.xyz" />
-                <data android:scheme="https" />
+                <data android:scheme="https" android:host="hookhook.xyz" />
+            </intent-filter>
+            <intent-filter android:label="hookhook">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="hookhook" />
             </intent-filter>
             <!-- Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash

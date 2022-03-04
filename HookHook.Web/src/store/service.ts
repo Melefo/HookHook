@@ -109,8 +109,8 @@ const service = {
             }
             return {};
         },
-        async addSpotify({ commit }: any, code: String) {
-            const res = await fetch("/api/service/spotify?code=" + code, {
+        async addSpotify({ commit }: any, {code, redirect}: any) {
+            const res = await fetch(`/api/service/spotify?code=${code}&redirect=${redirect}`, {
                 method: 'POST',
                 headers: authHeader()
             });

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
@@ -8,7 +9,9 @@ import 'package:hookhook/views/home.dart';
 import 'package:hookhook/views/register.dart';
 import 'package:hookhook/widgets/welcome_hookhook.dart';
 import 'package:hookhook/wrapper/backend.dart';
-
+import 'package:uni_links/uni_links.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/src/widgets/image.dart' as ImageWidget;
 import '../main.dart';
 
 class LoginView extends StatefulWidget {
@@ -24,13 +27,59 @@ class _LoginView extends AdaptiveState<LoginView> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    linkStream.listen(onListen);
+  }
+
+  void onListen(String? response) async {
+    if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
+      final url = Uri.parse(response);
+      await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
+    }
+    if (HookHook.backend.signIn.token != null) {
+      await Navigator.pushReplacementNamed(
+          context, HomeView.routeName);
+    }
+  }
+
+  Future<void> redirect(String authUri) async {
+    if (await canLaunch(authUri)) {
+      await launch(authUri);
+    }
+  }
+
+  Widget constructSpotify() =>
+      IconButton(
+        onPressed: () async {
+          final scopes = [
+            "user-read-email",
+            "user-read-private",
+            "user-library-modify",
+            "user-library-read",
+            "playlist-modify-private",
+            "playlist-read-private",
+            "playlist-modify-public",
+          ];
+          await redirect("https://accounts.spotify.com/authorize?client_id=${dotenv.env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv.env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes.join(" ")}");
+        },
+        icon: ServicesIcons.custom("spotify", 100),
+        iconSize: 0.08.sw,
+      );
+
   List<Widget> generateFromServices() {
     List<Widget> list = [];
     if (HookHook.backend.about == null) {
       return [];
     }
+
     for (var service in HookHook.backend.about!.server.services) {
-      list.add(ServicesIcons.custom(service.name.toLowerCase(), 0.08.sw));
+      switch (service.name.toLowerCase()) {
+        case "spotify": {
+          list.add(constructSpotify());
+        }
+      }
     }
     return list;
   }
@@ -46,13 +95,13 @@ class _LoginView extends AdaptiveState<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Image.asset(
+                  ImageWidget.Image.asset(
                       "assets/pinguin/warp.gif",
                       height: 0.15.sw,
                       width: 0.15.sw
                   ),
                   WelcomeHookHook(),
-                  Image.asset(
+                  ImageWidget.Image.asset(
                       "assets/pinguin/warp.gif",
                       height: 0.15.sw,
                       width: 0.15.sw
@@ -107,7 +156,7 @@ class _LoginView extends AdaptiveState<LoginView> {
                       onChanged: (text) async {
                         if (text[text.length - 1] != '/') {
                           text += '/';
-                        }  
+                        }
                         await Backend.init(instance: text);
                         await HookHook.storage.write(
                             key: Backend.instanceKey, value: Backend.apiEndpoint

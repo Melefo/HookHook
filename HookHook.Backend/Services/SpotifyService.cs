@@ -19,10 +19,6 @@ namespace HookHook.Backend.Services
         /// Client secret
         /// </summary>
 		private readonly string _secret;
-        /// <summary>
-        /// Redirect url
-        /// </summary>
-		private readonly string _redirect;
 
         /// <summary>
         /// Constructor
@@ -32,7 +28,6 @@ namespace HookHook.Backend.Services
 		{
 			_id = config["Spotify:ClientId"];
 			_secret = config["Spotify:ClientSecret"];
-			_redirect = config["Spotify:Redirect"];
 		}
 
         /// <summary>
@@ -40,11 +35,11 @@ namespace HookHook.Backend.Services
         /// </summary>
         /// <param name="code">OAuth code</param>
         /// <returns>SpotifyClient, AuthorizationCodeToken</returns>
-		public async Task<(SpotifyClient, AuthorizationCodeTokenResponse)> OAuth(string code)
+		public async Task<(SpotifyClient, AuthorizationCodeTokenResponse)> OAuth(string code, string redirect)
 		{
 			var client = new OAuthClient();
 			var response = await client.RequestToken(
-				new AuthorizationCodeTokenRequest(_id, _secret, code, new Uri(_redirect))
+				new AuthorizationCodeTokenRequest(_id, _secret, code, new Uri(redirect))
 			);
 
 			if (response == null)
@@ -60,9 +55,9 @@ namespace HookHook.Backend.Services
         /// <param name="user"></param>
         /// <param name="code"></param>
         /// <returns>New ServiceAccount</returns>
-		public async Task<ServiceAccount?> AddAccount(User user, string code)
+		public async Task<ServiceAccount?> AddAccount(User user, string code, string redirect)
         {
-			(var client, var token) = await OAuth(code);
+			(var client, var token) = await OAuth(code, redirect);
 			var spotifyUser = await client.UserProfile.Current();
 			var id = spotifyUser.Id;
 

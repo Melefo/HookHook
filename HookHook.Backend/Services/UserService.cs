@@ -369,9 +369,9 @@ namespace HookHook.Backend.Services
         /// <param name="code">Auth code</param>
         /// <param name="ctx"></param>
         /// <returns>JWT</returns>
-        public async Task<string> SpotifyOAuth(string code, HttpContext ctx)
+        public async Task<string> SpotifyOAuth(string code, string redirect, HttpContext ctx)
         {
-            (var spotify, var res) = await _spotify.OAuth(code);
+            (var spotify, var res) = await _spotify.OAuth(code, redirect);
             var spotifyUser = await spotify.UserProfile.Current();
             OAuthAccount account = new(spotifyUser.Id, res.AccessToken, TimeSpan.FromSeconds(res.ExpiresIn), res.RefreshToken);
 

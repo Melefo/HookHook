@@ -140,8 +140,8 @@ const signIn = {
             }
             return {};
         },
-        async spotify({ commit }: any, code: String) {
-            const res = await fetch("/api/signin/oauth/spotify?code=" + code, {
+        async spotify({ commit }: any, {code, redirect}: any) {
+            const res = await fetch(`/api/signin/oauth/spotify?code=${code}&redirect=${redirect}`, {
                 method: 'POST',
             });
             if (res.status === 500) {
