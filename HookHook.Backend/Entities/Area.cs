@@ -18,6 +18,11 @@ namespace HookHook.Backend.Entities
         public string Id { get; private init; } = ObjectId.GenerateNewId().ToString();
 
         /// <summary>
+        /// LastLaunchFailed
+        /// </summary>
+        public bool LastLaunchFailed { get; set; } = false;
+
+        /// <summary>
         /// Area name
         /// </summary>
         public string Name { get; private init; }
@@ -68,6 +73,8 @@ namespace HookHook.Backend.Entities
             if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
                 return;
             LastUpdate = DateTime.UtcNow.AddMinutes(MinutesBetween);
+
+            LastLaunchFailed = false;
             try
             {
                 (var formatters, bool actionValue) = await Action.Check(user);
@@ -75,15 +82,15 @@ namespace HookHook.Backend.Entities
                 if (!actionValue)
                     return;
 
-                foreach (var reaction in Reactions)
-                {
+                foreach (var reaction in Reactions) {
                     await reaction.Execute(user, formatters!);
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine($"{e.Source}: {e.Message}");
-                return;
+                LastLaunchFailed = true;
+                db.SaveUser(user);
+                throw e;
             }
             db.SaveUser(user);
         }

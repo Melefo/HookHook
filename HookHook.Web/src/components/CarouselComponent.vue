@@ -15,6 +15,22 @@
       "
     >
       <div>{{ slide.name }}</div>
+
+        <div class="text-red-500" v-if="(slide.error !== '' && slide.error !== undefined) || slide.LastLaunchFailed" >
+            <ExclamationIcon
+                class="
+                h-10
+                dark:bg-[#181A1E]
+                bg-[#f0f0f0]
+                dark:text-[#f0f0f0]
+                text-[#181A1E]
+                rounded-md
+                p-1.5
+                mx-2
+                duration-200
+                hover:scale-105"/>
+        </div>
+
       <div class="flex flex-row items-center my-2">
         <div
           class="flex w-[40px] h-[40px] rounded-xl"
@@ -61,7 +77,7 @@
 import { defineComponent } from "vue";
 import Bloc from "@/components/BlocComponent.vue";
 import { RefreshIcon, ArrowNarrowRightIcon } from "@heroicons/vue/outline";
-import { TrashIcon } from "@heroicons/vue/solid";
+import { TrashIcon, ExclamationIcon } from "@heroicons/vue/solid";
 import dayjs from "dayjs";
 import { mapActions } from "vuex";
 import { HubConnectionBuilder } from "@microsoft/signalr";
@@ -73,6 +89,7 @@ export default defineComponent({
     RefreshIcon,
     TrashIcon,
     ArrowNarrowRightIcon,
+    ExclamationIcon
   },
   computed: {
     blocs() {
@@ -115,11 +132,16 @@ export default defineComponent({
     };
   },
   created: async function () {
+    if (this.blocs)
+        console.log(this.blocs[0]);
     await this.get();
     await this.ws.start();
     for (var area in this.blocs) {
-      this.ws.on(this.blocs[area].id, (e) => {
+      this.ws.on(this.blocs[area].id, (e, errorMessage) => {
+          console.log("WS content2: ", errorMessage);
+
         this.blocs[area].date = e;
+        this.blocs[area].error = errorMessage;
       });
 
     }
