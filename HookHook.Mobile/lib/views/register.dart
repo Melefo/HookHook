@@ -66,7 +66,7 @@ class _RegisterView extends AdaptiveState<RegisterView> {
                     height: 0.15.sw,
                     width: 0.15.sw
                 ),
-                WelcomeHookHook(),
+                const WelcomeHookHook(),
                 Image.asset(
                     "assets/pinguin/breakdance.gif",
                     height: 0.15.sw,

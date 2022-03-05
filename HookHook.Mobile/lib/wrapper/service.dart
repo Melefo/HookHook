@@ -30,6 +30,7 @@ class Account {
 class Service {
   static String baseUrl = Backend.apiEndpoint + "service/";
   static String twitterUrl = baseUrl + "twitter";
+  static String twitchUrl = baseUrl + "twitch";
 
   Future<List<Account>> getAccounts(String provider) async {
     final res = await http.get(Uri.parse("$baseUrl$provider"),
@@ -64,6 +65,25 @@ class Service {
   Future<Account?> addTwitter(String code, String verifier) async {
     final res = await http.post(Uri.parse(
         "$twitterUrl?code=$code&verifier=$verifier"),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer " +
+            (await HookHook.backend.signIn.token)!,
+      },
+    )
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      return Account.fromJson(jsonDecode(res.body));
+    }
+    return null;
+  }
+
+  Future<Account?> addTwitch(String code) async {
+    final res = await http.post(Uri.parse(
+        "$twitchUrl?code=$code"),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " +
             (await HookHook.backend.signIn.token)!,

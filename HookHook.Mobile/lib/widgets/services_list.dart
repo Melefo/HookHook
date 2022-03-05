@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hookhook/services_icons.dart';
 import 'package:hookhook/widgets/services/discord.dart';
 import 'package:hookhook/widgets/services/github.dart';
 import 'package:hookhook/widgets/services/google.dart';
@@ -9,7 +8,6 @@ import 'package:hookhook/widgets/services/twitter.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import '../main.dart';
-import 'list_items.dart';
 
 class ServicesList extends StatelessWidget {
 

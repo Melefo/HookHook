@@ -96,7 +96,14 @@ class _TwitterDialog extends AdaptiveState<TwitterDialog> {
   Widget build(BuildContext context) =>
       SimpleDialog(
           backgroundColor: const Color(0xFFA3E7EE),
-          title: const Center(child: Text("Twitter")),
+          title: const Center(
+              child: Text(
+                  "Twitter",
+                  style: TextStyle(
+                    color: Colors.black
+                  )
+              )
+          ),
           children: [
             ...List<Widget>.from(
                 accounts.map((e) =>
@@ -104,7 +111,12 @@ class _TwitterDialog extends AdaptiveState<TwitterDialog> {
                         mainAxisAlignment: MainAxisAlignment
                             .spaceAround,
                         children: [
-                          Text(e.username),
+                          Text(
+                              e.username,
+                              style: const TextStyle(
+                                  color: Colors.black
+                              )
+                          ),
                           IconButton(
                               onPressed: () async {
                                 await HookHook.backend.service
@@ -114,7 +126,10 @@ class _TwitterDialog extends AdaptiveState<TwitterDialog> {
                                   accounts.remove(e);
                                 });
                               },
-                              icon: const Icon(Icons.close)
+                              icon: const Icon(
+                                  Icons.close,
+                                  color: Colors.black
+                              )
                           )
                         ]
                     ),

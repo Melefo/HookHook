@@ -38,7 +38,7 @@ class _Verify extends AdaptiveState<Verify> {
                       height: 0.15.sw,
                       width: 0.15.sw
                   ),
-                  WelcomeHookHook(),
+                  const WelcomeHookHook(),
                   Image.asset(
                       "assets/pinguin/breakdance.gif",
                       height: 0.15.sw,
