@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_twitch_auth/flutter_twitch_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pkce/pkce.dart';
@@ -14,7 +15,6 @@ import 'package:hookhook/widgets/welcome_hookhook.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/src/widgets/image.dart' as ImageWidget;
 import '../main.dart';
 
 class LoginView extends StatefulWidget {
@@ -63,6 +63,19 @@ class _LoginView extends AdaptiveState<LoginView> {
         }
       }
     });
+    linkStream.listen((String? response) async {
+      if (response!.startsWith(dotenv.env["TWITTER_REDIRECT"]!)) {
+        final url = Uri.parse(response);
+        String code = url.queryParameters["oauth_token"]!;
+        String verifier = url.queryParameters["oauth_verifier"]!;
+        await HookHook.backend.signIn.twitter(code, verifier);
+        if (HookHook.backend.signIn.token != null) {
+          await Navigator.pushReplacementNamed(
+              context, HomeView.routeName
+          );
+        }
+      }
+    });
   }
 
   GoogleSignIn google = GoogleSignIn(
@@ -90,7 +103,9 @@ class _LoginView extends AdaptiveState<LoginView> {
       try {
         await google.signIn();
       } catch (error) {
-        print(error);
+        if (kDebugMode) {
+          print(error);
+        }
       }
     },
     icon: ServicesIcons.google(100),
@@ -189,6 +204,16 @@ class _LoginView extends AdaptiveState<LoginView> {
         iconSize: 0.08.sw,
       );
 
+  Widget constructTwitter() =>
+      IconButton(
+        onPressed: () async {
+          String? url = await HookHook.backend.signIn.authorize("Twitter", dotenv.env["TWITTER_REDIRECT"]!);
+          await redirect(url!);
+        },
+        icon: ServicesIcons.twitter(100),
+        iconSize: 0.08.sw,
+      );
+
   List<Widget> generateFromServices() {
     List<Widget> list = [];
     if (HookHook.backend.about == null) {
@@ -218,6 +243,10 @@ class _LoginView extends AdaptiveState<LoginView> {
           list.add(constructTwitch());
           break;
         }
+        case "twitter": {
+          list.add(constructTwitter());
+          break;
+        }
       }
     }
     return list;
@@ -234,13 +263,13 @@ class _LoginView extends AdaptiveState<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ImageWidget.Image.asset(
+                  Image.asset(
                       "assets/pinguin/warp.gif",
                       height: 0.15.sw,
                       width: 0.15.sw
                   ),
                   WelcomeHookHook(),
-                  ImageWidget.Image.asset(
+                  Image.asset(
                       "assets/pinguin/warp.gif",
                       height: 0.15.sw,
                       width: 0.15.sw

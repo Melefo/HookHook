@@ -23,9 +23,11 @@ class SignIn {
   static String githubUrl = baseUrl + "oauth/github";
   static String discordUrl = baseUrl + "oauth/discord";
   static String twitchUrl = baseUrl + "oauth/twitch";
+  static String twitterUrl = baseUrl + "oauth/twitter";
   static String verifyUrl = baseUrl + "verify/";
   static String confirmUrl = baseUrl + "confirm";
   static String registerUrl = baseUrl + "register";
+  static String authorizeUrl = baseUrl + "authorize/";
   static String forgotUrl = baseUrl + "forgot/";
   static String baseUrl = Backend.apiEndpoint + "signin/";
 
@@ -98,7 +100,7 @@ class SignIn {
 
   Future<void> register(String firstName, String lastName, String email,
       String username, String password) async {
-    final res = await http.post(Uri.parse(registerUrl),
+    await http.post(Uri.parse(registerUrl),
         headers: <String, String>{
           'Content-Type': 'application/json'
         },
@@ -179,6 +181,19 @@ class SignIn {
     }
   }
 
+  Future<void> twitter(String code, String verifier) async {
+    final res = await http.post(Uri.parse(
+        "$twitterUrl?code=$code&verifier=$verifier"))
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      await saveToken(res.body);
+    }
+  }
+
   Future<void> saveToken(String body) async {
     token = _Login
         ._(jsonDecode(body))
@@ -187,5 +202,19 @@ class SignIn {
     await HookHook.storage.write(
         key: Backend.instanceKey, value: Backend.apiEndpoint
     );
+  }
+
+  Future<String?> authorize(String provider, String redirect) async {
+    final res = await http.get(Uri.parse(
+      "$authorizeUrl$provider?redirect=$redirect"
+    )).timeout(
+      const Duration(
+        seconds: 3
+      )
+    );
+    if (res.statusCode == 200) {
+      return res.body;
+    }
+    return null;
   }
 }

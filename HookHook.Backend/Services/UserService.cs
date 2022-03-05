@@ -331,8 +331,8 @@ namespace HookHook.Backend.Services
         /// Twitter authorize
         /// </summary>
         /// <returns>Authorization code</returns>
-        public string TwitterAuthorize() =>
-            _twitter.Authorize();
+        public string TwitterAuthorize(string redirect) =>
+            _twitter.Authorize(redirect);
 
         /// <summary>
         /// OAuth with twitter

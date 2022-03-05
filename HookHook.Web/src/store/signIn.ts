@@ -208,8 +208,8 @@ const signIn = {
             }
             return {};
         },
-        async authorize({ commit }: any, provider: String) {
-            const res = await fetch('/api/signin/authorize/' + provider, {
+        async authorize({ commit }: any, { provider, redirect }: any) {
+            const res = await fetch(`/api/signin/authorize/${provider}?redirect=${redirect}`, {
                 method: 'GET',
             });
             if (res.status === 500) {
