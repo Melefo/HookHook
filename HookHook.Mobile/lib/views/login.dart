@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_twitch_auth/flutter_twitch_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,53 +31,68 @@ class LoginView extends StatefulWidget {
 class _LoginView extends AdaptiveState<LoginView> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+  late StreamSubscription googleListener;
+  late StreamSubscription spotifyListener;
+  late StreamSubscription githubListener;
+  late StreamSubscription twitterListener;
 
   @override
   void initState() {
     super.initState();
-    google.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
-      await HookHook.backend.signIn.google(account!.serverAuthCode!);
-      if (HookHook.backend.signIn.token != null) {
-        await Navigator.pushReplacementNamed(
-            context, HomeView.routeName
-        );
+    googleListener = google.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
+      if (ModalRoute.of(context)?.settings.name == LoginView.routeName) {
+        await HookHook.backend.signIn.google(account!.serverAuthCode!);
+        if (await HookHook.backend.signIn.token != null) {
+          await Navigator.pushReplacementNamed(
+              context, HomeView.routeName
+          );
+        }
       }
     });
-    linkStream.listen((String? response) async {
+    spotifyListener = linkStream.listen((String? response) async {
       if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
         final url = Uri.parse(response);
         await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
-        if (HookHook.backend.signIn.token != null) {
+        if (await HookHook.backend.signIn.token != null) {
           await Navigator.pushReplacementNamed(
               context, HomeView.routeName
           );
         }
       }
     });
-    linkStream.listen((String? response) async {
+    githubListener = linkStream.listen((String? response) async {
       if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
         final url = Uri.parse(response);
         await HookHook.backend.signIn.github(url.queryParameters["code"]!);
-        if (HookHook.backend.signIn.token != null) {
+        if (await HookHook.backend.signIn.token != null) {
           await Navigator.pushReplacementNamed(
               context, HomeView.routeName
           );
         }
       }
     });
-    linkStream.listen((String? response) async {
+    twitterListener = linkStream.listen((String? response) async {
       if (response!.startsWith(dotenv.env["TWITTER_REDIRECT"]!)) {
         final url = Uri.parse(response);
         String code = url.queryParameters["oauth_token"]!;
         String verifier = url.queryParameters["oauth_verifier"]!;
         await HookHook.backend.signIn.twitter(code, verifier);
-        if (HookHook.backend.signIn.token != null) {
+        if (await HookHook.backend.signIn.token != null) {
           await Navigator.pushReplacementNamed(
               context, HomeView.routeName
           );
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    googleListener.cancel();
+    spotifyListener.cancel();
+    githubListener.cancel();
+    twitterListener.cancel();
+    super.dispose();
   }
 
   GoogleSignIn google = GoogleSignIn(
@@ -154,7 +171,7 @@ class _LoginView extends AdaptiveState<LoginView> {
               final url = Uri.parse(response);
               await HookHook.backend.signIn.discord(url.queryParameters["code"]!, pkcePair.codeVerifier);
             }
-            if (HookHook.backend.signIn.token != null) {
+            if (await HookHook.backend.signIn.token != null) {
               await Navigator.pushReplacementNamed(
                   context, HomeView.routeName);
             }
@@ -194,7 +211,7 @@ class _LoginView extends AdaptiveState<LoginView> {
           );
           String? code = await FlutterTwitchAuth.authToCode(context);
           await HookHook.backend.signIn.twitch(code!);
-          if (HookHook.backend.signIn.token != null) {
+          if (await HookHook.backend.signIn.token != null) {
             await Navigator.pushReplacementNamed(
                 context, HomeView.routeName
             );
@@ -268,7 +285,7 @@ class _LoginView extends AdaptiveState<LoginView> {
                       height: 0.15.sw,
                       width: 0.15.sw
                   ),
-                  WelcomeHookHook(),
+                  const WelcomeHookHook(),
                   Image.asset(
                       "assets/pinguin/warp.gif",
                       height: 0.15.sw,
@@ -344,7 +361,7 @@ class _LoginView extends AdaptiveState<LoginView> {
                         onPressed: () async {
                           await HookHook.backend.signIn.login(
                               username.value.text, password.value.text);
-                          if (HookHook.backend.signIn.token != null) {
+                          if (await HookHook.backend.signIn.token != null) {
                             await Navigator.pushReplacementNamed(
                                 context, HomeView.routeName);
                           }

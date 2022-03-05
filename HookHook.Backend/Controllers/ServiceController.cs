@@ -193,9 +193,7 @@ namespace HookHook.Backend.Controllers
             var account = accounts.SingleOrDefault(x => x.UserId == id)!;
 
             accounts.Remove(account);
-            var areas = user.Areas.Where(x => x.Action.AccountId == id || x.Reactions.Any(x => x.AccountId == id));
-            foreach (var area in areas)
-                user.Areas.Remove(area);
+            user.Areas.RemoveAll(x => x.Action.AccountId == id || x.Reactions.Any(x => x.AccountId == id));
             _mongo.SaveUser(user);
 
             return NoContent();

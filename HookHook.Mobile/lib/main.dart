@@ -24,11 +24,12 @@ void main() async {
   String? password = await HookHook.storage.read(key: Backend.passwordKey);
   String? instance = await HookHook.storage.read(key: Backend.instanceKey);
   await Backend.init(instance, token, username, password);
-  runApp(HookHook());
+  runApp(HookHook(token));
 }
 
 class HookHook extends AppMVC {
-  HookHook({Key? key}) : super(key: key);
+  final String? _token;
+  HookHook(this._token, {Key? key}) : super(key: key);
 
   static const FlutterSecureStorage storage = FlutterSecureStorage();
   static Backend backend = Backend();
@@ -78,7 +79,7 @@ class HookHook extends AppMVC {
                           title: "HookHook",
                           theme: theme,
                           darkTheme: dark,
-                          initialRoute: backend.signIn.token != null ? HomeView.routeName : LoginView.routeName,
+                          initialRoute: _token != null ? HomeView.routeName : LoginView.routeName,
                           routes: {
                             HomeView.routeName: (context) => const HomeView(),
                             NewAreaView.routeName: (context) => const NewAreaView(),
