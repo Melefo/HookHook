@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../main.dart';
 import 'backend.dart';
@@ -31,6 +32,7 @@ class Service {
   static String baseUrl = Backend.apiEndpoint + "service/";
   static String twitterUrl = baseUrl + "twitter";
   static String twitchUrl = baseUrl + "twitch";
+  static String spotifyUrl = baseUrl + "spotify";
 
   Future<List<Account>> getAccounts(String provider) async {
     final res = await http.get(Uri.parse("$baseUrl$provider"),
@@ -84,6 +86,25 @@ class Service {
   Future<Account?> addTwitch(String code) async {
     final res = await http.post(Uri.parse(
         "$twitchUrl?code=$code"),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer " +
+            (await HookHook.backend.signIn.token)!,
+      },
+    )
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      return Account.fromJson(jsonDecode(res.body));
+    }
+    return null;
+  }
+
+  Future<Account?> addSpotify(String code) async {
+    final res = await http.post(Uri.parse(
+        "$spotifyUrl?code=$code&redirect=${dotenv.env["SPOTIFY_REDIRECT"]}"),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " +
             (await HookHook.backend.signIn.token)!,
