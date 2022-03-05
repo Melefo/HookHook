@@ -10,6 +10,44 @@ class AreaClient {
 
   AreaClient();
 
+  void deleteAreaFromID(String id) async {
+    String url = "area/delete/" + id;
+    print(url);
+    final res = await http.get(Uri.parse(Backend.apiEndpoint + url)).timeout(const Duration(
+        seconds: 3
+    ));
+    final response = await http.get(
+      Uri.parse(Backend.apiEndpoint + url),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer " + HookHook.backend.signIn.token!,
+      },
+    );
+    if (response.statusCode == 200) {
+      var data = response.body;
+    } else {
+      throw Exception();
+    }
+  }
+
+  void triggerAreaFromID(String id) async {
+    String url = "area/trigger/" + id;
+    print(url);
+    final res = await http.get(Uri.parse(Backend.apiEndpoint + url)).timeout(const Duration(
+        seconds: 3
+    ));
+    final response = await http.get(
+      Uri.parse(Backend.apiEndpoint + url),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer " + HookHook.backend.signIn.token!,
+      },
+    );
+    if (response.statusCode == 200) {
+      var data = response.body;
+    } else {
+      throw Exception();
+    }
+  }
+
   Future<List<AreaModel>> fetchAreas() async {
     const String url = "area/all";
 

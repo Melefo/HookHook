@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hookhook/hookhook_colors.dart';
+import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 
@@ -10,10 +11,11 @@ class AreaItem extends StatelessWidget {
   final String areaName;
   final String datetime;
   final String from;
+  final String areaId;
   final List<String> to;
 
   const AreaItem(
-      {Key? key, this.areaName = "Area Name", this.datetime = "dateTime", this.from = "Action", this.to = const ["Reactions"]})
+      {Key? key, this.areaName = "Area Name", required this.areaId, this.datetime = "dateTime", this.from = "Action", this.to = const ["Reactions"]})
       : super(key: key);
 
   @override
@@ -66,6 +68,8 @@ class AreaItem extends StatelessWidget {
                       ),
                       child: IconButton(
                         onPressed: () {
+                          print("trigger");
+                          Backend().area.triggerAreaFromID(areaId);
                         },
                         icon: Icon(Icons.refresh, color: Colors.black),
                       ),
@@ -87,7 +91,7 @@ class AreaItem extends StatelessWidget {
                                   child: Text('Cancel', style: TextStyle(color: HookHookColors.orange)),
                                 ),
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, 'Yes'),
+                                  onPressed: () => Backend().area.deleteAreaFromID(areaId),
                                   child: Text('Yes', style: TextStyle(color: HookHookColors.blue)),
                                 ),
                               ],
