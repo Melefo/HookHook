@@ -33,6 +33,7 @@ class Service {
   static String twitterUrl = baseUrl + "twitter";
   static String twitchUrl = baseUrl + "twitch";
   static String spotifyUrl = baseUrl + "spotify";
+  static String googleUrl = baseUrl + "google";
 
   Future<List<Account>> getAccounts(String provider) async {
     final res = await http.get(Uri.parse("$baseUrl$provider"),
@@ -105,6 +106,25 @@ class Service {
   Future<Account?> addSpotify(String code) async {
     final res = await http.post(Uri.parse(
         "$spotifyUrl?code=$code&redirect=${dotenv.env["SPOTIFY_REDIRECT"]}"),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer " +
+            (await HookHook.backend.signIn.token)!,
+      },
+    )
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      return Account.fromJson(jsonDecode(res.body));
+    }
+    return null;
+  }
+
+  Future<Account?> addGoogle(String code) async {
+    final res = await http.post(Uri.parse(
+        "$googleUrl?code=$code"),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " +
             (await HookHook.backend.signIn.token)!,

@@ -40,13 +40,11 @@ class _LoginView extends AdaptiveState<LoginView> {
   void initState() {
     super.initState();
     googleListener = google.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
-      if (ModalRoute.of(context)?.settings.name == LoginView.routeName) {
-        await HookHook.backend.signIn.google(account!.serverAuthCode!);
-        if (await HookHook.backend.signIn.token != null) {
-          await Navigator.pushReplacementNamed(
-              context, HomeView.routeName
-          );
-        }
+      await HookHook.backend.signIn.google(account!.serverAuthCode!);
+      if (await HookHook.backend.signIn.token != null) {
+        await Navigator.pushReplacementNamed(
+            context, HomeView.routeName
+        );
       }
     });
     spotifyListener = linkStream.listen((String? response) async {
