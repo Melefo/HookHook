@@ -8,7 +8,6 @@ import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/main.dart';
 import 'package:hookhook/wrapper/service.dart';
-import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../services_icons.dart';

@@ -34,6 +34,7 @@ class Service {
   static String twitchUrl = baseUrl + "twitch";
   static String spotifyUrl = baseUrl + "spotify";
   static String googleUrl = baseUrl + "google";
+  static String gitHubUrl = baseUrl + "github";
 
   Future<List<Account>> getAccounts(String provider) async {
     final res = await http.get(Uri.parse("$baseUrl$provider"),
@@ -125,6 +126,25 @@ class Service {
   Future<Account?> addGoogle(String code) async {
     final res = await http.post(Uri.parse(
         "$googleUrl?code=$code"),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer " +
+            (await HookHook.backend.signIn.token)!,
+      },
+    )
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      return Account.fromJson(jsonDecode(res.body));
+    }
+    return null;
+  }
+
+  Future<Account?> addGitHub(String code) async {
+    final res = await http.post(Uri.parse(
+        "$gitHubUrl?code=$code"),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " +
             (await HookHook.backend.signIn.token)!,
