@@ -3,83 +3,140 @@ import 'package:http/http.dart' as http;
 
 import 'backend.dart';
 
-class Action
-{
-  final Map<String, dynamic> _data;
+class Action {
+  final String name;
+  final String description;
 
-  String get name => _data["name"];
-  String get description => _data["description"];
+  Action({
+    required this.name,
+    required this.description
+  });
 
-  Action._(this._data);
+  factory Action.fromJson(Map<String, dynamic> json) =>
+      Action(
+        name: json["name"],
+        description: json["description"],
+      );
+
+  Map<String, dynamic> toJson() =>
+      {
+        "name": name,
+        "description": description,
+      };
 }
 
-class Reaction
-{
-  final Map<String, dynamic> _data;
+class Reaction {
+  final String name;
+  final String description;
 
-  String get name => _data["name"];
-  String get description => _data["description"];
+  Reaction({
+    required this.name,
+    required this.description
+  });
 
-  Reaction._(this._data);
+  factory Reaction.fromJson(Map<String, dynamic> json) =>
+      Reaction(
+        name: json["name"],
+        description: json["description"],
+      );
+
+  Map<String, dynamic> toJson() =>
+      {
+        "name": name,
+        "description": description,
+      };
 }
 
-class Service
-{
-  final Map<String, dynamic> _data;
+class Service {
+  Service({
+    required this.name,
+    required this.actions,
+    required this.reactions,
+  });
 
-  String get name => _data["name"];
+  final String name;
+  final List<Action> actions;
+  final List<Reaction> reactions;
 
-  late List<Action> actions = [];
-  late List<Reaction> reactions = [];
+  factory Service.fromJson(Map<String, dynamic> json) =>
+      Service(
+        name: json["name"],
+        actions: List<Action>.from(
+            json["actions"].map((x) => Action.fromJson(x))),
+        reactions: List<Reaction>.from(
+            json["reactions"].map((x) => Reaction.fromJson(x))),
+      );
 
-  Service._(this._data)
-  {
-    for (var element in _data["actions"]) {
-      actions.add(Action._(element));
-    }
-    for (var element in _data["reactions"]) {
-      reactions.add(Reaction._(element));
-    }
-  }
+  Map<String, dynamic> toJson() =>
+      {
+        "name": name,
+        "actions": List<dynamic>.from(actions.map((x) => x.toJson())),
+        "reactions": List<dynamic>.from(reactions.map((x) => x.toJson())),
+      };
 }
 
-class Server
-{
-  final Map<String, dynamic> _data;
+class Server {
+  Server({
+    required this.currentTime,
+    required this.services,
+  });
 
-  int get currentTime => _data["currentTime"];
+  final int currentTime;
+  final List<Service> services;
 
-  List<Service> services = [];
+  factory Server.fromJson(Map<String, dynamic> json) =>
+      Server(
+        currentTime: json["currentTime"],
+        services: List<Service>.from(
+            json["services"].map((x) => Service.fromJson(x))),
+      );
 
-  Server._(this._data)
-  {
-    for (var element in _data["services"]) {
-      services.add(Service._(element));
-    }
-  }
+  Map<String, dynamic> toJson() =>
+      {
+        "currentTime": currentTime,
+        "services": List<dynamic>.from(services.map((x) => x.toJson())),
+      };
 }
 
-class Client
-{
-  final Map<String, dynamic> _data;
+class Client {
+  Client({
+    required this.host,
+  });
 
-  String get host => _data["host"];
+  final String host;
 
-  Client._(this._data);
+  factory Client.fromJson(Map<String, dynamic> json) =>
+      Client(
+        host: json["host"],
+      );
+
+  Map<String, dynamic> toJson() =>
+      {
+        "host": host,
+      };
 }
 
 class About
 {
-  final Map<String, dynamic> _data;
+  final Client client;
+  final Server server;
 
-  late Client client;
-  late Server server;
+  About({
+    required this.client,
+    required this.server
+  });
 
-  About._(this._data)
-  {
-    client = Client._(_data["client"]);
-    server = Server._(_data["server"]);
-  }
+  factory About.fromJson(Map<String, dynamic> json) =>
+      About(
+        client: Client.fromJson(json["client"]),
+        server: Server.fromJson(json["server"]),
+      );
+
+  Map<String, dynamic> toJson() =>
+      {
+        "client": client.toJson(),
+        "server": server.toJson()
+      };
 
   static const String url = "about.json";
 
@@ -89,7 +146,7 @@ class About
     ));
 
     if (res.statusCode == 200) {
-      return About._(jsonDecode(res.body));
+      return About.fromJson(jsonDecode(res.body));
     }
     throw Exception();
   }

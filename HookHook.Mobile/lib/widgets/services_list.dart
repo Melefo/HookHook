@@ -6,7 +6,6 @@ import 'package:hookhook/widgets/services/google.dart';
 import 'package:hookhook/widgets/services/spotify.dart';
 import 'package:hookhook/widgets/services/twitch.dart';
 import 'package:hookhook/widgets/services/twitter.dart';
-import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import '../main.dart';
