@@ -1,3 +1,4 @@
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/models/area_model.dart';
 import 'package:hookhook/views/new_area.dart';
@@ -35,14 +36,14 @@ class _Home extends StateMVC<HomeView> {
                 padding: EdgeInsets.only(top: 70),
                 child: Text('HookHook', textAlign: TextAlign.left,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45)),
               ),
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.fromLTRB(25, 30, 0, 10),
                   child: Text('Services', style: TextStyle(fontSize: 15)),
                 ),
               ),
-              const HList(height: 70, widget: ServicesList(itemWidth: 60)),
+              HList(height: 0.07.sh, widget: ServicesList(itemWidth: 0.12.sw)),
               Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(25)),
