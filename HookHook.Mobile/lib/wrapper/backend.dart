@@ -1,31 +1,32 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:hookhook/wrapper/area_client.dart';
-import 'package:hookhook/wrapper/sign_in.dart';
-import 'about.dart';
+import 'sign_in.dart';
+import 'about.dart' hide Service;
+import 'area_client.dart';
+import 'service.dart';
 
 class Backend {
   static Backend? _this;
   static const String tokenKey = "user_token";
+  static const String usernameKey = "user_name";
+  static const String passwordKey = "user_password";
   static const String instanceKey = "instance";
 
-  factory Backend() =>
-      _this ??= Backend._();
+  factory Backend([String? token, String? username, String? password]) =>
+      _this ??= Backend._(token, username, password);
 
   static String apiEndpoint = dotenv.env["BACKEND_URL"] ?? "http://localhost:8080/";
 
   About? about;
-  SignIn signIn = SignIn();
+  SignIn signIn;
   AreaClient area = AreaClient();
+  Service service = Service();
 
-  Backend._();
+  Backend._([String? token, String? username, String? password]) : signIn = SignIn(token, username, password);
 
-  static Future<Backend> init({String? token, String? instance}) async
+  static Future<Backend> init(String? instance, [String? token, String? username, String? password]) async
   {
-    Backend backend = Backend();
-    if (token != null) {
-      backend.signIn.token = token;
-    }
+    Backend backend = Backend(token, username, password);
     if (instance != null) {
       Backend.apiEndpoint = instance;
     }

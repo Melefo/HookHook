@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hookhook/adaptive_state.dart';
+import 'package:hookhook/main.dart';
 
 import '../../services_icons.dart';
 import '../list_items.dart';
@@ -14,12 +15,17 @@ class Twitter extends StatefulWidget {
 }
 
 class _Twitter extends AdaptiveState<Twitter> {
+  Future<Widget> buildAccound(BuildContext context) async {
+    final res = await HookHook.backend.service.getAccounts("Twitter");
+    print(res);
+    return Text("g");
+  }
+
   Widget buildDialog(BuildContext context) =>
       SimpleDialog(
         backgroundColor: const Color(0xFFA3E7EE),
         title: const Center(child: Text("Twitter")),
         children: [
-
         ],
       );
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decode/jwt_decode.dart';
 
 import '../main.dart';
 
@@ -10,12 +11,26 @@ class _Login
   final Map<String, dynamic> _data;
 
   String get token => _data["token"];
-
   _Login._(this._data);
 }
 
 class SignIn {
-  String? token;
+  String? _token;
+  String? _username;
+  String? _password;
+
+  SignIn(this._token, this._username, this._password);
+
+  Future<String?> get token async {
+    if (_token != null && Jwt.isExpired(_token!)) {
+      _token = null;
+      if (_username != null && _password != null) {
+          await login(_username!, _password!);
+      }
+    }
+
+    return _token;
+  }
 
   static String loginUrl = baseUrl + "login";
   static String spotifyUrl = baseUrl + "oauth/spotify";
@@ -49,10 +64,14 @@ class SignIn {
         seconds: 3
     ));
     if (res.statusCode == 200) {
-      token = _Login
+      _token = _Login
           ._(jsonDecode(res.body))
           .token;
-      await HookHook.storage.write(key: Backend.tokenKey, value: token);
+      _username = username;
+      _password = password;
+      await HookHook.storage.write(key: Backend.tokenKey, value: await token);
+      await HookHook.storage.write(key: Backend.usernameKey, value: _username);
+      await HookHook.storage.write(key: Backend.passwordKey, value: _password);
       await HookHook.storage.write(
           key: Backend.instanceKey, value: Backend.apiEndpoint
       );
@@ -65,10 +84,10 @@ class SignIn {
             seconds: 3
         ));
     if (res.statusCode == 200) {
-      token = _Login
+      _token = _Login
           ._(jsonDecode(res.body))
           .token;
-      await HookHook.storage.write(key: Backend.tokenKey, value: token);
+      await HookHook.storage.write(key: Backend.tokenKey, value: await token);
       await HookHook.storage.write(
           key: Backend.instanceKey, value: Backend.apiEndpoint
       );
@@ -88,10 +107,10 @@ class SignIn {
         seconds: 3
     ));
     if (res.statusCode == 200) {
-      token = _Login
+      _token = _Login
           ._(jsonDecode(res.body))
           .token;
-      await HookHook.storage.write(key: Backend.tokenKey, value: token);
+      await HookHook.storage.write(key: Backend.tokenKey, value: await token);
       await HookHook.storage.write(
           key: Backend.instanceKey, value: Backend.apiEndpoint
       );
@@ -195,10 +214,10 @@ class SignIn {
   }
 
   Future<void> saveToken(String body) async {
-    token = _Login
+    _token = _Login
         ._(jsonDecode(body))
         .token;
-    await HookHook.storage.write(key: Backend.tokenKey, value: token);
+    await HookHook.storage.write(key: Backend.tokenKey, value: await token);
     await HookHook.storage.write(
         key: Backend.instanceKey, value: Backend.apiEndpoint
     );

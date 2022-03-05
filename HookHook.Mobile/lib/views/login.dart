@@ -325,7 +325,10 @@ class _LoginView extends AdaptiveState<LoginView> {
                         if (text[text.length - 1] != '/') {
                           text += '/';
                         }
-                        await Backend.init(instance: text);
+                        String? token = await HookHook.storage.read(key: Backend.tokenKey);
+                        String? username = await HookHook.storage.read(key: Backend.usernameKey);
+                        String? password = await HookHook.storage.read(key: Backend.passwordKey);
+                        await Backend.init(text, token, username, password);
                         await HookHook.storage.write(
                             key: Backend.instanceKey, value: Backend.apiEndpoint
                         );
