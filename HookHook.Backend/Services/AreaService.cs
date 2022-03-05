@@ -119,7 +119,7 @@ namespace HookHook.Backend.Services
         /// <param name="user">HookHook user</param>
         /// <param name="area">AREA</param>
         /// <returns></returns>
-        private Task AreaExecuted(User user, Entities.Area area, String errorMessage)
+        private Task AreaExecuted(User user, Entities.Area area, string errorMessage)
         {
             _hubContext.Clients.User(user.Id).SendAsync(area.Id,
                                                        (long)(area.LastUpdate - DateTime.UnixEpoch).TotalSeconds,

@@ -15,7 +15,7 @@ class Backend {
   factory Backend([String? token, String? username, String? password]) =>
       _this ??= Backend._(token, username, password);
 
-  static String apiEndpoint = dotenv.env["BACKEND_URL"] ?? "http://localhost:8080/";
+  static String apiEndpoint = dotenv.env["BACKEND_URL"] ?? "http://hookhook.xyz:8080/";
 
   About? about;
   SignIn signIn;

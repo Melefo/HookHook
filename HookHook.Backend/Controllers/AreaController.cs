@@ -250,7 +250,7 @@ namespace HookHook.Backend.Controllers
         /// </summary>
         /// <param name="id"></param>
         [HttpGet("trigger/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> TriggerUserAreas(string id)
         {
@@ -259,7 +259,7 @@ namespace HookHook.Backend.Controllers
                 return BadRequest();
             if (!await _area.ExecuteUserArea(user, id))
                 return BadRequest();
-            return Ok();
+            return NoContent();
         }
 
         public class UserArea

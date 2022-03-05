@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:hookhook/main.dart';
 import 'package:hookhook/models/area_model.dart';
 import 'package:http/http.dart' as http;
@@ -8,40 +9,29 @@ class AreaClient {
 
   AreaClient();
 
-  void deleteAreaFromID(String id) async {
+  Future<void> deleteAreaFromID(String id) async {
     String url = "area/delete/" + id;
-    print(url);
-    final response = await http.delete(
+    final res = await http.delete(
       Uri.parse(Backend.apiEndpoint + url),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
       },
     );
-    if (response.statusCode == 204) {
-      var data = response.body;
-      print(data);
-    } else {
-      throw Exception();
+    if (res.statusCode != 204 && kDebugMode) {
+      print("FAILED TO UPDATE");
     }
   }
 
-  void triggerAreaFromID(String id) async {
+  Future<void> triggerAreaFromID(String id) async {
     String url = "area/trigger/" + id;
-    print(url);
-    final res = await http.get(Uri.parse(Backend.apiEndpoint + url)).timeout(const Duration(
-        seconds: 3
-    ));
-    final response = await http.get(
-      Uri.parse(Backend.apiEndpoint + url),
+    final res = await http.get(Uri.parse(Backend.apiEndpoint + url),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
-      },
-    );
-    if (response.statusCode == 204) {
-      var data = response.body;
-      print(data);
-    } else {
-      throw Exception();
+      },).timeout(const Duration(
+        seconds: 3
+    ));
+    if (res.statusCode != 204 && kDebugMode) {
+      print("FAILED TO UPDATE");
     }
   }
 

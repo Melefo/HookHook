@@ -1,11 +1,8 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/hookhook_colors.dart';
-import 'package:hookhook/models/area_model.dart';
 import 'package:hookhook/views/new_area.dart';
-import 'package:hookhook/widgets/area_item.dart';
 import 'package:hookhook/widgets/area_list.dart';
-import 'package:hookhook/wrapper/area_client.dart';
-import 'package:hookhook/wrapper/backend.dart';
+import 'package:hookhook/widgets/hookhook_title.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +33,7 @@ class _Home extends AdaptiveState<HomeView> {
             children: <Widget>[
               const Padding(
                 padding: EdgeInsets.only(top: 70),
-                child: Text('HookHook', textAlign: TextAlign.left,style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45)),
+                child: HookHookTitle(),
               ),
               const Align(
                 alignment: Alignment.centerLeft,

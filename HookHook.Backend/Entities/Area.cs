@@ -70,9 +70,9 @@ namespace HookHook.Backend.Entities
         /// <returns></returns>
         public async Task Launch(User user, MongoService db)
         {
-            if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
+            if (LastUpdate.AddMinutes(MinutesBetween) > DateTime.UtcNow)
                 return;
-            LastUpdate = DateTime.UtcNow.AddMinutes(MinutesBetween);
+            LastUpdate = DateTime.UtcNow;
 
             LastLaunchFailed = false;
             try
@@ -86,11 +86,11 @@ namespace HookHook.Backend.Entities
                     await reaction.Execute(user, formatters!);
                 }
             }
-            catch (Exception e)
+            catch
             {
                 LastLaunchFailed = true;
                 db.SaveUser(user);
-                throw e;
+                throw;
             }
             db.SaveUser(user);
         }
