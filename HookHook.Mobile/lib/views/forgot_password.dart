@@ -35,7 +35,7 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
                     height: 0.15.sw,
                     width: 0.15.sw
                 ),
-                WelcomeHookHook(),
+                const WelcomeHookHook(),
                 Image.asset(
                     "assets/pinguin/clap.gif",
                     height: 0.15.sw,

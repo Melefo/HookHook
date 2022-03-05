@@ -14,7 +14,7 @@ class AreaClient {
     final response = await http.delete(
       Uri.parse(Backend.apiEndpoint + url),
       headers: {
-        HttpHeaders.authorizationHeader: "Bearer " + HookHook.backend.signIn.token!,
+        HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
       },
     );
     if (response.statusCode == 204) {
@@ -34,7 +34,7 @@ class AreaClient {
     final response = await http.get(
       Uri.parse(Backend.apiEndpoint + url),
       headers: {
-        HttpHeaders.authorizationHeader: "Bearer " + HookHook.backend.signIn.token!,
+        HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
       },
     );
     if (response.statusCode == 204) {
@@ -54,7 +54,7 @@ class AreaClient {
     final response = await http.get(
       Uri.parse(Backend.apiEndpoint + url),
       headers: {
-        HttpHeaders.authorizationHeader: "Bearer " + HookHook.backend.signIn.token!,
+        HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
       },
     );
     if (response.statusCode == 200) {

@@ -20,8 +20,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   String? token = await HookHook.storage.read(key: Backend.tokenKey);
+  String? username = await HookHook.storage.read(key: Backend.usernameKey);
+  String? password = await HookHook.storage.read(key: Backend.passwordKey);
   String? instance = await HookHook.storage.read(key: Backend.instanceKey);
-  await Backend.init(token: token, instance: instance);
+  await Backend.init(instance, token, username, password);
   runApp(HookHook());
 }
 
