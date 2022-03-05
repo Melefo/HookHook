@@ -11,17 +11,15 @@ class AreaClient {
   void deleteAreaFromID(String id) async {
     String url = "area/delete/" + id;
     print(url);
-    final res = await http.get(Uri.parse(Backend.apiEndpoint + url)).timeout(const Duration(
-        seconds: 3
-    ));
-    final response = await http.get(
+    final response = await http.delete(
       Uri.parse(Backend.apiEndpoint + url),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " + HookHook.backend.signIn.token!,
       },
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 204) {
       var data = response.body;
+      print(data);
     } else {
       throw Exception();
     }
@@ -39,8 +37,9 @@ class AreaClient {
         HttpHeaders.authorizationHeader: "Bearer " + HookHook.backend.signIn.token!,
       },
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 204) {
       var data = response.body;
+      print(data);
     } else {
       throw Exception();
     }
