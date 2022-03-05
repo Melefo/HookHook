@@ -67,7 +67,8 @@ class _SpotifyDialog extends AdaptiveState<SpotifyDialog> {
     listener = linkStream.listen((String? response) async {
       if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
         final url = Uri.parse(response);
-        final account = await HookHook.backend.service.addSpotify(url.queryParameters["code"]!);
+        final account = await HookHook.backend.service.addSpotify(
+            url.queryParameters["code"]!);
         if (account != null) {
           setState(() {
             accounts.add(account);
@@ -148,7 +149,11 @@ class _SpotifyDialog extends AdaptiveState<SpotifyDialog> {
                       "playlist-read-private",
                       "playlist-modify-public",
                     ];
-                    await redirect("https://accounts.spotify.com/authorize?client_id=${dotenv.env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv.env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes.join(" ")}");
+                    await redirect(
+                        "https://accounts.spotify.com/authorize?client_id=${dotenv
+                            .env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv
+                            .env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes
+                            .join(" ")}");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -168,14 +173,11 @@ class _SpotifyDialog extends AdaptiveState<SpotifyDialog> {
                       ),
                     ],
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        HookHookColors.light),
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )
-                    ),
+                  style: TextButton.styleFrom(
+                      backgroundColor: HookHookColors.light,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      )
                   )
               ),
             )

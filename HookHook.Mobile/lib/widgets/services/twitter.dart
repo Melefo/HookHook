@@ -100,7 +100,7 @@ class _TwitterDialog extends AdaptiveState<TwitterDialog> {
               child: Text(
                   "Twitter",
                   style: TextStyle(
-                    color: Colors.black
+                      color: Colors.black
                   )
               )
           ),
@@ -165,18 +165,14 @@ class _TwitterDialog extends AdaptiveState<TwitterDialog> {
                       ),
                     ],
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        HookHookColors.light),
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )
+                  style: TextButton.styleFrom(
+                    backgroundColor: HookHookColors.light,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
                     ),
                   )
               ),
             )
           ]
       );
-
 }

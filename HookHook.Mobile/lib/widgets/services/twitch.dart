@@ -128,7 +128,8 @@ class _TwitchDialog extends AdaptiveState<TwitchDialog> {
                         scope: scopes.join(' ')
                     );
                     String? code = await FlutterTwitchAuth.authToCode(context);
-                    final account = await HookHook.backend.service.addTwitch(code!);
+                    final account = await HookHook.backend.service.addTwitch(
+                        code!);
                     if (account != null) {
                       setState(() {
                         accounts.add(account);
@@ -153,14 +154,11 @@ class _TwitchDialog extends AdaptiveState<TwitchDialog> {
                       ),
                     ],
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        HookHookColors.light),
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )
-                    ),
+                  style: TextButton.styleFrom(
+                      backgroundColor: HookHookColors.light,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      )
                   )
               ),
             )

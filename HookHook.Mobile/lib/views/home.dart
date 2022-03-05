@@ -38,7 +38,7 @@ class _Home extends AdaptiveState<HomeView> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(25, 30, 0, 10),
+                  padding: EdgeInsets.fromLTRB(25, 10, 0, 10),
                   child: Text('Services', style: TextStyle(fontSize: 15)),
                 ),
               ),

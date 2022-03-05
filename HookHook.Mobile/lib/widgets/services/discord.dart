@@ -69,7 +69,8 @@ class _DiscordDialog extends AdaptiveState<DiscordDialog> {
     listener = linkStream.listen((String? response) async {
       if (response!.startsWith(dotenv.env["DISCORD_REDIRECT"]!)) {
         final url = Uri.parse(response);
-        final account = await HookHook.backend.service.addDiscord(url.queryParameters["code"]!, pkcePair.codeVerifier);
+        final account = await HookHook.backend.service.addDiscord(
+            url.queryParameters["code"]!, pkcePair.codeVerifier);
         if (account != null) {
           setState(() {
             accounts.add(account);
@@ -147,7 +148,12 @@ class _DiscordDialog extends AdaptiveState<DiscordDialog> {
                       "email",
                       "bot"
                     ];
-                    await redirect("https://discord.com/oauth2/authorize?code_challenge=${pkcePair.codeChallenge}&code_challenge_method=S256&client_id=${dotenv.env["DISCORD_CLIENTID"]}&redirect_uri=${dotenv.env["DISCORD_REDIRECT"]}&response_type=code&scope=${scopes.join(' ')}&permissions=66568");
+                    await redirect(
+                        "https://discord.com/oauth2/authorize?code_challenge=${pkcePair
+                            .codeChallenge}&code_challenge_method=S256&client_id=${dotenv
+                            .env["DISCORD_CLIENTID"]}&redirect_uri=${dotenv
+                            .env["DISCORD_REDIRECT"]}&response_type=code&scope=${scopes
+                            .join(' ')}&permissions=66568");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -167,14 +173,11 @@ class _DiscordDialog extends AdaptiveState<DiscordDialog> {
                       ),
                     ],
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        HookHookColors.light),
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )
-                    ),
+                  style: TextButton.styleFrom(
+                      backgroundColor: HookHookColors.light,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      )
                   )
               ),
             )

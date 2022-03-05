@@ -10,6 +10,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:hookhook/views/login.dart';
 import 'package:hookhook/views/new_area.dart';
 import 'package:hookhook/views/register.dart';
+import 'package:hookhook/views/settings.dart';
 import 'package:hookhook/views/verify.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:mvc_application/view.dart'
@@ -87,7 +88,8 @@ class HookHook extends AppMVC {
                             NewAreaView.routeName: (context) => const NewAreaView(),
                             LoginView.routeName: (context) => const LoginView(),
                             ForgotPassword.routeName: (context) => const ForgotPassword(),
-                            RegisterView.routeName: (context) => const RegisterView()
+                            RegisterView.routeName: (context) => const RegisterView(),
+                            SettingsView.routeName: (context) => const SettingsView()
                           },
                           onGenerateRoute: (settings) =>
                               constructRoutes(settings),

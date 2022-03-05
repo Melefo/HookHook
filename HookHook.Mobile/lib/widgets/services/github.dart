@@ -67,7 +67,8 @@ class _GithubDialog extends AdaptiveState<GithubDialog> {
     listener = linkStream.listen((String? response) async {
       if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
         final url = Uri.parse(response);
-        final account = await HookHook.backend.service.addGitHub(url.queryParameters["code"]!);
+        final account = await HookHook.backend.service.addGitHub(
+            url.queryParameters["code"]!);
         if (account != null) {
           setState(() {
             accounts.add(account);
@@ -143,7 +144,11 @@ class _GithubDialog extends AdaptiveState<GithubDialog> {
                       "user",
                       "repo"
                     ];
-                    await redirect("https://github.com/login/oauth/authorize?client_id=${dotenv.env["GITHUB_CLIENTID"]}&redirect_uri=${dotenv.env["GITHUB_REDIRECT"]}&response_type=code&scope=${scopes.join(' ')}");
+                    await redirect(
+                        "https://github.com/login/oauth/authorize?client_id=${dotenv
+                            .env["GITHUB_CLIENTID"]}&redirect_uri=${dotenv
+                            .env["GITHUB_REDIRECT"]}&response_type=code&scope=${scopes
+                            .join(' ')}");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -163,13 +168,10 @@ class _GithubDialog extends AdaptiveState<GithubDialog> {
                       ),
                     ],
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        HookHookColors.light),
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )
+                  style: TextButton.styleFrom(
+                    backgroundColor: HookHookColors.light,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
                     ),
                   )
               ),

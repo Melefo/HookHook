@@ -177,18 +177,14 @@ class _GoogleDialog extends AdaptiveState<GoogleDialog> {
                       ),
                     ],
                   ),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        HookHookColors.light),
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )
-                    ),
+                  style: TextButton.styleFrom(
+                      backgroundColor: HookHookColors.light,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      )
                   )
               ),
             )
           ]
       );
-
 }

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hookhook/hookhook_colors.dart';
+import 'package:hookhook/views/login.dart';
+import 'package:hookhook/views/settings.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 import '../adaptive_state.dart';
+import '../main.dart';
 
 class HookHookTitle extends StatefulWidget {
   const HookHookTitle({Key? key}) : super(key: key);
@@ -13,6 +17,21 @@ class HookHookTitle extends StatefulWidget {
 }
 
 class _HookHookTitle extends AdaptiveState {
+  String? token;
+
+  @override
+  void initState() {
+    HookHook.backend.signIn.token.then((value) {
+      setState(() {
+        token = value;
+      });
+      if (value == null) {
+        Navigator.pushReplacementNamed(context, LoginView.routeName);
+      }
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) =>
       Column(
@@ -23,7 +42,7 @@ class _HookHookTitle extends AdaptiveState {
               RichText(
                   text: TextSpan(
                       style: TextStyle(
-                          fontSize: 48.sp,
+                          fontSize: 42.sp,
                           fontFamily: "Comfortaa"
                       ),
                       children: [
@@ -42,7 +61,7 @@ class _HookHookTitle extends AdaptiveState {
                                     "oo",
                                     style: TextStyle(
                                         color: HookHookColors.orange,
-                                        fontSize: 48.sp,
+                                        fontSize: 42.sp,
                                         fontFamily: "Comfortaa"
                                     )
                                 ),
@@ -71,7 +90,7 @@ class _HookHookTitle extends AdaptiveState {
                                     "oo",
                                     style: TextStyle(
                                         color: HookHookColors.blue,
-                                        fontSize: 48.sp,
+                                        fontSize: 42.sp,
                                         fontFamily: "Comfortaa"
                                     )
                                 ),
@@ -96,7 +115,60 @@ class _HookHookTitle extends AdaptiveState {
               )
             ],
           ),
-          Row()
+          const Padding(
+              padding: EdgeInsets.only(
+                  top: 16,
+              )
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RichText(
+                      text: TextSpan(
+                          children: [
+                            TextSpan(
+                                text: "Hello",
+                                style: TextStyle(
+                                  color: darkMode ? Colors.white : Colors.black,
+                                )
+                            ),
+                            if (token != null)
+                              TextSpan(
+                                  text: " ${Jwt.parseJwt(token!)["given_name"]}",
+                                  style: TextStyle(
+                                    color: darkMode ? Colors.blue : Colors.orange,
+                                  )
+                              ),
+                            TextSpan(
+                                text: ", welcome back! ",
+                                style: TextStyle(
+                                  color: darkMode ? Colors.white : Colors.black,
+                                )
+                            ),
+                          ]
+                      )
+                  ),
+                  TextButton(
+                      onPressed: () => Navigator.pushNamed(context, SettingsView.routeName),
+                    style: TextButton.styleFrom(
+                      backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
+                      padding: const EdgeInsets.all(12),
+                      minimumSize: Size.zero,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      )
+                    ),
+                    clipBehavior: Clip.none,
+                      child: Icon(
+                          Icons.settings,
+                          color: darkMode ? HookHookColors.dark : Colors.black
+                      ),
+                  )
+                ]
+            ),
+          )
         ],
       );
 }
