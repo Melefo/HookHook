@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:hookhook/widgets/h_list.dart';
 import 'package:hookhook/widgets/services_list.dart';
 
+import '../adaptive_state.dart';
+
 //view
 class HomeView extends StatefulWidget {
 
@@ -20,16 +22,16 @@ class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
 
   @override
-  StateMVC<HomeView> createState() => _Home();
+  _Home createState() => _Home();
 }
 
 //state
-class _Home extends StateMVC<HomeView> {
+class _Home extends AdaptiveState<HomeView> {
 
   @override
   Widget build(BuildContext context) =>
       Scaffold(
-          backgroundColor: HookHookColors.light,
+          backgroundColor: darkMode ? HookHookColors.dark : HookHookColors.light,
           body: Column(
             children: <Widget>[
               const Padding(

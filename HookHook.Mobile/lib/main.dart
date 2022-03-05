@@ -18,18 +18,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final savedThemeMode = await AdaptiveTheme.getThemeMode();
   await dotenv.load(fileName: ".env");
   String? token = await HookHook.storage.read(key: Backend.tokenKey);
   String? username = await HookHook.storage.read(key: Backend.usernameKey);
   String? password = await HookHook.storage.read(key: Backend.passwordKey);
   String? instance = await HookHook.storage.read(key: Backend.instanceKey);
   await Backend.init(instance, token, username, password);
-  runApp(HookHook(token));
+  runApp(HookHook(token, savedThemeMode));
 }
 
 class HookHook extends AppMVC {
   final String? _token;
-  HookHook(this._token, {Key? key}) : super(key: key);
+  final AdaptiveThemeMode? theme;
+  HookHook(this._token, this.theme, {Key? key}) : super(key: key);
 
   static const FlutterSecureStorage storage = FlutterSecureStorage();
   static Backend backend = Backend();
@@ -72,7 +74,7 @@ class HookHook extends AppMVC {
                       brightness: Brightness.dark,
                       primaryColor: HookHookColors.dark
                   ),
-                  initial: AdaptiveThemeMode.system,
+                  initial: theme ?? AdaptiveThemeMode.system,
                   builder: (theme, dark) =>
                       MaterialApp(
                           debugShowCheckedModeBanner: kReleaseMode,

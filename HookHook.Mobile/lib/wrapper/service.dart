@@ -35,6 +35,7 @@ class Service {
   static String spotifyUrl = baseUrl + "spotify";
   static String googleUrl = baseUrl + "google";
   static String gitHubUrl = baseUrl + "github";
+  static String discordUrl = baseUrl + "discord";
 
   Future<List<Account>> getAccounts(String provider) async {
     final res = await http.get(Uri.parse("$baseUrl$provider"),
@@ -145,6 +146,25 @@ class Service {
   Future<Account?> addGitHub(String code) async {
     final res = await http.post(Uri.parse(
         "$gitHubUrl?code=$code"),
+      headers: {
+        HttpHeaders.authorizationHeader: "Bearer " +
+            (await HookHook.backend.signIn.token)!,
+      },
+    )
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      return Account.fromJson(jsonDecode(res.body));
+    }
+    return null;
+  }
+
+  Future<Account?> addDiscord(String code, String verifier) async {
+    final res = await http.post(Uri.parse(
+        "$discordUrl?code=$code&verifier=$verifier&redirect=${dotenv.env["DISCORD_REDIRECT"]}"),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " +
             (await HookHook.backend.signIn.token)!,
