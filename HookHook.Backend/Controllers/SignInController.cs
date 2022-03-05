@@ -115,11 +115,11 @@ namespace HookHook.Backend.Controllers
         [HttpGet("authorize/{provider}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> Authorize(Providers provider = Providers.Twitter)
+        public ActionResult<string> Authorize(Providers provider, [FromQuery] [BindRequired] string redirect)
         {
             if (provider != Providers.Twitter)
                 return BadRequest();
-            return _service.TwitterAuthorize();
+            return _service.TwitterAuthorize(redirect);
         }
 
         /// <summary>

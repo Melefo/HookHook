@@ -78,7 +78,7 @@ class HookHook extends AppMVC {
                           darkTheme: dark,
                           initialRoute: backend.signIn.token != null ? HomeView.routeName : LoginView.routeName,
                           routes: {
-                            HomeView.routeName: (context) => HomeView(),
+                            HomeView.routeName: (context) => const HomeView(),
                             NewAreaView.routeName: (context) => const NewAreaView(),
                             LoginView.routeName: (context) => const LoginView(),
                             ForgotPassword.routeName: (context) => const ForgotPassword(),

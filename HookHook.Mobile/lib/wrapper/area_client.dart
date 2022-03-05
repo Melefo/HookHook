@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:hookhook/main.dart';
 import 'package:hookhook/models/area_model.dart';
 import 'package:http/http.dart' as http;

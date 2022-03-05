@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_twitch_auth/flutter_twitch_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pkce/pkce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,7 +15,6 @@ import 'package:hookhook/widgets/welcome_hookhook.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/src/widgets/image.dart' as ImageWidget;
 import '../main.dart';
 
 class LoginView extends StatefulWidget {
@@ -28,29 +30,91 @@ class _LoginView extends AdaptiveState<LoginView> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    google.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
+      await HookHook.backend.signIn.google(account!.serverAuthCode!);
+      if (HookHook.backend.signIn.token != null) {
+        await Navigator.pushReplacementNamed(
+            context, HomeView.routeName
+        );
+      }
+    });
+    linkStream.listen((String? response) async {
+      if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
+        final url = Uri.parse(response);
+        await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
+        if (HookHook.backend.signIn.token != null) {
+          await Navigator.pushReplacementNamed(
+              context, HomeView.routeName
+          );
+        }
+      }
+    });
+    linkStream.listen((String? response) async {
+      if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
+        final url = Uri.parse(response);
+        await HookHook.backend.signIn.github(url.queryParameters["code"]!);
+        if (HookHook.backend.signIn.token != null) {
+          await Navigator.pushReplacementNamed(
+              context, HomeView.routeName
+          );
+        }
+      }
+    });
+    linkStream.listen((String? response) async {
+      if (response!.startsWith(dotenv.env["TWITTER_REDIRECT"]!)) {
+        final url = Uri.parse(response);
+        String code = url.queryParameters["oauth_token"]!;
+        String verifier = url.queryParameters["oauth_verifier"]!;
+        await HookHook.backend.signIn.twitter(code, verifier);
+        if (HookHook.backend.signIn.token != null) {
+          await Navigator.pushReplacementNamed(
+              context, HomeView.routeName
+          );
+        }
+      }
+    });
+  }
+
+  GoogleSignIn google = GoogleSignIn(
+    // Optional clientId
+    clientId: dotenv.env["GOOGLE_CLIENTID"],
+    scopes: [
+      "openid",
+      "email",
+      "profile",
+      "https://www.googleapis.com/auth/youtube",
+      "https://www.googleapis.com/auth/youtube.readonly",
+      "https://www.googleapis.com/auth/youtube.force-ssl"
+    ],
+  );
+
   Future<void> redirect(String authUri) async {
     if (await canLaunch(authUri)) {
       await launch(authUri);
     }
   }
 
+  Widget constructGoogle() =>
+  IconButton(
+    onPressed: () async {
+      try {
+        await google.signIn();
+      } catch (error) {
+        if (kDebugMode) {
+          print(error);
+        }
+      }
+    },
+    icon: ServicesIcons.google(100),
+    iconSize: 0.08.sw
+  );
+
   Widget constructGitHub() =>
     IconButton(
       onPressed: () async {
-        final listener = linkStream.listen(null);
-        listener.onData((String? response) async {
-          if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
-            final url = Uri.parse(response);
-            await HookHook.backend.signIn.github(url.queryParameters["code"]!);
-          }
-          if (HookHook.backend.signIn.token != null) {
-            await Navigator.pushReplacementNamed(
-                context, HomeView.routeName
-            );
-          }
-          listener.cancel();
-        });
-
         final scopes = [
           "user",
           "repo"
@@ -64,21 +128,7 @@ class _LoginView extends AdaptiveState<LoginView> {
   Widget constructSpotify() =>
       IconButton(
         onPressed: () async {
-          final listener = linkStream.listen(null);
-          listener.onData((String? response) async {
-            if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
-              final url = Uri.parse(response);
-              await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
-            }
-            if (HookHook.backend.signIn.token != null) {
-              await Navigator.pushReplacementNamed(
-                  context, HomeView.routeName
-              );
-            }
-            listener.cancel();
-          });
-
-          final scopes = [
+           final scopes = [
             "user-read-email",
             "user-read-private",
             "user-library-modify",
@@ -124,6 +174,46 @@ class _LoginView extends AdaptiveState<LoginView> {
     );
   }
 
+  Widget constructTwitch() =>
+      IconButton(
+        onPressed: () async {
+          final scopes = [
+            "channel:read:subscriptions",
+            "channel:manage:broadcast",
+            "user:read:broadcast",
+            "user:read:subscriptions",
+            "user:edit",
+            "user:read:email",
+            "user:read:follows"
+          ];
+          FlutterTwitchAuth.initialize(
+            twitchClientId: dotenv.env["TWITCH_CLIENTID"]!,
+            twitchRedirectUri: dotenv.env["TWITCH_REDIRECT"]!,
+            twitchClientSecret: '',
+            scope: scopes.join(' ')
+          );
+          String? code = await FlutterTwitchAuth.authToCode(context);
+          await HookHook.backend.signIn.twitch(code!);
+          if (HookHook.backend.signIn.token != null) {
+            await Navigator.pushReplacementNamed(
+                context, HomeView.routeName
+            );
+          }
+        },
+        icon: ServicesIcons.twitch(100),
+        iconSize: 0.08.sw,
+      );
+
+  Widget constructTwitter() =>
+      IconButton(
+        onPressed: () async {
+          String? url = await HookHook.backend.signIn.authorize("Twitter", dotenv.env["TWITTER_REDIRECT"]!);
+          await redirect(url!);
+        },
+        icon: ServicesIcons.twitter(100),
+        iconSize: 0.08.sw,
+      );
+
   List<Widget> generateFromServices() {
     List<Widget> list = [];
     if (HookHook.backend.about == null) {
@@ -144,6 +234,19 @@ class _LoginView extends AdaptiveState<LoginView> {
           list.add(constructGitHub());
           break;
         }
+        case "google":
+        case "youtube": {
+          list.add(constructGoogle());
+          break;
+        }
+        case "twitch": {
+          list.add(constructTwitch());
+          break;
+        }
+        case "twitter": {
+          list.add(constructTwitter());
+          break;
+        }
       }
     }
     return list;
@@ -160,13 +263,13 @@ class _LoginView extends AdaptiveState<LoginView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ImageWidget.Image.asset(
+                  Image.asset(
                       "assets/pinguin/warp.gif",
                       height: 0.15.sw,
                       width: 0.15.sw
                   ),
                   WelcomeHookHook(),
-                  ImageWidget.Image.asset(
+                  Image.asset(
                       "assets/pinguin/warp.gif",
                       height: 0.15.sw,
                       width: 0.15.sw

@@ -20,7 +20,7 @@ namespace HookHook.Backend.Entities
         /// <summary>
         /// LastLaunchFailed
         /// </summary>
-        public bool LastLaunchFailed { get; set; } = false;
+        public bool LastLaunchFailed { get; set; }
 
         /// <summary>
         /// Area name

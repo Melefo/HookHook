@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hookhook/wrapper/area_client.dart';
 import 'package:hookhook/wrapper/sign_in.dart';
@@ -33,7 +34,9 @@ class Backend {
       backend.about = about;
     }
     on Exception {
-      print("Failed to call backend");
+      if (kDebugMode) {
+        print("Failed to call backend");
+      }
     }
     return backend;
   }

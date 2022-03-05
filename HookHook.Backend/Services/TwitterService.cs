@@ -25,10 +25,6 @@ namespace HookHook.Backend.Services
         /// Client secret
         /// </summary>
 		private readonly string _secret;
-        /// <summary>
-        /// Redirect URL
-        /// </summary>
-		private readonly string _redirect;
 
         /// <summary>
         /// _OAuthSessions
@@ -45,16 +41,15 @@ namespace HookHook.Backend.Services
 
 			_id = _configuration["Twitter:ClientId"];
 			_secret = _configuration["Twitter:ClientSecret"];
-			_redirect = _configuration["Twitter:Redirect"];
 		}
 
         /// <summary>
         /// Twitter authorize
         /// </summary>
         /// <returns>Authorization code</returns>
-		public string Authorize()
+		public string Authorize(string redirect)
 		{
-			var session = CoreTweet.OAuth.Authorize(_id, _secret, _redirect);
+			var session = CoreTweet.OAuth.Authorize(_id, _secret, redirect);
 
 			_OAuthSessions.Add(session.RequestToken, session);
 			return session.AuthorizeUri.ToString();

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,7 +49,7 @@ class _ConfirmPassword extends AdaptiveState<ConfirmPassword> {
                       height: 0.15.sw,
                       width: 0.15.sw
                   ),
-                  WelcomeHookHook(),
+                  const WelcomeHookHook(),
                   Image.asset(
                       "assets/pinguin/mop.gif",
                       height: 0.15.sw,
