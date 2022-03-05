@@ -1,3 +1,4 @@
+import 'package:flutter_twitch_auth/flutter_twitch_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pkce/pkce.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,28 @@ class _LoginView extends AdaptiveState<LoginView> {
         );
       }
     });
+    linkStream.listen((String? response) async {
+      if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
+        final url = Uri.parse(response);
+        await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
+        if (HookHook.backend.signIn.token != null) {
+          await Navigator.pushReplacementNamed(
+              context, HomeView.routeName
+          );
+        }
+      }
+    });
+    linkStream.listen((String? response) async {
+      if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
+        final url = Uri.parse(response);
+        await HookHook.backend.signIn.github(url.queryParameters["code"]!);
+        if (HookHook.backend.signIn.token != null) {
+          await Navigator.pushReplacementNamed(
+              context, HomeView.routeName
+          );
+        }
+      }
+    });
   }
 
   GoogleSignIn google = GoogleSignIn(
@@ -77,20 +100,6 @@ class _LoginView extends AdaptiveState<LoginView> {
   Widget constructGitHub() =>
     IconButton(
       onPressed: () async {
-        final listener = linkStream.listen(null);
-        listener.onData((String? response) async {
-          if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
-            final url = Uri.parse(response);
-            await HookHook.backend.signIn.github(url.queryParameters["code"]!);
-          }
-          if (HookHook.backend.signIn.token != null) {
-            await Navigator.pushReplacementNamed(
-                context, HomeView.routeName
-            );
-          }
-          listener.cancel();
-        });
-
         final scopes = [
           "user",
           "repo"
@@ -104,21 +113,7 @@ class _LoginView extends AdaptiveState<LoginView> {
   Widget constructSpotify() =>
       IconButton(
         onPressed: () async {
-          final listener = linkStream.listen(null);
-          listener.onData((String? response) async {
-            if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
-              final url = Uri.parse(response);
-              await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
-            }
-            if (HookHook.backend.signIn.token != null) {
-              await Navigator.pushReplacementNamed(
-                  context, HomeView.routeName
-              );
-            }
-            listener.cancel();
-          });
-
-          final scopes = [
+           final scopes = [
             "user-read-email",
             "user-read-private",
             "user-library-modify",
@@ -164,6 +159,36 @@ class _LoginView extends AdaptiveState<LoginView> {
     );
   }
 
+  Widget constructTwitch() =>
+      IconButton(
+        onPressed: () async {
+          final scopes = [
+            "channel:read:subscriptions",
+            "channel:manage:broadcast",
+            "user:read:broadcast",
+            "user:read:subscriptions",
+            "user:edit",
+            "user:read:email",
+            "user:read:follows"
+          ];
+          FlutterTwitchAuth.initialize(
+            twitchClientId: dotenv.env["TWITCH_CLIENTID"]!,
+            twitchRedirectUri: dotenv.env["TWITCH_REDIRECT"]!,
+            twitchClientSecret: '',
+            scope: scopes.join(' ')
+          );
+          String? code = await FlutterTwitchAuth.authToCode(context);
+          await HookHook.backend.signIn.twitch(code!);
+          if (HookHook.backend.signIn.token != null) {
+            await Navigator.pushReplacementNamed(
+                context, HomeView.routeName
+            );
+          }
+        },
+        icon: ServicesIcons.twitch(100),
+        iconSize: 0.08.sw,
+      );
+
   List<Widget> generateFromServices() {
     List<Widget> list = [];
     if (HookHook.backend.about == null) {
@@ -187,6 +212,10 @@ class _LoginView extends AdaptiveState<LoginView> {
         case "google":
         case "youtube": {
           list.add(constructGoogle());
+          break;
+        }
+        case "twitch": {
+          list.add(constructTwitch());
           break;
         }
       }

@@ -22,6 +22,7 @@ class SignIn {
   static String googleUrl = baseUrl + "oauth/google";
   static String githubUrl = baseUrl + "oauth/github";
   static String discordUrl = baseUrl + "oauth/discord";
+  static String twitchUrl = baseUrl + "oauth/twitch";
   static String verifyUrl = baseUrl + "verify/";
   static String confirmUrl = baseUrl + "confirm";
   static String registerUrl = baseUrl + "register";
@@ -122,13 +123,7 @@ class SignIn {
         )
     );
     if (res.statusCode == 200) {
-      token = _Login
-          ._(jsonDecode(res.body))
-          .token;
-      await HookHook.storage.write(key: Backend.tokenKey, value: token);
-      await HookHook.storage.write(
-          key: Backend.instanceKey, value: Backend.apiEndpoint
-      );
+      await saveToken(res.body);
     }
   }
 
@@ -141,13 +136,7 @@ class SignIn {
         )
     );
     if (res.statusCode == 200) {
-      token = _Login
-          ._(jsonDecode(res.body))
-          .token;
-      await HookHook.storage.write(key: Backend.tokenKey, value: token);
-      await HookHook.storage.write(
-          key: Backend.instanceKey, value: Backend.apiEndpoint
-      );
+      await saveToken(res.body);
     }
   }
 
@@ -160,13 +149,7 @@ class SignIn {
         )
     );
     if (res.statusCode == 200) {
-      token = _Login
-          ._(jsonDecode(res.body))
-          .token;
-      await HookHook.storage.write(key: Backend.tokenKey, value: token);
-      await HookHook.storage.write(
-          key: Backend.instanceKey, value: Backend.apiEndpoint
-      );
+      await saveToken(res.body);
     }
   }
 
@@ -179,13 +162,30 @@ class SignIn {
         )
     );
     if (res.statusCode == 200) {
-      token = _Login
-          ._(jsonDecode(res.body))
-          .token;
-      await HookHook.storage.write(key: Backend.tokenKey, value: token);
-      await HookHook.storage.write(
-          key: Backend.instanceKey, value: Backend.apiEndpoint
-      );
+      await saveToken(res.body);
     }
+  }
+
+  Future<void> twitch(String code) async {
+    final res = await http.post(Uri.parse(
+        "$twitchUrl?code=$code"))
+        .timeout(
+        const Duration(
+            seconds: 3
+        )
+    );
+    if (res.statusCode == 200) {
+      await saveToken(res.body);
+    }
+  }
+
+  Future<void> saveToken(String body) async {
+    token = _Login
+        ._(jsonDecode(body))
+        .token;
+    await HookHook.storage.write(key: Backend.tokenKey, value: token);
+    await HookHook.storage.write(
+        key: Backend.instanceKey, value: Backend.apiEndpoint
+    );
   }
 }
