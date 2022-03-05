@@ -44,7 +44,7 @@ class _Home extends AdaptiveState<HomeView> {
               ),
               HList(height: 0.07.sh, widget: ServicesList(itemWidth: 0.12.sw)),
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(25)),
                     color: Colors.white
                 ),
@@ -64,17 +64,15 @@ class _Home extends AdaptiveState<HomeView> {
                   ),
                 ),
               ),
-              Align(
+              const Align(
                 alignment: Alignment.centerLeft,
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.fromLTRB(25, 20, 0, 20),
                   child: Text('Your AREAs', style: TextStyle(fontSize: 15)),
                 ),
               ),
-              AreaList()
+              const AreaList()
             ],
           ),
       );
-
-  Widget _buildBox({required Color color}) => Container(margin: EdgeInsets.all(12), height: 100, width: 100, color: color);
 }

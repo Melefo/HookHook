@@ -33,7 +33,7 @@ class _AreaList extends AdaptiveState<AreaList> {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
-        padding: EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         scrollDirection: Axis.vertical,
         children: <Widget>[
           Column(

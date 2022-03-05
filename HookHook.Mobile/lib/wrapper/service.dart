@@ -62,8 +62,10 @@ class Service {
     ).timeout(const Duration(
         seconds: 3
     ));
-    if (res.statusCode != 204 && kDebugMode) {
-      print("DELETE ACCOUNT FAILED");
+    if (res.statusCode != 204) {
+      if (kDebugMode) {
+        print("DELETE ACCOUNT FAILED");
+      }
     }
   }
 

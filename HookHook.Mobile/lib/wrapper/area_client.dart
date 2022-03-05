@@ -17,8 +17,10 @@ class AreaClient {
         HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
       },
     );
-    if (res.statusCode != 204 && kDebugMode) {
-      print("FAILED TO UPDATE");
+    if (res.statusCode != 204) {
+      if (kDebugMode) {
+        print("FAILED TO UPDATE");
+      }
     }
   }
 
@@ -30,28 +32,29 @@ class AreaClient {
       },).timeout(const Duration(
         seconds: 3
     ));
-    if (res.statusCode != 204 && kDebugMode) {
-      print("FAILED TO UPDATE");
+    if (res.statusCode != 204) {
+      if (kDebugMode) {
+        print("FAILED TO UPDATE");
+      }
     }
   }
 
   Future<List<AreaModel>> fetchAreas() async {
     const String url = "area/all";
 
-    final res = await http.get(Uri.parse(Backend.apiEndpoint + url)).timeout(const Duration(
-      seconds: 3
-    ));
-    final response = await http.get(
+    final res = await http.get(
       Uri.parse(Backend.apiEndpoint + url),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
       },
     );
-    if (response.statusCode == 200) {
-      var data = response.body;
-      return areaModelFromJson(data);
+    if (res.statusCode == 200) {
+      return areaModelFromJson(res.body);
     } else {
-      throw Exception();
+      if (kDebugMode) {
+        print("FAILED TO FETCH");
+      }
     }
+    return [];
   }
 }

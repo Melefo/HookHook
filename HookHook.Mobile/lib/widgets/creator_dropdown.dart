@@ -13,23 +13,23 @@ class _ReactionDropdown extends State<ReactionDropdown> {
 
   String _dropdownvalue = 'Tweet';
 
-  var items =  ['Tweet', 'Push', 'Like', 'Message Pinned'];
+  var items = ['Tweet', 'Push', 'Like', 'Message Pinned'];
 
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-      focusColor:Colors.white,
+      focusColor: Colors.white,
       value: _dropdownvalue,
       //elevation: 5,
-      style: TextStyle(color: Colors.white),
-      iconEnabledColor:Colors.white,
+      style: const TextStyle(color: Colors.white),
+      iconEnabledColor: Colors.white,
       items: items.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
-          child: Text(value,style:TextStyle(color:Colors.white),),
+          child: Text(value, style: const TextStyle(color: Colors.white),),
         );
       }).toList(),
-      hint:Text(
+      hint: const Text(
         "Please choose a langauage",
         style: TextStyle(
             color: Colors.white,
