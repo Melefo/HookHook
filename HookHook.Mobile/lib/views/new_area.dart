@@ -20,7 +20,8 @@ class NewAreaView extends StatefulWidget {
 class _NewAreaView extends AdaptiveState<NewAreaView> {
 
   int step = 0;
-  TextEditingController areaName = TextEditingController(text: "Default Area Name");
+  TextEditingController areaName = TextEditingController(
+      text: "Default Area Name");
   List<TextEditingController> fromArg = [];
   List<TextEditingController> toArg = [];
   List<about.Service> services = Backend().about!.server.services;
@@ -40,7 +41,7 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
   @override
   Widget build(BuildContext context) =>
       Scaffold(
-          backgroundColor: HookHookColors.light,
+          backgroundColor: HookHookColors.dark,
           body: Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: 16,
@@ -76,11 +77,11 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                   ),
                 ),
                 TextFormField(
-                    decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        labelText: "Area Name"
-                    ),
-                    controller: areaName,
+                  decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: "Area Name"
+                  ),
+                  controller: areaName,
                 ),
 
                 /// ACTION PART
@@ -104,7 +105,8 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                       step = 0;
                     }
                     from = value!.toString();
-                    final action = await Backend().service.getAccounts((from.replaceAll("from_", "")));
+                    final action = await Backend().service.getAccounts(
+                        (from.replaceAll("from_", "")));
                     setState(() {
                       if (value != "from_null") {
                         accountAction = action;
@@ -137,7 +139,10 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                         final action = await Backend().area.getServices();
                         setState(() {
                           if (value != "fromUser_null") {
-                            possibleAction = action.where((element) => element.name.toLowerCase() == from.replaceAll("from_", "").toLowerCase() && element.areaType == AreaType.ACTION).toList();
+                            possibleAction = action.where((element) =>
+                            element.name.toLowerCase() ==
+                                from.replaceAll("from_", "").toLowerCase() &&
+                                element.areaType == AreaType.ACTION).toList();
                           }
                         });
                       },
@@ -168,10 +173,13 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                         final areas = Backend();
                         setState(() {
                           fromArg = [];
-                          for (String elem in possibleAction.singleWhere((element) => element.className == fromAction).parameterNames) {
+                          for (String elem in possibleAction
+                              .singleWhere((element) =>
+                          element.className == value)
+                              .parameterNames) {
                             fromArg.add(
-                              TextEditingController()
-                          );
+                                TextEditingController()
+                            );
                           }
                           fromAction = value!.toString();
                         });
@@ -182,16 +190,23 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                     visible: step > 1 ? true : false,
                     child: Column(
                       children: [
-                        if (possibleAction.isNotEmpty && fromAction != "fromAction_null")
-                        ...possibleAction.singleWhere((element) => element.className == fromAction).parameterNames.asMap().entries.map((e) =>
-                            TextFormField(
+                        if (possibleAction.isNotEmpty &&
+                            fromAction != "fromAction_null")
+                          ...possibleAction
+                              .singleWhere((element) =>
+                          element.className == fromAction)
+                              .parameterNames
+                              .asMap()
+                              .entries
+                              .map((e) =>
+                              TextFormField(
                                 decoration: InputDecoration(
                                     border: UnderlineInputBorder(),
                                     labelText: e.value
                                 ),
                                 controller: fromArg[e.key],
-                            ),
-                        ).toList()
+                              ),
+                          ).toList()
                       ],
                     )
                 ),
@@ -204,7 +219,8 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                     child: DropdownButton(
                       value: to,
                       items: <DropdownMenuItem>[
-                        for (about.Service element in services) DropdownMenuItem(
+                        for (about
+                            .Service element in services) DropdownMenuItem(
                           value: "to_" + element.name,
                           child: Text(element.name),
                         ),
@@ -212,15 +228,16 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                           value: "to_null",
                           child: Text(""),
                         ),
-                                            ],
-                        onChanged: (dynamic value) async {
+                      ],
+                      onChanged: (dynamic value) async {
                         if (value != "to_null") {
                           step = 4;
                         } else {
                           step = 3;
                         }
                         to = value!.toString();
-                        final action = await Backend().service.getAccounts((to.replaceAll("to_", "")));
+                        final action = await Backend().service.getAccounts(
+                            (to.replaceAll("to_", "")));
 
                         setState(() {
                           if (value != "to_null") {
@@ -255,7 +272,10 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
 
                         setState(() {
                           if (value != "toUser_null") {
-                            possibleReaction = action.where((element) => element.name.toLowerCase() == to.replaceAll("to_", "").toLowerCase() && element.areaType == AreaType.REACTION).toList();
+                            possibleReaction = action.where((element) =>
+                            element.name.toLowerCase() ==
+                                to.replaceAll("to_", "").toLowerCase() &&
+                                element.areaType == AreaType.REACTION).toList();
                           }
                         });
                       },
@@ -284,9 +304,13 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                         }
                         setState(() {
                           toArg = [];
-                          for (String elem in possibleReaction.singleWhere((element) => element.className == toAction).parameterNames) toArg.add(
-                              TextEditingController()
-                          );
+                          for (String elem in possibleReaction
+                              .singleWhere((element) =>
+                          element.className == value)
+                              .parameterNames)
+                            toArg.add(
+                                TextEditingController()
+                            );
                           toAction = value!.toString();
                         });
                       },
@@ -296,8 +320,15 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                     visible: step > 1 ? true : false,
                     child: Column(
                       children: [
-                        if (possibleReaction.isNotEmpty && toAction != "toAction_null")
-                          ...possibleReaction.singleWhere((element) => element.className == toAction).parameterNames.asMap().entries.map((e) =>
+                        if (possibleReaction.isNotEmpty &&
+                            toAction != "toAction_null")
+                          ...possibleReaction
+                              .singleWhere((element) =>
+                          element.className == toAction)
+                              .parameterNames
+                              .asMap()
+                              .entries
+                              .map((e) =>
                               TextFormField(
                                 decoration: InputDecoration(
                                     border: UnderlineInputBorder(),
@@ -324,7 +355,17 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                           ),
                           child: TextButton(
                             onPressed: () async {
-                              await Backend().area.createAreas(create.CreateAreaModel(action: create.Action(type: fromAction, arguments: fromArg.map((e) => e.value.text).toList(), accountId: fromUser), reactions: [create.Action(type: toAction, arguments: toArg.map((e) => e.value.text).toList(), accountId: toUser)], minutes: 5, name: areaName.value.text));
+                              await Backend().area.createAreas(
+                                  create.CreateAreaModel(action: create.Action(
+                                      type: fromAction,
+                                      arguments: fromArg.map((e) =>
+                                      e.value.text).toList(),
+                                      accountId: fromUser), reactions: [
+                                    create.Action(type: toAction,
+                                        arguments: toArg.map((e) =>
+                                        e.value.text).toList(),
+                                        accountId: toUser)
+                                  ], minutes: 5, name: areaName.value.text));
                             },
                             child: const Padding(
                               padding: EdgeInsets.fromLTRB(
