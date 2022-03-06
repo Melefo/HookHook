@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
-import 'package:hookhook/wrapper/backend.dart';
+import 'package:hookhook/widgets/services/discord.dart';
+import 'package:hookhook/widgets/services/github.dart';
+import 'package:hookhook/widgets/services/google.dart';
+import 'package:hookhook/widgets/services/spotify.dart';
+import 'package:hookhook/widgets/services/twitch.dart';
+import 'package:hookhook/widgets/services/twitter.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
-
-import '../services_icons.dart';
 
 class AreaItem extends StatefulWidget {
   final String areaName;
@@ -13,9 +17,12 @@ class AreaItem extends StatefulWidget {
   final String from;
   final String areaId;
   final List<String> to;
+  final Function delete;
+  final Function trigger;
+  final bool failed;
 
   const AreaItem(
-      {Key? key, this.areaName = "Area Name", required this.areaId, this.datetime = "dateTime", this.from = "Action", this.to = const ["Reactions"]})
+      {Key? key, this.areaName = "Area Name", required this.areaId, this.datetime = "dateTime", this.from = "Action", this.to = const ["Reactions"], required this.delete, required this.trigger, required this.failed})
       : super(key: key);
   
   @override
@@ -23,6 +30,36 @@ class AreaItem extends StatefulWidget {
 }
 
 class _AreaItem extends AdaptiveState<AreaItem> {
+  Widget serviceIcon(String provider) {
+    switch (provider.toLowerCase()) {
+      case "discord":
+        {
+          return const Discord(width: 50, padding: 1);
+        }
+      case "github":
+        {
+          return const Github(width: 50, padding: 1);
+        }
+      case "youtube":
+      case "google":
+        {
+          return const Google(width: 50, padding: 1);
+        }
+      case "spotify":
+        {
+          return const Spotify(width: 50, padding: 1);
+        }
+      case "twitch":
+        {
+          return const Twitch(width: 50, padding: 1);
+        }
+      case "twitter":
+        {
+          return const Twitter(width: 50, padding: 1);
+        }
+    }
+    return const Icon(Icons.category, size: 20);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +68,6 @@ class _AreaItem extends AdaptiveState<AreaItem> {
       child: Container(
         alignment: Alignment.topCenter,
         padding: const EdgeInsets.all(10.0),
-        height: 180,
         width: 350,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(25)),
@@ -42,28 +78,34 @@ class _AreaItem extends AdaptiveState<AreaItem> {
             Text(
                 widget.areaName,
                 style: TextStyle(
-                    color: darkMode ? Colors.white : Colors.black
+                    color: darkMode ? Colors.white : Colors.black,
+                  fontSize: 12.sp
                 )
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 30),
+              padding: const EdgeInsets.only(top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ServicesIcons.custom(widget.from, 20),
-                  const Icon(
-                      Icons.arrow_right_alt_rounded, color: Colors.black),
-                  for (String elem in widget.to) ServicesIcons.custom(elem, 20),
+                  serviceIcon(widget.from),
+                  Icon(
+                      Icons.arrow_right_alt_rounded,
+                      color: darkMode ? Colors.white : Colors.black
+                  ),
+                  for (String elem in widget.to) serviceIcon(elem),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 20, right: 5, left: 5),
+              padding: const EdgeInsets.only(top: 10, right: 5, left: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(widget.datetime,
-                      style: const TextStyle(color: Colors.black)),
+                      style: TextStyle(
+                          color: darkMode ? Colors.white : Colors.black
+                      )
+                  ),
                 ],
               ),
             ),
@@ -72,66 +114,74 @@ class _AreaItem extends AdaptiveState<AreaItem> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  if (widget.failed)
+                    Icon(
+                        Icons.warning,
+                        color: darkMode ? Colors.white : Colors.black
+                    ),
                   Container(
                     decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      color: darkMode ? HookHookColors.dark : HookHookColors.light,
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      color: darkMode ? HookHookColors.dark : HookHookColors
+                          .light,
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        Backend().area.triggerAreaFromID(widget.areaId);
-                      },
+                      onPressed: () => widget.trigger(),
                       icon: Icon(
                           Icons.refresh,
-                        color: darkMode ? Colors.white : HookHookColors.gray
+                          color: darkMode ? Colors.white : HookHookColors.gray
                       ),
                     ),
                   ),
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      color: darkMode ? HookHookColors.dark : HookHookColors.light,
+                      color: darkMode ? HookHookColors.dark : HookHookColors
+                          .light,
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        showDialog<String>(
-                            context: context,
-                            builder: (BuildContext context) =>
-                                AlertDialog(
-                                  backgroundColor: darkMode ? HookHookColors.gray : HookHookColors.light,
-                                  content: const Text(
-                                      'You will delete this area'
-                                  ),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, 'Cancel'),
-                                      child: const Text(
-                                          'Cancel',
-                                          style: TextStyle(
-                                              color: HookHookColors.orange
-                                          )
-                                      ),
+                        onPressed: () {
+                          showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  AlertDialog(
+                                    backgroundColor: darkMode ? HookHookColors
+                                        .gray : HookHookColors.light,
+                                    content: const Text(
+                                        'You will delete this area'
                                     ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Backend().area.deleteAreaFromID(
-                                              widget.areaId),
-                                      child: const Text(
-                                          'Yes',
-                                          style: TextStyle(
-                                          color: HookHookColors.blue
-                                          )
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(context, 'Cancel'),
+                                        child: const Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                                color: HookHookColors.orange
+                                            )
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                )
-                        );
-                      },
-                      icon: Icon(
-                          Icons.delete,
-                          color: darkMode ? Colors.white : HookHookColors.gray
-                      )
+                                      TextButton(
+                                        onPressed: () {
+                                          widget.delete();
+                                          Navigator.pop(context, 'OK');
+                                        },
+                                        child: const Text
+                                          (
+                                            'Yes',
+                                            style: TextStyle(
+                                                color: HookHookColors.blue
+                                            )
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                          );
+                        },
+                        icon: Icon(
+                            Icons.delete,
+                            color: darkMode ? Colors.white : HookHookColors.gray
+                        )
                     ),
                   )
                 ],

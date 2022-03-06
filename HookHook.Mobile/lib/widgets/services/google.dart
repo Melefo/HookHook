@@ -15,8 +15,9 @@ import '../list_items.dart';
 
 class Google extends StatefulWidget {
   final double width;
+  final double padding;
   final bool enabled;
-  const Google({Key? key, required this.width, this.enabled = false}) : super(key: key);
+  const Google({Key? key, required this.width, this.padding = 4, this.enabled = false}) : super(key: key);
 
   @override
   _Google createState() => _Google();
@@ -31,7 +32,7 @@ class _Google extends AdaptiveState<Google> {
         color: const Color(0xFFF8CBAA),
         content: IconButton(
           icon: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(widget.padding),
             child: ServicesIcons.google(
                 widget.width, const Color(0xFFC79D7D)),
           ),

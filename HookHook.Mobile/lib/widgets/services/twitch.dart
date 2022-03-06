@@ -11,8 +11,9 @@ import '../list_items.dart';
 
 class Twitch extends StatefulWidget {
   final double width;
+  final double padding;
   final bool enabled;
-  const Twitch({Key? key, required this.width, this.enabled = false}) : super(key: key);
+  const Twitch({Key? key, required this.width, this.padding = 4, this.enabled = false}) : super(key: key);
 
   @override
   _Twitch createState() => _Twitch();
@@ -27,7 +28,7 @@ class _Twitch extends AdaptiveState<Twitch> {
         color: const Color(0xFFFFFFC7),
         content: IconButton(
           icon: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(widget.padding),
             child: ServicesIcons.twitch(
                 widget.width, const Color(0xFFC6C791)),
           ),

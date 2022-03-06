@@ -4,6 +4,7 @@ import 'package:hookhook/models/area_model.dart';
 import 'package:intl/intl.dart';
 import 'package:hookhook/wrapper/backend.dart';
 
+import '../main.dart';
 import 'area_item.dart';
 
 class AreaList extends StatefulWidget {
@@ -38,17 +39,31 @@ class _AreaList extends AdaptiveState<AreaList> {
         children: <Widget>[
           Column(
             children: [
-              for (AreaModel elem in areas) AreaItem(areaName: elem.name,
-                  areaId: elem.id,
-                  datetime: format.format(
-                      DateTime.fromMillisecondsSinceEpoch(elem.date * 1000)),
-                  from: elem.from,
-                  to: elem.to),
+              for (AreaModel elem in areas) AreaItem(
+                areaName: elem.name,
+                areaId: elem.id,
+                datetime: format.format(
+                    DateTime.fromMillisecondsSinceEpoch(elem.date * 1000)),
+                from: elem.from,
+                to: elem.to,
+                trigger: () async {
+                  await HookHook.backend.area.triggerAreaFromID(elem.id);
+                  setState(() {
+                    elem.date = (DateTime.now().millisecondsSinceEpoch / 1000).round();
+                  });
+                },
+                delete: () async {
+                  await HookHook.backend.area.deleteAreaFromID(elem.id);
+                  setState(() {
+                    areas.remove(elem);
+                  });
+                },
+                failed: elem.lastLaunchFailed
+              ),
             ],
           ),
         ],
       ),
     );
   }
-
 }

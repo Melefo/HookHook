@@ -15,8 +15,9 @@ import '../list_items.dart';
 
 class Discord extends StatefulWidget {
   final double width;
+  final double padding;
   final bool enabled;
-  const Discord({Key? key, required this.width, this.enabled = false}) : super(key: key);
+  const Discord({Key? key, required this.width, this.padding = 4, this.enabled = false}) : super(key: key);
 
   @override
   _Discord createState() => _Discord();
@@ -31,7 +32,7 @@ class _Discord extends AdaptiveState<Discord> {
         color: const Color(0xFFD9D1EA),
         content: IconButton(
           icon: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(widget.padding),
             child: ServicesIcons.discord(
                 widget.width, const Color(0xFFAAA3BA)),
           ),

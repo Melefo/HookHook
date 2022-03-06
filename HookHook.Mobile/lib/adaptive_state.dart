@@ -7,7 +7,7 @@ abstract class AdaptiveState<T extends StatefulWidget> extends State<T> {
   bool darkMode = false;
   static final StreamController _controller = StreamController.broadcast();
   static Stream get onChange => _controller.stream;
-  late StreamSubscription listener;
+  late StreamSubscription _listener;
 
   @override
   void initState() {
@@ -16,7 +16,7 @@ abstract class AdaptiveState<T extends StatefulWidget> extends State<T> {
         .of(context)
         .mode
         .isDark;
-    listener = onChange.listen((event) {
+    _listener = onChange.listen((event) {
       setState(() {
         darkMode = event;
       });
@@ -26,7 +26,7 @@ abstract class AdaptiveState<T extends StatefulWidget> extends State<T> {
   @override
   void dispose()
   {
-    listener.cancel();
+    _listener.cancel();
     super.dispose();
   }
 

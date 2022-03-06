@@ -14,8 +14,9 @@ import '../list_items.dart';
 
 class Spotify extends StatefulWidget {
   final double width;
+  final double padding;
   final bool enabled;
-  const Spotify({Key? key, required this.width, this.enabled = false}) : super(key: key);
+  const Spotify({Key? key, required this.width, this.padding = 4, this.enabled = false}) : super(key: key);
 
   @override
   _Spotify createState() => _Spotify();
@@ -30,7 +31,7 @@ class _Spotify extends AdaptiveState<Spotify> {
         color: const Color(0xFFB4E1DC),
         content: IconButton(
           icon: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(widget.padding),
             child: ServicesIcons.spotify(
                 widget.width, const Color(0xFF85B1AC)),
           ),

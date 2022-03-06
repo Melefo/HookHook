@@ -15,13 +15,15 @@ class AreaModel {
     required this.from,
     required this.to,
     required this.date,
+    required this.lastLaunchFailed
   });
 
   final String id;
   final String name;
   final String from;
   final List<String> to;
-  final int date;
+  int date;
+  final bool lastLaunchFailed;
 
   factory AreaModel.fromJson(Map<String, dynamic> json) => AreaModel(
     id: json["id"],
@@ -29,6 +31,7 @@ class AreaModel {
     from: json["from"],
     to: List<String>.from(json["to"].map((x) => x)),
     date: json["date"],
+    lastLaunchFailed: json["lastLaunchFailed"]
   );
 
   Map<String, dynamic> toJson() => {

@@ -14,8 +14,9 @@ import '../list_items.dart';
 
 class Github extends StatefulWidget {
   final double width;
+  final double padding;
   final bool enabled;
-  const Github({Key? key, required this.width, this.enabled = false}) : super(key: key);
+  const Github({Key? key, required this.width, this.padding = 4, this.enabled = false}) : super(key: key);
 
   @override
   _Github createState() => _Github();
@@ -30,7 +31,7 @@ class _Github extends AdaptiveState<Github> {
         color: const Color(0xFFF5CDCB),
         content: IconButton(
           icon: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(widget.padding),
             child: ServicesIcons.gitHub(
                 widget.width, const Color(0xFFC49E9C)),
           ),

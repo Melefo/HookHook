@@ -14,8 +14,9 @@ import '../list_items.dart';
 
 class Twitter extends StatefulWidget {
   final double width;
+  final double padding;
   final bool enabled;
-  const Twitter({Key? key, required this.width, this.enabled = false}) : super(key: key);
+  const Twitter({Key? key, required this.width, this.padding = 4, this.enabled = false}) : super(key: key);
 
   @override
   _Twitter createState() => _Twitter();
@@ -30,7 +31,7 @@ class _Twitter extends AdaptiveState<Twitter> {
         color: const Color(0xFFA3E7EE),
         content: IconButton(
           icon: Padding(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(widget.padding),
             child: ServicesIcons.twitter(
                 widget.width, const Color(0xFF73B6BD)),
           ),

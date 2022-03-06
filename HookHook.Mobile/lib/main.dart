@@ -20,7 +20,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final savedThemeMode = await AdaptiveTheme.getThemeMode();
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: kDebugMode ? ".env.local" : ".env");
   String? token = await HookHook.storage.read(key: Backend.tokenKey);
   String? username = await HookHook.storage.read(key: Backend.usernameKey);
   String? password = await HookHook.storage.read(key: Backend.passwordKey);
