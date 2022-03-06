@@ -10,8 +10,8 @@
         max-h-full
         flex-col
         justify-between
-        my-2
-        sm:my-0
+        mb-2
+        lg:mb-0
       "
     >
       <div>{{ slide.name }}</div>

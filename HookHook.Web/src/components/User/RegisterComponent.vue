@@ -73,7 +73,7 @@
           v-model="confirm"
         />
       </div>
-      <Input type="submit" value="Register" :reverse="true" />
+      <Input type="submit" value="Register" :reverse="true"/>
     </form>
   </div>
 </template>
