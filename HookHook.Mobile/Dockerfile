@@ -1,6 +1,13 @@
-FROM mingc/android-build-box:latest as build
+FROM androidsdk/android-31:latest as build
+WORKDIR /
 
-#Installing app
+RUN git clone https://github.com/flutter/flutter.git
+
+RUN git -C flutter checkout stable
+ENV PATH "/flutter/bin:$PATH"
+
+RUN flutter upgrade && flutter doctor
+
 WORKDIR /app
 COPY ["HookHook.Mobile", "/app"]
 
