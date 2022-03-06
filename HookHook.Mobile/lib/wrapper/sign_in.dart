@@ -51,6 +51,8 @@ class SignIn {
           seconds: 3
       ));
 
+  void logout() => _token = null;
+
   Future<void> login(String username, String password) async {
     final res = await http.post(Uri.parse(loginUrl),
         headers: <String, String>{

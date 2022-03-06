@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hookhook/adaptive_state.dart';
+import 'package:hookhook/main.dart';
 import 'package:hookhook/widgets/hookhook_title.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 import '../hookhook_colors.dart';
+import 'login.dart';
 
 class SettingsView extends StatefulWidget {
   const SettingsView({Key? key}) : super(key: key);
@@ -14,6 +17,18 @@ class SettingsView extends StatefulWidget {
 }
 
 class _Settings extends AdaptiveState<SettingsView> {
+  String? token;
+
+  @override
+  void initState() {
+    HookHook.backend.signIn.token.then((value) {
+      setState(() {
+        token = value;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) =>
       Scaffold(
@@ -30,7 +45,7 @@ class _Settings extends AdaptiveState<SettingsView> {
                     Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          "Enabled night mode in preferences",
+                          "Enable app night mode",
                           style: TextStyle(
                               color: darkMode ? Colors.white : Colors.black
                           ),
@@ -59,11 +74,66 @@ class _Settings extends AdaptiveState<SettingsView> {
                     padding: const EdgeInsets.only(right: 50),
                     child: Switch(
                       value: darkMode,
-                      activeColor: Colors.pink,
-                      inactiveThumbColor: Colors.blue,
+                      activeColor: HookHookColors.blue,
+                      inactiveThumbColor: HookHookColors.orange,
                       onChanged: (bool value) {
                         setDarkMode(value);
                       },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                  children: <Widget>[
+                    Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          "Current account",
+                          style: TextStyle(
+                              color: darkMode ? Colors.white : Colors.black
+                          ),
+                        )
+                    ),
+                    Expanded(
+                        child: Divider(color: darkMode
+                            ? Colors.white.withAlpha(50)
+                            : Colors.black.withAlpha(50))
+                    ),
+                  ]
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 60),
+                    child: Text(
+                        token != null ? Jwt.parseJwt(token!)["given_name"] : "",
+                        style: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 50),
+                    child: TextButton(
+                        onPressed: ()  {
+                          HookHook.backend.signIn.logout();
+                          Navigator.pushReplacementNamed(context, LoginView.routeName);
+                        },
+                        child: Text(
+                          "Logout",
+                          style: TextStyle(
+                              color: darkMode ? Colors.white : Colors.black
+                          ),
+                        ),
+                        style: TextButton.styleFrom(
+                            backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
+                            padding: const EdgeInsets.all(15),
+                            shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)
+                                ),
+                            minimumSize: const Size(150, 0)
+                        )
                     ),
                   ),
                 ],

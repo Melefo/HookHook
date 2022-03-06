@@ -147,8 +147,7 @@ class _HookHookTitle extends AdaptiveState<HookHookTitle> {
                                     text: " ${Jwt.parseJwt(
                                         token!)["given_name"]}",
                                     style: TextStyle(
-                                      color: darkMode ? Colors.blue : Colors
-                                          .orange,
+                                      color: darkMode ? HookHookColors.blue : HookHookColors.orange,
                                     )
                                 ),
                               TextSpan(
@@ -177,7 +176,9 @@ class _HookHookTitle extends AdaptiveState<HookHookTitle> {
                       clipBehavior: Clip.none,
                       child: Icon(
                           Icons.settings,
-                          color: darkMode ? HookHookColors.dark : Colors.black
+                          color: darkMode
+                              ? Colors.white
+                              : HookHookColors.gray
                       ),
                     )
                   ]

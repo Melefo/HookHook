@@ -91,20 +91,14 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
                       color: darkMode ? Colors.white : Colors.black
                   ),
                 ),
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        darkMode ? HookHookColors.gray : Colors.white
+                style: TextButton.styleFrom(
+                    backgroundColor: darkMode ? HookHookColors.gray : Colors
+                        .white,
+                    padding: const EdgeInsets.all(15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
                     ),
-                    padding: MaterialStateProperty.all(
-                        const EdgeInsets.all(15)),
-                    shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)
-                        )
-                    ),
-                    minimumSize: MaterialStateProperty.all(
-                        const Size(150, 0)
-                    )
+                    minimumSize: const Size(150, 0)
                 )
             )
           ],

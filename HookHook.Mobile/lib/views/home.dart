@@ -44,21 +44,21 @@ class _Home extends AdaptiveState<HomeView> {
               ),
               HList(height: 0.07.sh, widget: ServicesList(itemWidth: 0.12.sw)),
               Container(
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    color: Colors.white
+                decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(25)),
+                    color: darkMode ? HookHookColors.gray : Colors.white
                 ),
                 child: TextButton(
                   onPressed: () async {
                     await Navigator.pushNamed(context, NewAreaView.routeName);
                   },
-                  child: const Padding(
-                    padding: EdgeInsets.fromLTRB(120.0, 15.0, 120.0, 15.0),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(120.0, 15.0, 120.0, 15.0),
                     child: Text(
                       "New Area",
                       style: TextStyle(
                           fontSize: 20,
-                          color: Colors.black,
+                          color: darkMode ? Colors.white : Colors.black,
                           fontWeight: FontWeight.w500),
                     ),
                   ),

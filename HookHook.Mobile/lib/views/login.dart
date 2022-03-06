@@ -370,20 +370,13 @@ class _LoginView extends AdaptiveState<LoginView> {
                               color: darkMode ? Colors.white : Colors.black
                           ),
                         ),
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                darkMode ? HookHookColors.gray : Colors.white
-                            ),
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.all(15)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
+                        style: TextButton.styleFrom(
+                            backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
+                            padding: const EdgeInsets.all(15),
+                            shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)
-                                )
                             ),
-                            minimumSize: MaterialStateProperty.all(
-                                const Size(150, 0)
-                            )
+                            minimumSize: const Size(150, 0)
                         )
                     ),
                     const Padding(
@@ -399,20 +392,13 @@ class _LoginView extends AdaptiveState<LoginView> {
                               color: darkMode ? Colors.white : Colors.black
                           ),
                         ),
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                darkMode ? HookHookColors.gray : Colors.white
-                            ),
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.all(15)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
+                        style: TextButton.styleFrom(
+                            backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
+                            padding: const EdgeInsets.all(15),
+                            shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10)
-                                )
                             ),
-                            minimumSize: MaterialStateProperty.all(
-                                const Size(150, 0)
-                            )
+                            minimumSize: const Size(150, 0)
                         )
                     ),
                   ],
@@ -425,22 +411,6 @@ class _LoginView extends AdaptiveState<LoginView> {
                 children: generateFromServices(),
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               ),
-              /*TextButton(
-                onPressed: () {
-                  setDarkMode(!darkMode);
-                },
-                child: Text(
-                  darkMode ? 'Passer au light mode' : "Passer au dark mode",
-                  style: TextStyle(
-                      color: darkMode ? Colors.black : Colors.white
-                  )
-                ),
-                style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        darkMode ? HookHookColors.blue : HookHookColors
-                            .orange)
-                ),
-              )*/
             ],
           )
       );

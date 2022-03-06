@@ -18,14 +18,14 @@ class AreaList extends StatefulWidget {
 class _AreaList extends AdaptiveState<AreaList> {
 
   List<AreaModel> areas = [];
-  final DateFormat format = DateFormat('hh:mm dd/MM/yyyy');
+  final DateFormat format = DateFormat('dd MMMM yyyy HH:mm');
 
   @override
   void initState() {
     Backend().area.fetchAreas().then((value) =>
-    setState(() =>
-      areas = value
-    ));
+        setState(() =>
+        areas = value
+        ));
     super.initState();
   }
 
@@ -38,7 +38,12 @@ class _AreaList extends AdaptiveState<AreaList> {
         children: <Widget>[
           Column(
             children: [
-              for (AreaModel elem in areas) AreaItem(areaName: elem.name, areaId: elem.id, datetime: format.format(DateTime.fromMillisecondsSinceEpoch(elem.date * 1000)), from: elem.from, to: elem.to),
+              for (AreaModel elem in areas) AreaItem(areaName: elem.name,
+                  areaId: elem.id,
+                  datetime: format.format(
+                      DateTime.fromMillisecondsSinceEpoch(elem.date * 1000)),
+                  from: elem.from,
+                  to: elem.to),
             ],
           ),
         ],
