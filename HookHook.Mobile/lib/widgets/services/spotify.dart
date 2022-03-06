@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/main.dart';
@@ -66,7 +65,7 @@ class _SpotifyDialog extends AdaptiveState<SpotifyDialog> {
         })
     );
     listener = linkStream.listen((String? response) async {
-      if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
+      if (response!.startsWith("hookhook://oauth/spotify")) {
         final url = Uri.parse(response);
         final account = await HookHook.backend.service.addSpotify(
             url.queryParameters["code"]!);
@@ -151,10 +150,7 @@ class _SpotifyDialog extends AdaptiveState<SpotifyDialog> {
                       "playlist-modify-public",
                     ];
                     await redirect(
-                        "https://accounts.spotify.com/authorize?client_id=${dotenv
-                            .env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv
-                            .env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes
-                            .join(" ")}");
+                        "https://accounts.spotify.com/authorize?client_id=${const String.fromEnvironment('SPOTIFY_CLIENTID')}&redirect_uri=hookhook://oauth/spotify&response_type=code&scope=${scopes.join(" ")}");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

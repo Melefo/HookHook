@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_twitch_auth/flutter_twitch_auth.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
@@ -123,8 +122,8 @@ class _TwitchDialog extends AdaptiveState<TwitchDialog> {
                       "user:read:follows"
                     ];
                     FlutterTwitchAuth.initialize(
-                        twitchClientId: dotenv.env["TWITCH_CLIENTID"]!,
-                        twitchRedirectUri: dotenv.env["TWITCH_REDIRECT"]!,
+                        twitchClientId: const String.fromEnvironment('TWITCH_CLIENTID'),
+                        twitchRedirectUri: const String.fromEnvironment('TWITCH_REDIRECT'),
                         twitchClientSecret: '',
                         scope: scopes.join(' ')
                     );

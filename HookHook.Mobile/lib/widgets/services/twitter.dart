@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/main.dart';
@@ -66,7 +65,7 @@ class _TwitterDialog extends AdaptiveState<TwitterDialog> {
         })
     );
     listener = linkStream.listen((String? response) async {
-      if (response!.startsWith(dotenv.env["TWITTER_REDIRECT"]!)) {
+      if (response!.startsWith("hookhook://oauth/twitter")) {
         final url = Uri.parse(response);
         String code = url.queryParameters["oauth_token"]!;
         String verifier = url.queryParameters["oauth_verifier"]!;
@@ -145,7 +144,7 @@ class _TwitterDialog extends AdaptiveState<TwitterDialog> {
                   onPressed: () async {
                     String? url = await HookHook.backend.signIn
                         .authorize(
-                        "Twitter", dotenv.env["TWITTER_REDIRECT"]!);
+                        "Twitter", "hookhook://oauth/twitter");
                     await redirect(url!);
                   },
                   child: Row(

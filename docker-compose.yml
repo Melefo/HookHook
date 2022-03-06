@@ -39,8 +39,22 @@ services:
     build:
       context: .
       dockerfile: "HookHook.Mobile/Dockerfile"
+      args:
+      - TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - TWITCH_REDIRECT=${TWITCH_REDIRECT}
+      - DISCORD_CLIENTID=${DISCORD_CLIENTID}
+      - SPOTIFY_CLIENTID=${SPOTIFY_CLIENTID}
+      - GITHUB_CLIENTID=${GITHUB_MOBILE_CLIENTID}
+      - GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
     volumes:
       - "apk:/build"
+    environment:
+      - TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - TWITCH_REDIRECT=${TWITCH_REDIRECT}
+      - DISCORD_CLIENTID=${DISCORD_CLIENTID}
+      - SPOTIFY_CLIENTID=${SPOTIFY_CLIENTID}
+      - GITHUB_CLIENTID=${GITHUB_MOBILE_CLIENTID}
+      - GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
   client_web:
     build:
       context: .

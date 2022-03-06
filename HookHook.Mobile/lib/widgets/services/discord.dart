@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/main.dart';
@@ -68,7 +67,7 @@ class _DiscordDialog extends AdaptiveState<DiscordDialog> {
         })
     );
     listener = linkStream.listen((String? response) async {
-      if (response!.startsWith(dotenv.env["DISCORD_REDIRECT"]!)) {
+      if (response!.startsWith("hookhook://oauth/discord")) {
         final url = Uri.parse(response);
         final account = await HookHook.backend.service.addDiscord(
             url.queryParameters["code"]!, pkcePair.codeVerifier);
@@ -150,11 +149,7 @@ class _DiscordDialog extends AdaptiveState<DiscordDialog> {
                       "bot"
                     ];
                     await redirect(
-                        "https://discord.com/oauth2/authorize?code_challenge=${pkcePair
-                            .codeChallenge}&code_challenge_method=S256&client_id=${dotenv
-                            .env["DISCORD_CLIENTID"]}&redirect_uri=${dotenv
-                            .env["DISCORD_REDIRECT"]}&response_type=code&scope=${scopes
-                            .join(' ')}&permissions=66568");
+                        "https://discord.com/oauth2/authorize?code_challenge=${pkcePair.codeChallenge}&code_challenge_method=S256&client_id=${const String.fromEnvironment('DISCORD_CLIENTID')}&redirect_uri=hookhook://oauth/discord&response_type=code&scope=${scopes.join(' ')}&permissions=66568");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

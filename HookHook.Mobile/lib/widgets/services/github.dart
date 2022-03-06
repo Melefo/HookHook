@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/main.dart';
@@ -66,7 +65,7 @@ class _GithubDialog extends AdaptiveState<GithubDialog> {
         })
     );
     listener = linkStream.listen((String? response) async {
-      if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
+      if (response!.startsWith("hookhook://oauth/github")) {
         final url = Uri.parse(response);
         final account = await HookHook.backend.service.addGitHub(
             url.queryParameters["code"]!);
@@ -146,10 +145,7 @@ class _GithubDialog extends AdaptiveState<GithubDialog> {
                       "repo"
                     ];
                     await redirect(
-                        "https://github.com/login/oauth/authorize?client_id=${dotenv
-                            .env["GITHUB_CLIENTID"]}&redirect_uri=${dotenv
-                            .env["GITHUB_REDIRECT"]}&response_type=code&scope=${scopes
-                            .join(' ')}");
+                        "https://github.com/login/oauth/authorize?client_id=${const String.fromEnvironment('GITHUB_CLIENTID')}&redirect_uri=hookhook://oauth/github&response_type=code&scope=${scopes.join(' ')}");
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

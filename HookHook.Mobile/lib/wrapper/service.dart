@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../main.dart';
 import 'backend.dart';
@@ -109,7 +108,7 @@ class Service {
 
   Future<Account?> addSpotify(String code) async {
     final res = await http.post(Uri.parse(
-        "$spotifyUrl?code=$code&redirect=${dotenv.env["SPOTIFY_REDIRECT"]}"),
+        "$spotifyUrl?code=$code&redirect=hookhook://oauth/spotify"),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " +
             (await HookHook.backend.signIn.token)!,
@@ -166,7 +165,7 @@ class Service {
 
   Future<Account?> addDiscord(String code, String verifier) async {
     final res = await http.post(Uri.parse(
-        "$discordUrl?code=$code&verifier=$verifier&redirect=${dotenv.env["DISCORD_REDIRECT"]}"),
+        "$discordUrl?code=$code&verifier=$verifier&redirect=hookhook://oauth/discord"),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " +
             (await HookHook.backend.signIn.token)!,

@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'sign_in.dart';
 import 'about.dart' hide Service;
 import 'area_client.dart';
@@ -15,7 +14,7 @@ class Backend {
   factory Backend([String? token, String? username, String? password]) =>
       _this ??= Backend._(token, username, password);
 
-  static String apiEndpoint = dotenv.env["BACKEND_URL"] ?? "http://hookhook.xyz:8080/";
+  static String apiEndpoint = const String.fromEnvironment('BACKEND_URL', defaultValue: 'http://hookhook.xyz:8080/');
 
   About? about;
   SignIn signIn;

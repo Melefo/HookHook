@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
@@ -59,7 +58,7 @@ class _GoogleDialog extends AdaptiveState<GoogleDialog> {
   List<Account> accounts = [];
   GoogleSignIn google = GoogleSignIn(
     // Optional clientId
-    clientId: dotenv.env["GOOGLE_CLIENTID"],
+    clientId: const String.fromEnvironment('GOOGLE_CLIENTID'),
     scopes: [
       "openid",
       "email",

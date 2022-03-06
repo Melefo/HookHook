@@ -1,18 +1,25 @@
-FROM androidsdk/android-31:latest as build
-WORKDIR /
+FROM mingc/android-build-box:latest as build
 
-RUN git clone https://github.com/flutter/flutter.git
+ARG GOOGLE_CLIENTID
+ARG GITHUB_CLIENTID
+ARG SPOTIFY_CLIENTID
+ARG DISCORD_CLIENTID
+ARG TWITCH_CLIENTID
+ARG TWITCH_REDIRECT
 
-RUN git -C flutter checkout stable
-ENV PATH "/flutter/bin:$PATH"
+ENV GOOGLE_CLIENTID $GOOGLE_CLIENTID
+ENV GITHUB_CLIENTID $GITHUB_CLIENTID
+ENV SPOTIFY_CLIENTID $SPOTIFY_CLIENTID
+ENV DISCORD_CLIENTID $DISCORD_CLIENTID
+ENV TWITCH_CLIENTID $TWITCH_CLIENTID
+ENV TWITCH_REDIRECT $TWITCH_REDIRECT
 
-RUN flutter upgrade && flutter doctor
-
+#Installing app
 WORKDIR /app
 COPY ["HookHook.Mobile", "/app"]
 
 RUN flutter pub get
-RUN flutter build apk
+RUN flutter build apk  --dart-define GITHUB_CLIENTID=$GITHUB_CLIENTID  --dart-define SPOTIFY_CLIENTID=$SPOTIFY_CLIENTID --dart-define DISCORD_CLIENTID=$DISCORD_CLIENTID --dart-define TWITCH_CLIENTID=$TWITCH_CLIENTID  --dart-define TWITCH_REDIRECT=$TWITCH_REDIRECT  --dart-define BACKEND_URL=$BACKEND_URL
 
 FROM alpine as app
 WORKDIR /build

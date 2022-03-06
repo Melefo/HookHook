@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decode/jwt_decode.dart';
@@ -147,7 +146,7 @@ class SignIn {
 
   Future<void> discord(String code, String verifier) async {
     final res = await http.post(Uri.parse(
-        "$discordUrl?code=$code&verifier=$verifier&redirect=${dotenv.env["DISCORD_REDIRECT"]!}"))
+        "$discordUrl?code=$code&verifier=$verifier&redirect=hookhook://oauth/discord"))
         .timeout(
         const Duration(
             seconds: 3
@@ -160,7 +159,7 @@ class SignIn {
 
   Future<void> spotify(String code) async {
     final res = await http.post(Uri.parse(
-        "$spotifyUrl?code=$code&redirect=${dotenv.env["SPOTIFY_REDIRECT"]!}"))
+        "$spotifyUrl?code=$code&redirect=hookhook://oauth/spotify"))
         .timeout(
         const Duration(
             seconds: 3

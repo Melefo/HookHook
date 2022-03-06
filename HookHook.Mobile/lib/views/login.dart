@@ -5,7 +5,6 @@ import 'package:flutter_twitch_auth/flutter_twitch_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pkce/pkce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hookhook/adaptive_state.dart';
 import 'package:hookhook/hookhook_colors.dart';
@@ -49,7 +48,7 @@ class _LoginView extends AdaptiveState<LoginView> {
       }
     });
     spotifyListener = linkStream.listen((String? response) async {
-      if (response!.startsWith(dotenv.env["SPOTIFY_REDIRECT"]!)) {
+      if (response!.startsWith("hookhook://oauth/spotify")) {
         final url = Uri.parse(response);
         await HookHook.backend.signIn.spotify(url.queryParameters["code"]!);
         if (await HookHook.backend.signIn.token != null) {
@@ -60,7 +59,7 @@ class _LoginView extends AdaptiveState<LoginView> {
       }
     });
     githubListener = linkStream.listen((String? response) async {
-      if (response!.startsWith(dotenv.env["GITHUB_REDIRECT"]!)) {
+      if (response!.startsWith("hookhook://oauth/github")) {
         final url = Uri.parse(response);
         await HookHook.backend.signIn.github(url.queryParameters["code"]!);
         if (await HookHook.backend.signIn.token != null) {
@@ -71,7 +70,7 @@ class _LoginView extends AdaptiveState<LoginView> {
       }
     });
     twitterListener = linkStream.listen((String? response) async {
-      if (response!.startsWith(dotenv.env["TWITTER_REDIRECT"]!)) {
+      if (response!.startsWith("hookhook://oauth/twitter")) {
         final url = Uri.parse(response);
         String code = url.queryParameters["oauth_token"]!;
         String verifier = url.queryParameters["oauth_verifier"]!;
@@ -96,7 +95,7 @@ class _LoginView extends AdaptiveState<LoginView> {
 
   GoogleSignIn google = GoogleSignIn(
     // Optional clientId
-    clientId: dotenv.env["GOOGLE_CLIENTID"],
+    clientId: const String.fromEnvironment('GOOGLE_CLIENTID'),
     scopes: [
       "openid",
       "email",
@@ -136,10 +135,7 @@ class _LoginView extends AdaptiveState<LoginView> {
             "repo"
           ];
           await redirect(
-              "https://github.com/login/oauth/authorize?client_id=${dotenv
-                  .env["GITHUB_CLIENTID"]}&redirect_uri=${dotenv
-                  .env["GITHUB_REDIRECT"]}&response_type=code&scope=${scopes
-                  .join(' ')}");
+              "https://github.com/login/oauth/authorize?client_id=${const String.fromEnvironment('GITHUB_CLIENTID')}&redirect_uri=hookhook://oauth/github&response_type=code&scope=${scopes.join(' ')}");
         },
         icon: ServicesIcons.gitHub(100),
         iconSize: 0.08.sw,
@@ -158,10 +154,7 @@ class _LoginView extends AdaptiveState<LoginView> {
             "playlist-modify-public",
           ];
           await redirect(
-              "https://accounts.spotify.com/authorize?client_id=${dotenv
-                  .env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv
-                  .env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes
-                  .join(" ")}");
+              "https://accounts.spotify.com/authorize?client_id=${const String.fromEnvironment('SPOTIFY_CLIENTID')}&redirect_uri=hookhook://oauth/spotify&response_type=code&scope=${scopes.join(" ")}");
         },
         icon: ServicesIcons.spotify(100),
         iconSize: 0.08.sw,
@@ -174,7 +167,7 @@ class _LoginView extends AdaptiveState<LoginView> {
       onPressed: () async {
         final listener = linkStream.listen(null);
         listener.onData((String? response) async {
-          if (response!.startsWith(dotenv.env["DISCORD_REDIRECT"]!)) {
+          if (response!.startsWith("hookhook://oauth/discord")) {
             final url = Uri.parse(response);
             await HookHook.backend.signIn.discord(
                 url.queryParameters["code"]!, pkcePair.codeVerifier);
@@ -193,11 +186,7 @@ class _LoginView extends AdaptiveState<LoginView> {
           "bot"
         ];
         await redirect(
-            "https://discord.com/oauth2/authorize?code_challenge=${pkcePair
-                .codeChallenge}&code_challenge_method=S256&client_id=${dotenv
-                .env["DISCORD_CLIENTID"]}&redirect_uri=${dotenv
-                .env["DISCORD_REDIRECT"]}&response_type=code&scope=${scopes
-                .join(' ')}&permissions=66568");
+            "https://discord.com/oauth2/authorize?code_challenge=${pkcePair.codeChallenge}&code_challenge_method=S256&client_id=${const String.fromEnvironment('DISCORD_CLIENTID')}&redirect_uri=hookhook://oauth/discord&response_type=code&scope=${scopes.join(' ')}&permissions=66568");
       },
       icon: ServicesIcons.discord(100),
       iconSize: 0.08.sw,
@@ -217,8 +206,8 @@ class _LoginView extends AdaptiveState<LoginView> {
             "user:read:follows"
           ];
           FlutterTwitchAuth.initialize(
-              twitchClientId: dotenv.env["TWITCH_CLIENTID"]!,
-              twitchRedirectUri: dotenv.env["TWITCH_REDIRECT"]!,
+              twitchClientId: const String.fromEnvironment('TWITCH_CLIENTID'),
+              twitchRedirectUri: const String.fromEnvironment('TWITCH_REDIRECT'),
               twitchClientSecret: '',
               scope: scopes.join(' ')
           );
@@ -238,7 +227,7 @@ class _LoginView extends AdaptiveState<LoginView> {
       IconButton(
         onPressed: () async {
           String? url = await HookHook.backend.signIn.authorize(
-              "Twitter", dotenv.env["TWITTER_REDIRECT"]!);
+              "Twitter", "hookhook://oauth/twitter");
           await redirect(url!);
         },
         icon: ServicesIcons.twitter(100),
