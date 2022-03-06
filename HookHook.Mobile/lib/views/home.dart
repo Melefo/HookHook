@@ -33,7 +33,7 @@ class _Home extends AdaptiveState<HomeView> {
             children: <Widget>[
               const Padding(
                 padding: EdgeInsets.only(top: 70),
-                child: HookHookTitle(),
+                child: HookHookTitle(welcome: true),
               ),
               const Align(
                 alignment: Alignment.centerLeft,

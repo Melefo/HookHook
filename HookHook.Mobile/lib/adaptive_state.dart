@@ -1,35 +1,33 @@
+import 'dart:async';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 
 abstract class AdaptiveState<T extends StatefulWidget> extends State<T> {
   bool darkMode = false;
-  dynamic _savedThemeMode;
+  static final StreamController _controller = StreamController.broadcast();
+  static Stream get onChange => _controller.stream;
+  late StreamSubscription listener;
 
   @override
   void initState() {
     super.initState();
-    _getCurrentTheme();
-    AdaptiveTheme
+    darkMode = AdaptiveTheme
         .of(context)
-        .modeChangeNotifier
-        .addListener(() {
+        .mode
+        .isDark;
+    listener = onChange.listen((event) {
       setState(() {
-        darkMode = !darkMode;
+        darkMode = event;
       });
     });
   }
 
-  void _getCurrentTheme() {
-    _savedThemeMode = AdaptiveTheme.of(context).theme;
-    if (_savedThemeMode.toString() == 'AdaptiveThemeMode.dark') {
-      setState(() {
-        darkMode = true;
-      });
-    } else {
-      setState(() {
-        darkMode = false;
-      });
-    }
+  @override
+  void dispose()
+  {
+    listener.cancel();
+    super.dispose();
   }
 
   void setDarkMode(bool value) {
@@ -41,5 +39,6 @@ abstract class AdaptiveState<T extends StatefulWidget> extends State<T> {
     setState(() {
       darkMode = value;
     });
+    _controller.add(darkMode);
   }
 }

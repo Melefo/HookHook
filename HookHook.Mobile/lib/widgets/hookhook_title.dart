@@ -10,13 +10,15 @@ import '../adaptive_state.dart';
 import '../main.dart';
 
 class HookHookTitle extends StatefulWidget {
-  const HookHookTitle({Key? key}) : super(key: key);
+  const HookHookTitle({Key? key, this.welcome = false}) : super(key: key);
+
+  final bool welcome;
 
   @override
   _HookHookTitle createState() => _HookHookTitle();
 }
 
-class _HookHookTitle extends AdaptiveState {
+class _HookHookTitle extends AdaptiveState<HookHookTitle> {
   String? token;
 
   @override
@@ -117,58 +119,70 @@ class _HookHookTitle extends AdaptiveState {
           ),
           const Padding(
               padding: EdgeInsets.only(
-                  top: 16,
+                top: 16,
               )
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RichText(
-                      text: TextSpan(
-                          children: [
-                            TextSpan(
-                                text: "Hello",
-                                style: TextStyle(
-                                  color: darkMode ? Colors.white : Colors.black,
-                                )
+          if (widget.welcome)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                        text: TextSpan(
+                            style: TextStyle(
+                                fontSize: 10.sp,
+                                fontFamily: "Comfortaa"
                             ),
-                            if (token != null)
+                            children: [
                               TextSpan(
-                                  text: " ${Jwt.parseJwt(token!)["given_name"]}",
+                                  text: "Hello",
                                   style: TextStyle(
-                                    color: darkMode ? Colors.blue : Colors.orange,
+                                    color: darkMode ? Colors.white : Colors
+                                        .black,
                                   )
                               ),
-                            TextSpan(
-                                text: ", welcome back! ",
-                                style: TextStyle(
-                                  color: darkMode ? Colors.white : Colors.black,
-                                )
-                            ),
-                          ]
-                      )
-                  ),
-                  TextButton(
-                      onPressed: () => Navigator.pushNamed(context, SettingsView.routeName),
-                    style: TextButton.styleFrom(
-                      backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
-                      padding: const EdgeInsets.all(12),
-                      minimumSize: Size.zero,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
-                      )
+                              if (token != null)
+                                TextSpan(
+                                    text: " ${Jwt.parseJwt(
+                                        token!)["given_name"]}",
+                                    style: TextStyle(
+                                      color: darkMode ? Colors.blue : Colors
+                                          .orange,
+                                    )
+                                ),
+                              TextSpan(
+                                  text: ", welcome back! ",
+                                  style: TextStyle(
+                                    color: darkMode ? Colors.white : Colors
+                                        .black,
+                                  )
+                              ),
+                            ]
+                        )
                     ),
-                    clipBehavior: Clip.none,
+                    TextButton(
+                      onPressed: () =>
+                          Navigator.pushNamed(context, SettingsView.routeName),
+                      style: TextButton.styleFrom(
+                          backgroundColor: darkMode
+                              ? HookHookColors.gray
+                              : Colors.white,
+                          padding: const EdgeInsets.all(12),
+                          minimumSize: Size.zero,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                          )
+                      ),
+                      clipBehavior: Clip.none,
                       child: Icon(
                           Icons.settings,
                           color: darkMode ? HookHookColors.dark : Colors.black
                       ),
-                  )
-                ]
-            ),
-          )
+                    )
+                  ]
+              ),
+            )
         ],
       );
 }
