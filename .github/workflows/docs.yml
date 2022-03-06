@@ -1,4 +1,4 @@
-name: Build DocFX
+name: Build Documentations
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  generate-docs:
+  generate-docfx-docs:
     runs-on: windows-latest
 
     steps:
@@ -36,3 +36,35 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/_site
           force_orphan: true
+          gh-pages: backend-doc
+  generate-docfx-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11.x'
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.8.1'
+
+      - run: flutter pub get
+
+      - name: Install dartdoc
+        run: dart pub global activate dartdoc
+
+      - name: Build Documentation
+        run: rm -rf doc/ && dartdoc --input HookHook.Mobile
+
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: doc/api
+          force_orphan: true
+          gh-pages: mobile-doc
