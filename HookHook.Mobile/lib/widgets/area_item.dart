@@ -152,8 +152,7 @@ class _AreaItem extends AdaptiveState<AreaItem> {
                                     ),
                                     actions: <Widget>[
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'Cancel'),
+                                        onPressed: () => Navigator.pop(context, 'Cancel'),
                                         child: const Text(
                                             'Cancel',
                                             style: TextStyle(
