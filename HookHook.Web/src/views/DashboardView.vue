@@ -7,7 +7,7 @@
         </Bloc>
         <p class="col-span-3">Your AREAs</p>
         <CarouselComponent class="col-span-3 row-start-2 lg:grid grid-cols-1 grid-rows-1 lg:grid-cols-2 lg:grid-rows-2 xl:grid-cols-3 gap-4 overflow-auto" />
-      </dv>
+      </div>
     </div>
 </template>
 

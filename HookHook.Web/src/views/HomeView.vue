@@ -20,6 +20,11 @@
             <p>Dashboard</p>
           </div>
         </router-link>
+        <a href="/client.apk" class="ml-8">
+          <div class="button-74 transition-colors duration-200">
+            <p>Download APK</p>
+          </div>
+        </a>
       </div>
     </section>
     <section
