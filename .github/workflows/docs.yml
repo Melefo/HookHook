@@ -37,7 +37,7 @@ jobs:
           publish_dir: docs/_site
           force_orphan: true
           gh-pages: backend-doc
-  generate-docfx-docs:
+  generate-dartdoc-docs:
     runs-on: ubuntu-latest
 
     steps:
