@@ -10,8 +10,8 @@
         max-h-full
         flex-col
         justify-between
-        my-2
-        sm:my-0
+        mb-2
+        lg:mb-0
       "
     >
       <div>{{ slide.name }}</div>
@@ -32,29 +32,32 @@
         </div>
 
       <div class="flex flex-row items-center my-2">
-        <div
-          class="flex w-[40px] h-[40px] rounded-xl"
-          :style="{ 'background-color': color(slide.from) }"
-        >
-          <img
-            class="w-7 h-7 m-auto"
-            :src="
-              require(`@/assets/img/coloredsvg/${slide.from.toLowerCase()}.svg`)
-            "
-          />
-        </div>
-        <ArrowNarrowRightIcon class="h-8 dark:text-white text-black mx-1" />
-        <div class="gap-2 grid grid-cols-4">
+        <div class="gap-2 flex">
           <div
-            v-for="(to, keyy) in slide.to"
-            :key="keyy"
             class="flex w-[40px] h-[40px] rounded-xl"
-            :style="{ 'background-color': color(to) }"
+            :style="{ 'background-color': color(slide.from) }"
           >
             <img
               class="w-7 h-7 m-auto"
-              :src="require(`@/assets/img/coloredsvg/${to.toLowerCase()}.svg`)"
+              :src="
+                require(`@/assets/img/coloredsvg/${slide.from.toLowerCase()}.svg`)
+              "
             />
+          </div>
+          <ArrowNarrowRightIcon class="h-8 dark:text-white text-black mx-1" />
+          <div class="flex lg:flex-col flex-row">
+            <div
+              v-for="(to, keyy) in slide.to"
+              :key="keyy"
+              class="flex w-[40px] h-[40px] rounded-xl lg:mb-2 mb-0 lg:mr-0 mr-2"
+              :style="{ 'background-color': color(to) }"
+            >
+              <img
+                class="w-7 h-7 m-auto"
+                :src="require(`@/assets/img/coloredsvg/${to.toLowerCase()}.svg`)"
+              />
+              <p></p>
+            </div>
           </div>
         </div>
       </div>

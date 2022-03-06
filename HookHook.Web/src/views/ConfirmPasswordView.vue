@@ -61,7 +61,7 @@
               :required="true"
               v-model="confirm"
             />
-            <Input type="submit" value="Register" :reverse="true" />
+            <Input type="submit" value="Send" :reverse="true" />
           </form>
         </div>
       </Bloc>
