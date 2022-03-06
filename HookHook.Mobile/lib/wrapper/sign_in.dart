@@ -51,7 +51,15 @@ class SignIn {
           seconds: 3
       ));
 
-  void logout() => _token = null;
+  Future<void> logout() async {
+    _token = null;
+    _username = null;
+    _password = null;
+    await HookHook.storage.delete(key: Backend.tokenKey);
+    await HookHook.storage.delete(key: Backend.usernameKey);
+    await HookHook.storage.delete(key: Backend.passwordKey);
+    await HookHook.storage.delete(key: Backend.instanceKey);
+  }
 
   Future<void> login(String username, String password) async {
     final res = await http.post(Uri.parse(loginUrl),

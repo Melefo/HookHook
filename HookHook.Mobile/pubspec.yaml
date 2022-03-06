@@ -52,7 +52,13 @@ dependencies:
   jwt_decode: ^0.3.1
   flutter_switch: ^0.3.2
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/img/icon.png"
+
 dev_dependencies:
+  flutter_launcher_icons: "^0.9.2"
   flutter_test:
     sdk: flutter
 

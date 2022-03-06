@@ -39,7 +39,8 @@ class _LoginView extends AdaptiveState<LoginView> {
   @override
   void initState() {
     super.initState();
-    googleListener = google.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
+    googleListener = google.onCurrentUserChanged.listen((
+        GoogleSignInAccount? account) async {
       await HookHook.backend.signIn.google(account!.serverAuthCode!);
       if (await HookHook.backend.signIn.token != null) {
         await Navigator.pushReplacementNamed(
@@ -113,37 +114,41 @@ class _LoginView extends AdaptiveState<LoginView> {
   }
 
   Widget constructGoogle() =>
-  IconButton(
-    onPressed: () async {
-      try {
-        await google.signIn();
-      } catch (error) {
-        if (kDebugMode) {
-          print(error);
-        }
-      }
-    },
-    icon: ServicesIcons.google(100),
-    iconSize: 0.08.sw
-  );
+      IconButton(
+          onPressed: () async {
+            try {
+              await google.signIn();
+            } catch (error) {
+              if (kDebugMode) {
+                print(error);
+              }
+            }
+          },
+          icon: ServicesIcons.google(100),
+          iconSize: 0.08.sw
+      );
 
   Widget constructGitHub() =>
-    IconButton(
-      onPressed: () async {
-        final scopes = [
-          "user",
-          "repo"
-        ];
-        await redirect("https://github.com/login/oauth/authorize?client_id=${dotenv.env["GITHUB_CLIENTID"]}&redirect_uri=${dotenv.env["GITHUB_REDIRECT"]}&response_type=code&scope=${scopes.join(' ')}");
-      },
-      icon: ServicesIcons.gitHub(100),
-      iconSize: 0.08.sw,
-    );
+      IconButton(
+        onPressed: () async {
+          final scopes = [
+            "user",
+            "repo"
+          ];
+          await redirect(
+              "https://github.com/login/oauth/authorize?client_id=${dotenv
+                  .env["GITHUB_CLIENTID"]}&redirect_uri=${dotenv
+                  .env["GITHUB_REDIRECT"]}&response_type=code&scope=${scopes
+                  .join(' ')}");
+        },
+        icon: ServicesIcons.gitHub(100),
+        iconSize: 0.08.sw,
+      );
 
   Widget constructSpotify() =>
       IconButton(
         onPressed: () async {
-           final scopes = [
+          final scopes = [
             "user-read-email",
             "user-read-private",
             "user-library-modify",
@@ -152,7 +157,11 @@ class _LoginView extends AdaptiveState<LoginView> {
             "playlist-read-private",
             "playlist-modify-public",
           ];
-          await redirect("https://accounts.spotify.com/authorize?client_id=${dotenv.env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv.env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes.join(" ")}");
+          await redirect(
+              "https://accounts.spotify.com/authorize?client_id=${dotenv
+                  .env['SPOTIFY_CLIENTID']}&redirect_uri=${dotenv
+                  .env['SPOTIFY_REDIRECT']}&response_type=code&scope=${scopes
+                  .join(" ")}");
         },
         icon: ServicesIcons.spotify(100),
         iconSize: 0.08.sw,
@@ -162,29 +171,35 @@ class _LoginView extends AdaptiveState<LoginView> {
     final pkcePair = PkcePair.generate();
 
     return IconButton(
-        onPressed: () async {
-          final listener = linkStream.listen(null);
-          listener.onData((String? response) async {
-            if (response!.startsWith(dotenv.env["DISCORD_REDIRECT"]!)) {
-              final url = Uri.parse(response);
-              await HookHook.backend.signIn.discord(url.queryParameters["code"]!, pkcePair.codeVerifier);
-            }
-            if (await HookHook.backend.signIn.token != null) {
-              await Navigator.pushReplacementNamed(
-                  context, HomeView.routeName);
-            }
-            listener.cancel();
-          });
+      onPressed: () async {
+        final listener = linkStream.listen(null);
+        listener.onData((String? response) async {
+          if (response!.startsWith(dotenv.env["DISCORD_REDIRECT"]!)) {
+            final url = Uri.parse(response);
+            await HookHook.backend.signIn.discord(
+                url.queryParameters["code"]!, pkcePair.codeVerifier);
+          }
+          if (await HookHook.backend.signIn.token != null) {
+            await Navigator.pushReplacementNamed(
+                context, HomeView.routeName);
+          }
+          listener.cancel();
+        });
 
-          final scopes = [
-            "identify",
-            "guilds",
-            "email",
-            "bot"
-          ];
-          await redirect("https://discord.com/oauth2/authorize?code_challenge=${pkcePair.codeChallenge}&code_challenge_method=S256&client_id=${dotenv.env["DISCORD_CLIENTID"]}&redirect_uri=${dotenv.env["DISCORD_REDIRECT"]}&response_type=code&scope=${scopes.join(' ')}&permissions=66568");
-        },
-        icon: ServicesIcons.discord(100),
+        final scopes = [
+          "identify",
+          "guilds",
+          "email",
+          "bot"
+        ];
+        await redirect(
+            "https://discord.com/oauth2/authorize?code_challenge=${pkcePair
+                .codeChallenge}&code_challenge_method=S256&client_id=${dotenv
+                .env["DISCORD_CLIENTID"]}&redirect_uri=${dotenv
+                .env["DISCORD_REDIRECT"]}&response_type=code&scope=${scopes
+                .join(' ')}&permissions=66568");
+      },
+      icon: ServicesIcons.discord(100),
       iconSize: 0.08.sw,
     );
   }
@@ -202,10 +217,10 @@ class _LoginView extends AdaptiveState<LoginView> {
             "user:read:follows"
           ];
           FlutterTwitchAuth.initialize(
-            twitchClientId: dotenv.env["TWITCH_CLIENTID"]!,
-            twitchRedirectUri: dotenv.env["TWITCH_REDIRECT"]!,
-            twitchClientSecret: '',
-            scope: scopes.join(' ')
+              twitchClientId: dotenv.env["TWITCH_CLIENTID"]!,
+              twitchRedirectUri: dotenv.env["TWITCH_REDIRECT"]!,
+              twitchClientSecret: '',
+              scope: scopes.join(' ')
           );
           String? code = await FlutterTwitchAuth.authToCode(context);
           await HookHook.backend.signIn.twitch(code!);
@@ -222,7 +237,8 @@ class _LoginView extends AdaptiveState<LoginView> {
   Widget constructTwitter() =>
       IconButton(
         onPressed: () async {
-          String? url = await HookHook.backend.signIn.authorize("Twitter", dotenv.env["TWITTER_REDIRECT"]!);
+          String? url = await HookHook.backend.signIn.authorize(
+              "Twitter", dotenv.env["TWITTER_REDIRECT"]!);
           await redirect(url!);
         },
         icon: ServicesIcons.twitter(100),
@@ -237,31 +253,37 @@ class _LoginView extends AdaptiveState<LoginView> {
 
     for (var service in HookHook.backend.about!.server.services) {
       switch (service.name.toLowerCase()) {
-        case "spotify": {
-          list.add(constructSpotify());
-          break;
-        }
-        case "discord": {
-          list.add(constructDiscord());
-          break;
-        }
-        case "github": {
-          list.add(constructGitHub());
-          break;
-        }
+        case "spotify":
+          {
+            list.add(constructSpotify());
+            break;
+          }
+        case "discord":
+          {
+            list.add(constructDiscord());
+            break;
+          }
+        case "github":
+          {
+            list.add(constructGitHub());
+            break;
+          }
         case "google":
-        case "youtube": {
-          list.add(constructGoogle());
-          break;
-        }
-        case "twitch": {
-          list.add(constructTwitch());
-          break;
-        }
-        case "twitter": {
-          list.add(constructTwitter());
-          break;
-        }
+        case "youtube":
+          {
+            list.add(constructGoogle());
+            break;
+          }
+        case "twitch":
+          {
+            list.add(constructTwitch());
+            break;
+          }
+        case "twitter":
+          {
+            list.add(constructTwitter());
+            break;
+          }
       }
     }
     return list;
@@ -294,7 +316,8 @@ class _LoginView extends AdaptiveState<LoginView> {
               Text(
                   "Try to login!",
                   style: TextStyle(
-                      fontSize: 14.sp
+                      fontSize: 14.sp,
+                      color: darkMode ? Colors.white : Colors.black
                   )
               ),
               Padding(
@@ -304,16 +327,36 @@ class _LoginView extends AdaptiveState<LoginView> {
                 child: Column(
                   children: [
                     TextFormField(
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: "Username/Email"
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: darkMode ? Colors.white : Colors.black
+                            )
+                        ),
+                        labelText: "Username/Email",
+                        labelStyle: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
+                        ),
+                      ),
+                      style: TextStyle(
+                          color: darkMode ? Colors.white : Colors.black
                       ),
                       controller: username,
                     ),
                     TextFormField(
-                        decoration: const InputDecoration(
-                            border: UnderlineInputBorder(),
-                            labelText: "Password"
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: darkMode ? Colors.white : Colors.black
+                              )
+                          ),
+                          labelText: "Password",
+                          labelStyle: TextStyle(
+                              color: darkMode ? Colors.white : Colors.black
+                          ),
+                        ),
+                        style: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
                         ),
                         controller: password,
                         obscureText: true
@@ -331,18 +374,31 @@ class _LoginView extends AdaptiveState<LoginView> {
                       ),
                     ),
                     TextFormField(
-                      decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
+                      decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: darkMode ? Colors.white : Colors.black
+                            )
+                        ),
                         labelText: "HookHook Instance",
+                        labelStyle: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
+                        ),
+                      ),
+                      style: TextStyle(
+                          color: darkMode ? Colors.white : Colors.black
                       ),
                       initialValue: Backend.apiEndpoint,
                       onChanged: (text) async {
                         if (text[text.length - 1] != '/') {
                           text += '/';
                         }
-                        String? token = await HookHook.storage.read(key: Backend.tokenKey);
-                        String? username = await HookHook.storage.read(key: Backend.usernameKey);
-                        String? password = await HookHook.storage.read(key: Backend.passwordKey);
+                        String? token = await HookHook.storage.read(
+                            key: Backend.tokenKey);
+                        String? username = await HookHook.storage.read(
+                            key: Backend.usernameKey);
+                        String? password = await HookHook.storage.read(
+                            key: Backend.passwordKey);
                         await Backend.init(text, token, username, password);
                         await HookHook.storage.write(
                             key: Backend.instanceKey, value: Backend.apiEndpoint
@@ -371,10 +427,12 @@ class _LoginView extends AdaptiveState<LoginView> {
                           ),
                         ),
                         style: TextButton.styleFrom(
-                            backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
+                            backgroundColor: darkMode
+                                ? HookHookColors.gray
+                                : Colors.white,
                             padding: const EdgeInsets.all(15),
                             shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
+                                borderRadius: BorderRadius.circular(10)
                             ),
                             minimumSize: const Size(150, 0)
                         )
@@ -393,10 +451,12 @@ class _LoginView extends AdaptiveState<LoginView> {
                           ),
                         ),
                         style: TextButton.styleFrom(
-                            backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
+                            backgroundColor: darkMode
+                                ? HookHookColors.gray
+                                : Colors.white,
                             padding: const EdgeInsets.all(15),
                             shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)
+                                borderRadius: BorderRadius.circular(10)
                             ),
                             minimumSize: const Size(150, 0)
                         )

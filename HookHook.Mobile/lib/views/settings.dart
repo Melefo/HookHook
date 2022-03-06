@@ -116,8 +116,8 @@ class _Settings extends AdaptiveState<SettingsView> {
                   Padding(
                     padding: const EdgeInsets.only(right: 50),
                     child: TextButton(
-                        onPressed: ()  {
-                          HookHook.backend.signIn.logout();
+                        onPressed: () async {
+                          await HookHook.backend.signIn.logout();
                           Navigator.pushReplacementNamed(context, LoginView.routeName);
                         },
                         child: Text(
