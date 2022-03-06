@@ -68,21 +68,22 @@ namespace HookHook.Backend.Entities
             if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
                 return;
             LastUpdate = DateTime.UtcNow.AddMinutes(MinutesBetween);
-            (var formatters, bool actionValue) = await Action.Check(user);
+            try
+            {
+                (var formatters, bool actionValue) = await Action.Check(user);
 
-            if (!actionValue)
-                return;
+                if (!actionValue)
+                    return;
 
-            foreach (var reaction in Reactions) {
-                try
+                foreach (var reaction in Reactions)
                 {
                     await reaction.Execute(user, formatters!);
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"{e.Source}: {e.Message}");
-                    return;
-                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.Source}: {e.Message}");
+                return;
             }
             db.SaveUser(user);
         }

@@ -32,6 +32,7 @@
         py-4
         text-white
         dark:text-center
+        rounded-2xl
       "
     >
       <div
@@ -79,6 +80,7 @@
         py-10
         text-white
         dark:text-center
+        rounded-2xl
       "
     >
       <div
@@ -94,14 +96,14 @@
         <p>Share on only one platform and the rest will follow!</p>
         <p>When <b>X</b> is shared, share to <b>Y</b> and <b>Z</b></p>
       </div>
-      <div class="justify-self-center self-center">
-        <img class="h-20" src="@/assets/pinguin/photo.gif" />
-      </div>
+      <a class="justify-self-center self-center">
+        <img class="h-20" src="@/assets/pinguin/photo.gif"/>
+      </a>
     </section>
     <section class="flex flex-col-reverse justify-around lg:flex-row mt-8 py-2 dark:text-white text-center">
-      <div class="justify-self-center self-center">
+      <a class="justify-self-center self-center cursor-default" href="https://www.youtube.com/watch?v=36BK2x8pFI8">
         <img class="h-32" src="@/assets/pinguin/dance.gif" />
-      </div>
+      </a>
       <div class="justify-center self-center text-center">
         <h3 class="text-xl mb-2 dark:text-[#A3E7EE] text-[#f09113]">Creators</h3>
         <div class="flex justify-evenly flex-col lg:flex-row lg:gap-8">
