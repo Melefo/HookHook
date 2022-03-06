@@ -36,7 +36,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/_site
           force_orphan: true
-          gh-pages: backend-doc
+          publish_branch: backend-doc
+  
   generate-dartdoc-docs:
     runs-on: ubuntu-latest
 
@@ -67,4 +68,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: doc/api
           force_orphan: true
-          gh-pages: mobile-doc
+          publish_branch: mobile-doc
