@@ -141,8 +141,6 @@ export default defineComponent({
     await this.ws.start();
     for (var area in this.blocs) {
       this.ws.on(this.blocs[area].id, (e, errorMessage) => {
-          console.log("WS content2: ", errorMessage);
-
         this.blocs[area].date = e;
         this.blocs[area].error = errorMessage;
       });

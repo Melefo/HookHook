@@ -13,13 +13,22 @@ namespace HookHook.Backend.Services
 	public class GitHubService
 	{
         /// <summary>
-        /// Client ID
+        /// Client ID Web
         /// </summary>
-		private readonly string _id;
+		private readonly string _idWeb;
         /// <summary>
-        /// Client secret
+        /// Client secret Web
         /// </summary>
-		private readonly string _secret;
+		private readonly string _secretWeb;
+        /// <summary>
+        /// Client ID Mobile
+        /// </summary>
+        private readonly string _idMobile;
+        /// <summary>
+        /// Client secret Mobile
+        /// </summary>
+		private readonly string _secretMobile;
+
 
         /// <summary>
         /// Constructor
@@ -27,9 +36,11 @@ namespace HookHook.Backend.Services
         /// <param name="config">Environment variables</param>
 		public GitHubService(IConfiguration config)
 		{
-			_id = config["GitHub:ClientId"];
-			_secret = config["GitHub:ClientSecret"];
-		}
+			_idWeb = config["GitHub:Web:ClientId"];
+			_secretWeb = config["GitHub:Web:ClientSecret"];
+            _idMobile = config["GitHub:Mobile:ClientId"];
+            _secretMobile = config["GitHub:Mobile:ClientSecret"];
+        }
 
         /// <summary>
         /// OAuth
@@ -40,8 +51,14 @@ namespace HookHook.Backend.Services
         {
 			var client = new GitHubClient(new ProductHeaderValue("HookHook"));
 
-			var request = new OauthTokenRequest(_id, _secret, code);
-			var res = await client.Oauth.CreateAccessToken(request);
+            var request = new OauthTokenRequest(_idWeb, _secretWeb, code);
+            var res = await client.Oauth.CreateAccessToken(request);
+
+            if (res.AccessToken == null)
+            {
+                request = new OauthTokenRequest(_idMobile, _secretMobile, code);
+                res = await client.Oauth.CreateAccessToken(request);
+            }
 
 			if (res == null)
 				throw new Exceptions.ApiException("Failed to call API");

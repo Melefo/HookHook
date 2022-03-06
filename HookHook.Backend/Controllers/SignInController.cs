@@ -80,14 +80,14 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult> OAuth(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier)
+        public async Task<ActionResult> OAuth(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null, [FromQuery] string? redirect = null)
         {
             try
             {
                 string token = provider switch
                 {
-                    Providers.Discord => await _service.DiscordOAuth(code, HttpContext),
-                    Providers.Spotify => await _service.SpotifyOAuth(code, HttpContext),
+                    Providers.Discord => await _service.DiscordOAuth(code, verifier, redirect!, HttpContext),
+                    Providers.Spotify => await _service.SpotifyOAuth(code, redirect!, HttpContext),
                     Providers.Twitch => await _service.TwitchOAuth(code, HttpContext),
                     Providers.GitHub => await _service.GitHubOAuth(code, HttpContext),
                     Providers.Twitter => await _service.TwitterOAuth(code, verifier!, HttpContext),
@@ -115,11 +115,11 @@ namespace HookHook.Backend.Controllers
         [HttpGet("authorize/{provider}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<string> Authorize(Providers provider = Providers.Twitter)
+        public ActionResult<string> Authorize(Providers provider, [FromQuery] [BindRequired] string redirect)
         {
             if (provider != Providers.Twitter)
                 return BadRequest();
-            return _service.TwitterAuthorize();
+            return _service.TwitterAuthorize(redirect);
         }
 
         /// <summary>

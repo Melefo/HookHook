@@ -138,7 +138,7 @@ namespace HookHook.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
-        public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
+        public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null, [FromQuery] string? redirect = null)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
             try
@@ -147,7 +147,7 @@ namespace HookHook.Backend.Controllers
                 switch (provider)
                 {
                     case Providers.Discord:
-                        account = await _discord.AddAccount(user, code);
+                        account = await _discord.AddAccount(user, code, verifier, redirect!);
                         break;
                     case Providers.Twitter:
                         account = await _twitter.AddAccount(user, code, verifier!);
@@ -156,7 +156,7 @@ namespace HookHook.Backend.Controllers
                         account = await _twitch.AddAccount(user, code);
                         break;
                     case Providers.Spotify:
-                        account = await _spotify.AddAccount(user, code);
+                        account = await _spotify.AddAccount(user, code, redirect!);
                         break;
                     case Providers.Google:
                         account = await _google.AddAccount(user, code);
@@ -193,9 +193,7 @@ namespace HookHook.Backend.Controllers
             var account = accounts.SingleOrDefault(x => x.UserId == id)!;
 
             accounts.Remove(account);
-            var areas = user.Areas.Where(x => x.Action.AccountId == id || x.Reactions.Any(x => x.AccountId == id));
-            foreach (var area in areas)
-                user.Areas.Remove(area);
+            user.Areas.RemoveAll(x => x.Action.AccountId == id || x.Reactions.Any(x => x.AccountId == id));
             _mongo.SaveUser(user);
 
             return NoContent();

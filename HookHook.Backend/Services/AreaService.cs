@@ -24,7 +24,7 @@ namespace HookHook.Backend.Services
         /// </summary>
         private readonly GoogleService _google;
         /// <summary>
-        /// Spotify servoce
+        /// Spotify service
         /// </summary>
         private readonly SpotifyService _spotify;
         /// <summary>
@@ -58,7 +58,7 @@ namespace HookHook.Backend.Services
 
             Schedule(async () => await Execute()).ToRunEvery(1).Minutes();
         }
-
+       
         /// <summary>
         /// Refresh Services acess token
         /// </summary>
@@ -119,7 +119,7 @@ namespace HookHook.Backend.Services
         /// <param name="user">HookHook user</param>
         /// <param name="area">AREA</param>
         /// <returns></returns>
-        private Task AreaExecuted(User user, Entities.Area area, String errorMessage)
+        private Task AreaExecuted(User user, Entities.Area area, string errorMessage)
         {
             _hubContext.Clients.User(user.Id).SendAsync(area.Id,
                                                        (long)(area.LastUpdate - DateTime.UnixEpoch).TotalSeconds,
