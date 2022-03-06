@@ -7,23 +7,58 @@ using Octokit;
 
 namespace HookHook.Backend.Services
 {
+    /// <summary>
+    /// Service used by areaservice
+    /// </summary>
 	public class GitHubService
 	{
-		private readonly string _id;
-		private readonly string _secret;
+        /// <summary>
+        /// Client ID Web
+        /// </summary>
+		private readonly string _idWeb;
+        /// <summary>
+        /// Client secret Web
+        /// </summary>
+		private readonly string _secretWeb;
+        /// <summary>
+        /// Client ID Mobile
+        /// </summary>
+        private readonly string _idMobile;
+        /// <summary>
+        /// Client secret Mobile
+        /// </summary>
+		private readonly string _secretMobile;
 
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="config">Environment variables</param>
 		public GitHubService(IConfiguration config)
 		{
-			_id = config["GitHub:ClientId"];
-			_secret = config["GitHub:ClientSecret"];
-		}
+			_idWeb = config["GitHub:Web:ClientId"];
+			_secretWeb = config["GitHub:Web:ClientSecret"];
+            _idMobile = config["GitHub:Mobile:ClientId"];
+            _secretMobile = config["GitHub:Mobile:ClientSecret"];
+        }
 
+        /// <summary>
+        /// OAuth
+        /// </summary>
+        /// <param name="code">OAuth code</param>
+        /// <returns>GithubClient, OauthToken</returns>
 		public async Task<(GitHubClient, OauthToken)> OAuth(string code)
         {
 			var client = new GitHubClient(new ProductHeaderValue("HookHook"));
 
-			var request = new OauthTokenRequest(_id, _secret, code);
-			var res = await client.Oauth.CreateAccessToken(request);
+            var request = new OauthTokenRequest(_idWeb, _secretWeb, code);
+            var res = await client.Oauth.CreateAccessToken(request);
+
+            if (res.AccessToken == null)
+            {
+                request = new OauthTokenRequest(_idMobile, _secretMobile, code);
+                res = await client.Oauth.CreateAccessToken(request);
+            }
 
 			if (res == null)
 				throw new Exceptions.ApiException("Failed to call API");
@@ -33,6 +68,12 @@ namespace HookHook.Backend.Services
 			return (client, res);
 		}
 
+        /// <summary>
+        /// Add new service account
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="code">OAuth code</param>
+        /// <returns>New ServiceAccount</returns>
 		public async Task<ServiceAccount?> AddAccount(Entities.User user, string code)
         {
 			(var client, var res) = await OAuth(code);

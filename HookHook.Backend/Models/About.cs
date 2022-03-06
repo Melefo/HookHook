@@ -20,7 +20,7 @@ namespace HookHook.Backend.Models
         /// <summary>
         /// Client address
         /// </summary>
-        public string Host { get; set; }
+        public string Host { get; set; }    
     }
 
     /// <summary>

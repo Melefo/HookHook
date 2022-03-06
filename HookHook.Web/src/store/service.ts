@@ -49,8 +49,8 @@ const service = {
             commit('deleteAccount', { provider, key });
             return {};
         },
-        async addDiscord({ commit }: any, code: String) {
-            const res = await fetch("/api/service/discord?code=" + code, {
+        async addDiscord({ commit }: any, { code, redirect }: any) {
+            const res = await fetch(`/api/service/discord?code=${code}&redirect=${redirect}`, {
                 method: 'POST',
                 headers: authHeader()
             });
@@ -109,8 +109,8 @@ const service = {
             }
             return {};
         },
-        async addSpotify({ commit }: any, code: String) {
-            const res = await fetch("/api/service/spotify?code=" + code, {
+        async addSpotify({ commit }: any, {code, redirect}: any) {
+            const res = await fetch(`/api/service/spotify?code=${code}&redirect=${redirect}`, {
                 method: 'POST',
                 headers: authHeader()
             });

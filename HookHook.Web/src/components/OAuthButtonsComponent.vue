@@ -1,18 +1,57 @@
 <template>
   <div class="text-black justify-start">
     <DialogComponent v-for="(item, key) in services" :key="key" :text="item.name" :src="item.name.toLowerCase() + '.svg'" :bgColor="color(item.name)">
+      <component :is="item.name + 'Oauth'" :oauth="false">
+        <button class="button-74 mb-[20px]" :bgColor="color(item.name)">
+          Add a user account
+        </button>
+      </component>
       <div v-for="(account, keyy) in accounts[item.name]" :key="account.userId" class="flex justify-between items-center mx-16">
         <p>{{ account.username }}</p>
         <button @click.prevent="async () => await deleteService(item.name, account.userId, keyy)">
           <XIcon class="h-8" />
         </button>
       </div>
-      <component :is="item.name + 'Oauth'" :oauth="false">
-        ADD
-      </component>
     </DialogComponent>
   </div>
 </template>
+
+<style>
+.button-74 {
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 30px;
+  box-shadow: #000000 4px 4px 0 0;
+  color: #000000;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 0 14px;
+  line-height: 40px;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-74:hover {
+  background-color: #f0f0f0;
+}
+
+.button-74:active {
+  box-shadow: #000000 2px 2px 0 0;
+  transform: translate(2px, 2px);
+}
+
+@media (min-width: 768px) {
+  .button-74 {
+    min-width: 120px;
+    padding: 0 25px;
+  }
+}
+</style>
 
 <script lang="ts">
   import { defineComponent } from "vue";

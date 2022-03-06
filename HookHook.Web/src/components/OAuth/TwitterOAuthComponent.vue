@@ -33,7 +33,7 @@ export default defineComponent({
     async handleTwitter() {
       window.removeEventListener("message", this.receiveTwitter);
 
-      var { url, error, errors } = await this.authorize("Twitter");
+      var { url, error, errors } = await this.authorize({ provider: "Twitter", redirect: process.env.VUE_APP_TWITTER_REDIRECT });
       if (url === null) {
         this.errors = errors || null;
         this.error = error || null;
@@ -42,8 +42,8 @@ export default defineComponent({
 
       let popup = window.open(
         url,
-        "_blank",
-        "width=500, height=750, left=20, top=20, popup=true"
+        "oauthWindow",
+        "width=500, height=750, left=20, top=20"
       );
       if (popup == null) {
         return;

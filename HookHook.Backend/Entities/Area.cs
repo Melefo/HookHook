@@ -18,6 +18,11 @@ namespace HookHook.Backend.Entities
         public string Id { get; private init; } = ObjectId.GenerateNewId().ToString();
 
         /// <summary>
+        /// LastLaunchFailed
+        /// </summary>
+        public bool LastLaunchFailed { get; set; }
+
+        /// <summary>
         /// Area name
         /// </summary>
         public string Name { get; private init; }
@@ -65,24 +70,27 @@ namespace HookHook.Backend.Entities
         /// <returns></returns>
         public async Task Launch(User user, MongoService db)
         {
-            if (LastUpdate > DateTime.UtcNow.AddMinutes(MinutesBetween))
+            if (LastUpdate.AddMinutes(MinutesBetween) > DateTime.UtcNow)
                 return;
-            LastUpdate = DateTime.UtcNow.AddMinutes(MinutesBetween);
-            (var formatters, bool actionValue) = await Action.Check(user);
+            LastUpdate = DateTime.UtcNow;
 
-            if (!actionValue)
-                return;
+            LastLaunchFailed = false;
+            try
+            {
+                (var formatters, bool actionValue) = await Action.Check(user);
 
-            foreach (var reaction in Reactions) {
-                try
-                {
+                if (!actionValue)
+                    return;
+
+                foreach (var reaction in Reactions) {
                     await reaction.Execute(user, formatters!);
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"{e.Source}: {e.Message}");
-                    return;
-                }
+            }
+            catch
+            {
+                LastLaunchFailed = true;
+                db.SaveUser(user);
+                throw;
             }
             db.SaveUser(user);
         }

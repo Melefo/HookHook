@@ -9,9 +9,13 @@ using HookHook.Backend.Models;
 using HookHook.Backend.Attributes;
 using System.Reflection;
 using HookHook.Backend.Utilities;
+using System.Linq;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// /area controller route
+    /// </summary>
     [Route("[controller]")]
     [ApiController]
     [Authorize]
@@ -56,6 +60,12 @@ namespace HookHook.Backend.Controllers
             };
         }
 
+        /// <summary>
+        /// Create entity from model
+        /// </summary>
+        /// <param name="area"></param>
+        /// <param name="user"></param>
+        /// <returns>Area entity</returns>
         private Entities.Area CreateEntityFromModel(AreaModel area, User user)
         {
             // * create an IAction from area.Action.type
@@ -94,7 +104,12 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Get services
+        /// </summary>
+        /// <returns>Array of services (with parameters, formatters, etc...)</returns>
         [HttpGet("getServices")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult getServices()
         {
             // * retrieve classes that have the Service attribute, get their constructor and argument list
@@ -128,27 +143,64 @@ namespace HookHook.Backend.Controllers
         }
 
 
-        // * create a new area
+        /// <summary>
+        /// Create a new area
+        /// </summary>
+        /// <param name="area"></param>
+        /// <returns>The created area</returns>
         [HttpPost("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<UserArea> CreateArea([FromBody] AreaModel area)
         {
             var user = _db.GetUser(HttpContext.User.Identity!.Name!);
+
             if (user == null)
                 return BadRequest();
+
+            // * if account id/type is missing, reaction will be set to null
+            if (Array.Exists(area.Reactions, reaction => reaction == null)) {
+                return (BadRequest(new {
+                    error = "Please fill out reaction details"
+                }));
+            }
+
+            // * check for empty arguments
+            if (Array.Exists(area.Action.Arguments, arg => arg == null) || Array.Exists(area.Action.Arguments, arg => arg == "")) {
+                return BadRequest(new {
+                    error = "Please fill out all the action arguments"
+                });
+            }
+            // * check for invalid/empty reaction
+            foreach (var reaction in area.Reactions) {
+
+                if (Array.Exists(reaction.Arguments, arg => arg == null) || Array.Exists(reaction.Arguments, arg => arg == "")) {
+                    return BadRequest(new {
+                        error = "Please fill out all the reaction arguments"
+                    });
+                }
+                if (String.IsNullOrEmpty(reaction.AccountId)) {
+                    return BadRequest(new {
+                        error = "Please select an account for your reaction"
+                    });
+                }
+            }
 
             Entities.Area areaEntity = CreateEntityFromModel(area, user);
 
             user.Areas.Add(areaEntity);
             _db.SaveUser(user);
 
-            UserArea userArea = new(areaEntity.Id, areaEntity.Name, areaEntity.Action.GetProvider(), areaEntity.Reactions.Select(x => x.GetProvider()).ToArray(), areaEntity.LastUpdate);
+            UserArea userArea = new(areaEntity.Id, areaEntity.Name, areaEntity.Action.GetProvider(), areaEntity.Reactions.Select(x => x.GetProvider()).ToArray(), areaEntity.LastUpdate, areaEntity.LastLaunchFailed);
             return Ok(userArea);
         }
 
-        // * modify -> add/remove reactions/action, so a new area ??
-        // * PUT vu qu'on envoie un nouveau AREA je dirais
+        /// <summary>
+        /// Modify an area
+        /// </summary>
+        /// <param name="area"></param>
+        /// <param name="id"></param>
+        /// <returns>The modified area</returns>
         [HttpPut("modify/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -170,7 +222,10 @@ namespace HookHook.Backend.Controllers
             return Ok(areaEntity);
         }
 
-        // * delete -> rm area by ID
+        /// <summary>
+        /// Delete an area
+        /// </summary>
+        /// <param name="id"></param>
         [HttpDelete("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -190,9 +245,12 @@ namespace HookHook.Backend.Controllers
             return NoContent();
         }
 
-        // * trigger all areas
+        /// <summary>
+        /// Trigger the areas of a user
+        /// </summary>
+        /// <param name="id"></param>
         [HttpGet("trigger/{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> TriggerUserAreas(string id)
         {
@@ -201,7 +259,7 @@ namespace HookHook.Backend.Controllers
                 return BadRequest();
             if (!await _area.ExecuteUserArea(user, id))
                 return BadRequest();
-            return Ok();
+            return NoContent();
         }
 
         public class UserArea
@@ -212,16 +270,23 @@ namespace HookHook.Backend.Controllers
             public Providers[] To { get; set; }
             public long Date { get; set; }
 
-            public UserArea(string id, string name, Providers from, Providers[] to, DateTime date)
+            public bool LastLaunchFailed { get; set; }
+
+            public UserArea(string id, string name, Providers from, Providers[] to, DateTime date, bool lastLaunchFailed)
             {
                 Id = id;
                 Name = name;
                 From = from;
                 To = to;
                 Date = (long)(date - DateTime.UnixEpoch).TotalSeconds;
+                LastLaunchFailed = lastLaunchFailed;
             }
         }
 
+        /// <summary>
+        /// Get the areas of a user
+        /// </summary>
+        /// <returns>The areas</returns>
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -233,7 +298,7 @@ namespace HookHook.Backend.Controllers
 
             List<UserArea> list = new();
             foreach (var area in user.Areas)
-                list.Add(new(area.Id, area.Name, area.Action.GetProvider(), area.Reactions.Select(x => x.GetProvider()).ToArray(), area.LastUpdate));
+                list.Add(new(area.Id, area.Name, area.Action.GetProvider(), area.Reactions.Select(x => x.GetProvider()).ToArray(), area.LastUpdate, area.LastLaunchFailed));
 
             return list;
         }

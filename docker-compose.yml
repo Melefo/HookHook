@@ -15,22 +15,46 @@ services:
       - Discord__ClientId=${DISCORD_CLIENTID}
       - Discord__ClientSecret=${DISCORD_CLIENTSECRET}
       - Discord__Redirect=${DISCORD_REDIRECT}
-      - GitHub__ClientId=${GITHUB_CLIENTID}
-      - GitHub__ClientSecret=${GITHUB_CLIENTSECRET}
-      - Spofity__ClientId=${SPOTIFY_CLIENTID}
-      - Spofity__ClientSecret=${SPOTIFY_CLIENTSECRET}
+      - Discord__BotToken=${DISCORD_BOTTOKEN}
+      - GitHub__Web__ClientId=${GITHUB_WEB_CLIENTID}
+      - GitHub__Web__ClientSecret=${GITHUB_WEB_CLIENTSECRET}
+      - GitHub__Mobile__ClientId=${GITHUB_MOBILE_CLIENTID}
+      - GitHub__Mobile__ClientSecret=${GITHUB_MOBILE_CLIENTSECRET}
+      - Spotify__ClientId=${SPOTIFY_CLIENTID}
+      - Spotify__ClientSecret=${SPOTIFY_CLIENTSECRET}
+      - Spotify__Redirect=${SPOTIFY_REDIRECT}
       - Twitch__ClientId=${TWITCH_CLIENTID}
       - Twitch__ClientSecret=${TWITCH_CLIENTSECRET}
+      - Twitch_Redirect=${TWITCH_REDIRECT}
       - Twitter__ClientId=${TWITTER_CLIENTID}
       - Twitter__ClientSecret=${TWITTER_CLIENTSECRET}
+      - Twitter_Redirect={TWITTER_REDIRECT}
       - Google__ClientId=${GOOGLE_CLIENTID}
       - Google__ClientSecret=${GOOGLE_CLIENTSECRET}
+      - Google__ApiKey=${GOOGLE_APIKEY}
+      - Google__Redirect=${GOOGLE_REDIRECT}
+      - SMTP__Email=${SMTP_EMAIL}
+      - SMTP__Password=${SMTP_PASSWORD}
   client_mobile:
     build:
       context: .
       dockerfile: "HookHook.Mobile/Dockerfile"
+      args:
+      - TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - TWITCH_REDIRECT=${TWITCH_REDIRECT}
+      - DISCORD_CLIENTID=${DISCORD_CLIENTID}
+      - SPOTIFY_CLIENTID=${SPOTIFY_CLIENTID}
+      - GITHUB_CLIENTID=${GITHUB_MOBILE_CLIENTID}
+      - GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
     volumes:
       - "apk:/build"
+    environment:
+      - TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - TWITCH_REDIRECT=${TWITCH_REDIRECT}
+      - DISCORD_CLIENTID=${DISCORD_CLIENTID}
+      - SPOTIFY_CLIENTID=${SPOTIFY_CLIENTID}
+      - GITHUB_CLIENTID=${GITHUB_MOBILE_CLIENTID}
+      - GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
   client_web:
     build:
       context: .
@@ -45,9 +69,11 @@ services:
     environment:
       - BACKEND_URL=http://server:80/
       - VUE_APP_DISCORD_CLIENTID=${DISCORD_CLIENTID}
-      - VUE_APP_GITHUB_CLIENTID=${GITHUB_CLIENTID}
+      - VUE_APP_GITHUB_CLIENTID=${GITHUB_WEB_CLIENTID}
       - VUE_APP_SPOTIFY_CLIENTID=${SPOTIFY_CLIENTID}
+      - VUE_APP_SPOTIFY_REDIRECT=${SPOTIFY_REDIRECT}
       - VUE_APP_TWITCH_CLIENTID=${TWITCH_CLIENTID}
+      - VUE_APP_TWITCH_REDIRECT=${TWITCH_REDIRECT}
       - VUE_APP_TWITTER_CLIENTID=${TWITTER_CLIENTID}
       - VUE_APP_GOOGLE_CLIENTID=${GOOGLE_CLIENTID}
   mongo:

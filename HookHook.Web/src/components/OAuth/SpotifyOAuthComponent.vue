@@ -1,6 +1,11 @@
 <template>
   <a href="/login" @click.prevent="handleSpotify">
-    <img v-if="oauth" class="h-10" alt="spotify" src="@/assets/img/spotify.svg" />
+    <img
+      v-if="oauth"
+      class="h-10"
+      alt="spotify"
+      src="@/assets/img/spotify.svg"
+    />
     <div v-else>
       <slot />
     </div>
@@ -21,8 +26,8 @@ export default defineComponent({
   props: {
     oauth: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   methods: {
     ...mapActions("signIn", ["spotify"]),
@@ -37,18 +42,21 @@ export default defineComponent({
         "user-library-read",
         "playlist-modify-private",
         "playlist-read-private",
-        "playlist-modify-public"
+        "playlist-modify-public",
       ];
 
       const url = `https://accounts.spotify.com/authorize?client_id=${
         process.env.VUE_APP_SPOTIFY_CLIENTID
       }&redirect_uri=${
         process.env.VUE_APP_SPOTIFY_REDIRECT
-      }&state=${Math.random().toString(36).slice(2)}&response_type=code&scope=${scopes.join(' ')}`;
+      }&state=${Math.random()
+        .toString(36)
+        .slice(2)}&response_type=code&scope=${scopes.join(" ")}`;
+      console.log(url);
       let popup = window.open(
         url,
-        "_blank",
-        "width=500, height=750, left=20, top=20, popup=true"
+        "oauthWindow",
+        "width=500, height=750, left=20, top=20"
       );
       if (popup == null) {
         return;
@@ -65,7 +73,15 @@ export default defineComponent({
         return;
       }
       window.removeEventListener("message", this.receiveSpotify);
-      const info = this.oauth ? await this.spotify(data.code) : await this.addSpotify(data.code);
+      const info = this.oauth
+        ? await this.spotify({
+            code: data.code,
+            redirect: process.env.VUE_APP_SPOTIFY_REDIRECT,
+          })
+        : await this.addSpotify({
+            code: data.code,
+            redirect: process.env.VUE_APP_SPOTIFY_REDIRECT,
+          });
       this.errors = info.errors || null;
       this.error = info.error || null;
       if (this.oauth) {

@@ -12,6 +12,9 @@ using TwitchLib.Api;
 
 namespace HookHook.Backend.Controllers
 {
+    /// <summary>
+    /// /service controller route
+    /// </summary>
 	[Route("[controller]")]
 	[ApiController]
 	[Authorize]
@@ -42,7 +45,14 @@ namespace HookHook.Backend.Controllers
             _twitchId = config["Twitch:ClientId"];
 		}
 
+        /// <summary>
+        /// Get user accounts for provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns>List of accounts</returns>
         [HttpGet("{provider}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<List<ServiceAccount>>> Get(Providers provider)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
@@ -102,7 +112,7 @@ namespace HookHook.Backend.Controllers
                         acc = new(account.UserId, search.Items[0].Snippet.Title);
                         break;
                     case Providers.GitHub:
-                        var github = new GitHubClient(new ProductHeaderValue("HookHook")); 
+                        var github = new GitHubClient(new ProductHeaderValue("HookHook"));
                         github.Credentials = new Credentials(account.AccessToken);
                         var current = await github.User.Current();
 
@@ -117,8 +127,18 @@ namespace HookHook.Backend.Controllers
             return list;
         }
 
+        /// <summary>
+        /// Add an account for a provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="code"></param>
+        /// <param name="verifier"></param>
+        /// <returns>The created account</returns>
         [HttpPost("{provider}")]
-        public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+        public async Task<ActionResult<ServiceAccount>> Add(Providers provider, [BindRequired][FromQuery] string code, [FromQuery] string? verifier = null, [FromQuery] string? redirect = null)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
             try
@@ -127,7 +147,7 @@ namespace HookHook.Backend.Controllers
                 switch (provider)
                 {
                     case Providers.Discord:
-                        account = await _discord.AddAccount(user, code);
+                        account = await _discord.AddAccount(user, code, verifier, redirect!);
                         break;
                     case Providers.Twitter:
                         account = await _twitter.AddAccount(user, code, verifier!);
@@ -136,7 +156,7 @@ namespace HookHook.Backend.Controllers
                         account = await _twitch.AddAccount(user, code);
                         break;
                     case Providers.Spotify:
-                        account = await _spotify.AddAccount(user, code);
+                        account = await _spotify.AddAccount(user, code, redirect!);
                         break;
                     case Providers.Google:
                         account = await _google.AddAccount(user, code);
@@ -158,7 +178,13 @@ namespace HookHook.Backend.Controllers
             }
         }
 
+        /// <summary>
+        /// Delete an account on provider
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="id"></param>
         [HttpDelete("{provider}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ActionResult Delete(Providers provider, [BindRequired] [FromQuery] string id)
         {
             var user = _mongo.GetUser(HttpContext.User.Identity!.Name!)!;
@@ -167,9 +193,7 @@ namespace HookHook.Backend.Controllers
             var account = accounts.SingleOrDefault(x => x.UserId == id)!;
 
             accounts.Remove(account);
-            var areas = user.Areas.Where(x => x.Action.AccountId == id || x.Reactions.Any(x => x.AccountId == id));
-            foreach (var area in areas)
-                user.Areas.Remove(area);
+            user.Areas.RemoveAll(x => x.Action.AccountId == id || x.Reactions.Any(x => x.AccountId == id));
             _mongo.SaveUser(user);
 
             return NoContent();
