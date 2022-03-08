@@ -107,7 +107,7 @@ class _Settings extends AdaptiveState<SettingsView> {
                   Padding(
                     padding: const EdgeInsets.only(left: 60),
                     child: Text(
-                        token != null ? Jwt.parseJwt(token!)["given_name"] : "",
+                        token != null ? Jwt.parseJwt(token!)["given_name"] ?? "No name" : "",
                         style: TextStyle(
                             color: darkMode ? Colors.white : Colors.black
                         )
