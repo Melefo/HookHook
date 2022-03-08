@@ -41,6 +41,7 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
   @override
   Widget build(BuildContext context) =>
       Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: HookHookColors.dark,
           body: Padding(
             padding: const EdgeInsets.symmetric(
@@ -121,7 +122,7 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                       value: fromUser,
                       items: <DropdownMenuItem>[
                         for (Account account in accountAction) DropdownMenuItem(
-                          value: account.userId,
+                          value: "from_" +  account.userId,
                           child: Text(account.username),
                         ),
                         const DropdownMenuItem(
@@ -262,7 +263,7 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                         ),
                       ],
                       onChanged: (dynamic value) async {
-                        if (value != "fromAction_null") {
+                        if (value != "toUser_null") {
                           step = 5;
                         } else {
                           step = 4;
@@ -317,7 +318,7 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                     )
                 ),
                 Visibility(
-                    visible: step > 1 ? true : false,
+                    visible: step > 5 ? true : false,
                     child: Column(
                       children: [
                         if (possibleReaction.isNotEmpty &&
@@ -357,14 +358,14 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                             onPressed: () async {
                               await Backend().area.createAreas(
                                   create.CreateAreaModel(action: create.Action(
-                                      type: fromAction,
+                                      type: fromAction.replaceAll("from_", ""),
                                       arguments: fromArg.map((e) =>
                                       e.value.text).toList(),
-                                      accountId: fromUser), reactions: [
-                                    create.Action(type: toAction,
+                                      accountId: fromUser.replaceAll("from_", "")), reactions: [
+                                    create.Action(type: toAction.replaceAll("to_", ""),
                                         arguments: toArg.map((e) =>
                                         e.value.text).toList(),
-                                        accountId: toUser)
+                                        accountId: toUser.replaceAll("to_", ""))
                                   ], minutes: 5, name: areaName.value.text));
                             },
                             child: const Padding(
