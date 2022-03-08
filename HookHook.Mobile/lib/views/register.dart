@@ -77,7 +77,8 @@ class _RegisterView extends AdaptiveState<RegisterView> {
             Text(
                 "Wanna try our service?",
                 style: TextStyle(
-                    fontSize: 14.sp
+                    fontSize: 14.sp,
+                      color: darkMode ? Colors.white : Colors.black
                 )
             ),
             if (_sent)
@@ -91,14 +92,16 @@ class _RegisterView extends AdaptiveState<RegisterView> {
                     Text(
                         "You are successfully registered!",
                         style: TextStyle(
-                            fontSize: 12.sp
+                            fontSize: 12.sp,
+                        color: darkMode ? Colors.white : Colors.black
                         ),
                         textAlign: TextAlign.center
                     ),
                     Text(
                         "Please check your email inbox for verification link",
                         style: TextStyle(
-                            fontSize: 12.sp
+                            fontSize: 12.sp,
+                        color: darkMode ? Colors.white : Colors.black
                         ),
                         textAlign: TextAlign.center
                     )
@@ -120,9 +123,19 @@ class _RegisterView extends AdaptiveState<RegisterView> {
                             constraints: BoxConstraints.tightFor(
                                 width: 0.32.sw),
                             child: TextFormField(
-                              decoration: const InputDecoration(
-                                  border: UnderlineInputBorder(),
-                                  labelText: "First name"
+                              decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: darkMode ? Colors.white : Colors.black
+                                      )
+                                  ),
+                                  labelText: "First name",
+                                labelStyle: TextStyle(
+                                    color: darkMode ? Colors.white : Colors.black
+                                ),
+                              ),
+                              style: TextStyle(
+                                  color: darkMode ? Colors.white : Colors.black
                               ),
                               controller: firstName,
                             ),
@@ -131,9 +144,19 @@ class _RegisterView extends AdaptiveState<RegisterView> {
                             constraints: BoxConstraints.tightFor(
                                 width: 0.32.sw),
                             child: TextFormField(
-                              decoration: const InputDecoration(
-                                  border: UnderlineInputBorder(),
-                                  labelText: "Last name"
+                              decoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: darkMode ? Colors.white : Colors.black
+                                    )
+                                ),
+                                  labelText: "Last name",
+                                labelStyle: TextStyle(
+                                    color: darkMode ? Colors.white : Colors.black
+                                ),
+                              ),
+                              style: TextStyle(
+                                  color: darkMode ? Colors.white : Colors.black
                               ),
                               controller: lastName,
                             ),
@@ -141,16 +164,36 @@ class _RegisterView extends AdaptiveState<RegisterView> {
                         ]
                     ),
                     TextFormField(
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: "Email"
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: darkMode ? Colors.white : Colors.black
+                              )
+                          ),
+                          labelText: "Email",
+                        labelStyle: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
+                        ),
+                      ),
+                      style: TextStyle(
+                          color: darkMode ? Colors.white : Colors.black
                       ),
                       controller: email,
                     ),
                     TextFormField(
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: "Username"
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: darkMode ? Colors.white : Colors.black
+                              )
+                          ),
+                          labelText: "Username",
+                        labelStyle: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
+                        ),
+                      ),
+                      style: TextStyle(
+                          color: darkMode ? Colors.white : Colors.black
                       ),
                       controller: username,
                     ),
@@ -161,9 +204,19 @@ class _RegisterView extends AdaptiveState<RegisterView> {
                             constraints: BoxConstraints.tightFor(
                                 width: 0.32.sw),
                             child: TextFormField(
-                                decoration: const InputDecoration(
-                                    border: UnderlineInputBorder(),
-                                    labelText: "Password"
+                                decoration: InputDecoration(
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: darkMode ? Colors.white : Colors.black
+                                        )
+                                    ),
+                                    labelText: "Password",
+                                  labelStyle: TextStyle(
+                                      color: darkMode ? Colors.white : Colors.black
+                                  ),
+                                ),
+                                style: TextStyle(
+                                    color: darkMode ? Colors.white : Colors.black
                                 ),
                                 controller: password,
                                 obscureText: true
@@ -173,9 +226,19 @@ class _RegisterView extends AdaptiveState<RegisterView> {
                             constraints: BoxConstraints.tightFor(
                                 width: 0.32.sw),
                             child: TextFormField(
-                              decoration: const InputDecoration(
-                                  border: UnderlineInputBorder(),
-                                  labelText: "Confirm password"
+                              decoration: InputDecoration(
+                                  enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: darkMode ? Colors.white : Colors.black
+                                      )
+                                  ),
+                                  labelText: "Confirm password",
+                                labelStyle: TextStyle(
+                                    color: darkMode ? Colors.white : Colors.black
+                                ),
+                              ),
+                              style: TextStyle(
+                                  color: darkMode ? Colors.white : Colors.black
                               ),
                               controller: confirm,
                               obscureText: true,

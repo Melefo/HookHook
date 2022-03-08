@@ -60,7 +60,8 @@ class _ConfirmPassword extends AdaptiveState<ConfirmPassword> {
               Text(
                   "Enter your new password.",
                   style: TextStyle(
-                      fontSize: 14.sp
+                      fontSize: 14.sp,
+                      color: darkMode ? Colors.white : Colors.black
                   )
               ),
               Padding(
@@ -72,20 +73,41 @@ class _ConfirmPassword extends AdaptiveState<ConfirmPassword> {
                   child: Column(
                     children: [
                       TextFormField(
-                          decoration: const InputDecoration(
-                              border: UnderlineInputBorder(),
-                              labelText: "Password"
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: darkMode ? Colors.white : Colors.black
+                              )
                           ),
-                          controller: password,
-                          obscureText: true
+                          labelText: "Password",
+                          labelStyle: TextStyle(
+                              color: darkMode ? Colors.white : Colors.black
+                          ),
+                        ),
+                        controller: password,
+                        obscureText: true,
+                        style: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
+                        ),
                       ),
                       TextFormField(
-                          decoration: const InputDecoration(
-                              border: UnderlineInputBorder(),
-                              labelText: "Confirm"
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: darkMode ? Colors.white : Colors
+                                        .black
+                                )
+                            ),
+                            labelText: "Confirm",
+                            labelStyle: TextStyle(
+                                color: darkMode ? Colors.white : Colors.black
+                            ),
                           ),
                           controller: confirm,
                           obscureText: true,
+                          style: TextStyle(
+                              color: darkMode ? Colors.white : Colors.black
+                          ),
                           validator: (text) {
                             if (text != password.value.text) {
                               return "Doesn't match password";
@@ -105,10 +127,12 @@ class _ConfirmPassword extends AdaptiveState<ConfirmPassword> {
                             ),
                           ),
                           style: TextButton.styleFrom(
-                              backgroundColor: darkMode ? HookHookColors.gray : Colors.white,
-                              padding:const EdgeInsets.all(15),
+                              backgroundColor: darkMode
+                                  ? HookHookColors.gray
+                                  : Colors.white,
+                              padding: const EdgeInsets.all(15),
                               shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)
+                                  borderRadius: BorderRadius.circular(10)
                               ),
                               minimumSize: const Size(150, 0)
                           )

@@ -46,7 +46,8 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
             Text(
                 "Forgot your password?",
                 style: TextStyle(
-                    fontSize: 14.sp
+                    fontSize: 14.sp,
+                    color: darkMode ? Colors.white : Colors.black
                 )
             ),
             if (_visible)
@@ -58,7 +59,8 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
                 child: Text(
                     "If an account with this email or username exists an email has been sent to recover your password",
                     style: TextStyle(
-                        fontSize: 12.sp
+                        fontSize: 12.sp,
+                        color: darkMode ? Colors.white : Colors.black
                     ),
                     textAlign: TextAlign.center
                 ),
@@ -69,11 +71,21 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
                   vertical: 16
               ),
               child: TextFormField(
-                decoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    labelText: "Username/Email"
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: darkMode ? Colors.white : Colors.black
+                      )
+                  ),
+                  labelText: "Username/Email",
+                  labelStyle: TextStyle(
+                      color: darkMode ? Colors.white : Colors.black
+                  ),
                 ),
                 controller: username,
+                style: TextStyle(
+                    color: darkMode ? Colors.white : Colors.black
+                ),
               ),
             ),
 

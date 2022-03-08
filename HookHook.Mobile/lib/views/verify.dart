@@ -26,35 +26,50 @@ class _Verify extends AdaptiveState<Verify> {
   Widget build(BuildContext context) {
     verify();
     return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Image.asset(
-                      "assets/pinguin/breakdance.gif",
-                      height: 0.15.sw,
-                      width: 0.15.sw
-                  ),
-                  const WelcomeHookHook(),
-                  Image.asset(
-                      "assets/pinguin/breakdance.gif",
-                      height: 0.15.sw,
-                      width: 0.15.sw
-                  )
-                ],
-              ),
-              const Padding(
-                  padding: EdgeInsets.all(32)
-              ),
-              const Text("Please wait..."),
-              const Text("Your email is being validated"),
-              const Text("The deeplink will close when finished")
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Image.asset(
+                    "assets/pinguin/breakdance.gif",
+                    height: 0.15.sw,
+                    width: 0.15.sw
+                ),
+                const WelcomeHookHook(),
+                Image.asset(
+                    "assets/pinguin/breakdance.gif",
+                    height: 0.15.sw,
+                    width: 0.15.sw
+                )
+              ],
+            ),
+            const Padding(
+                padding: EdgeInsets.all(32)
+            ),
+            Text(
+                "Please wait...",
+                style: TextStyle(
+                    color: darkMode ? Colors.white : Colors.black
+                )
+            ),
+            Text(
+                "Your email is being validated",
+                style: TextStyle(
+                    color: darkMode ? Colors.white : Colors.black
+                )
+            ),
+            Text(
+                "The deeplink will close when finished",
+                style: TextStyle(
+                    color: darkMode ? Colors.white : Colors.black
+                )
+            )
+          ],
         ),
-      );
+      ),
+    );
   }
 }

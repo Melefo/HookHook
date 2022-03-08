@@ -97,7 +97,8 @@ class _Settings extends AdaptiveState<SettingsView> {
                     Expanded(
                         child: Divider(color: darkMode
                             ? Colors.white.withAlpha(50)
-                            : Colors.black.withAlpha(50))
+                            : Colors.black.withAlpha(50)
+                        )
                     ),
                   ]
               ),
