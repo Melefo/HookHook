@@ -260,7 +260,7 @@ class _LoginView extends AdaptiveState<LoginView> {
         case "google":
         case "youtube":
           {
-            list.add(constructGoogle());
+            //list.add(constructGoogle());
             break;
           }
         case "twitch":
