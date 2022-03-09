@@ -1,7 +1,5 @@
 import 'package:hookhook/models/service_info_model.dart';
 import 'package:hookhook/wrapper/service.dart';
-import 'package:hookhook/wrapper/about.dart' as about;
-
 
 class Choices {
   Choices ();
@@ -13,10 +11,15 @@ class Choices {
 }
 
 class ActionParameters {
-  ActionParameters ();
+  ActionParameters();
 
   List<ServicesInfoModel>? events;
   List<Account>? accounts;
   List<String>? user;
   Choices choice = Choices();
+
+  bool validate() =>
+      choice.service != null && choice.userId != null &&
+          choice.action != null && choice.args != null &&
+          choice.args!.every((element) => element.isNotEmpty);
 }

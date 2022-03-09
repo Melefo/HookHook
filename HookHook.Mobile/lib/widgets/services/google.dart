@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hookhook/adaptive_state.dart';
-import 'package:hookhook/hookhook_colors.dart';
 import 'package:hookhook/main.dart';
 import 'package:hookhook/wrapper/service.dart';
 import 'package:url_launcher/url_launcher.dart';

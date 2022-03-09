@@ -58,7 +58,7 @@ class _CreatorArgs extends AdaptiveState<CreatorArgs> {
               onChanged: (text) {
                 if (widget.action.choice.args == null) {
                   widget.action.choice.args = [];
-                  for (var form in widget.controllers) {
+                  for (var _ in widget.controllers) {
                     widget.action.choice.args!.add("");
                   }
                 }

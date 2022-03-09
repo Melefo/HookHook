@@ -53,7 +53,7 @@ class _Creator extends AdaptiveState<Creator> {
               widget.action.choice.service != null &&
               widget.action.choice.userId != null) CreatorEvents(
             action: widget.action,
-            areaType: AreaType.ACTION,
+            areaType: AreaType.action,
             onUpdate: (chosenAction) {
               setState(() {
                 widget.action.choice.args = null;
@@ -64,7 +64,7 @@ class _Creator extends AdaptiveState<Creator> {
               widget.action.events != null)
             CreatorArgs(
                 action: widget.action,
-                areaType: AreaType.ACTION,
+                areaType: AreaType.action,
                 onUpdate: (String text) {
                   widget.onUpdate();
                 },

@@ -19,7 +19,6 @@ class NewAreaView extends StatefulWidget {
 
 class _NewAreaView extends AdaptiveState<NewAreaView> {
 
-  int step = 0;
   int refreshTime = 5;
   TextEditingController areaName = TextEditingController(
       text: "Default Area Name"
@@ -28,7 +27,7 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
 
   final ActionParameters action = ActionParameters();
 
-  List<ActionParameters> reactions = [ ActionParameters()];
+  List<ActionParameters> reactions = [ ActionParameters() ];
 
   @override
   Widget build(BuildContext context) =>
@@ -104,10 +103,11 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                           ),
                         ),
                         Creator(
-                          areaType: AreaType.ACTION,
+                          areaType: AreaType.action,
                           services: services,
                           action: action,
-                          onUpdate: () {},
+                          onUpdate: () {
+                          },
                         ),
 
                         ///REACTION PART
@@ -131,11 +131,36 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                         ),
                         for (var reaction in reactions)
                           Creator(
-                              areaType: AreaType.REACTION,
+                              areaType: AreaType.reaction,
                               services: services,
                               action: reaction,
-                              onUpdate: () {}
-                          )
+                              onUpdate: () {
+                              }
+                          ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              reactions.add(ActionParameters());
+                            });
+                          },
+                          style: TextButton.styleFrom(
+                              backgroundColor: darkMode
+                                  ? HookHookColors.gray
+                                  : Colors.white,
+                              padding: const EdgeInsets.all(12),
+                              minimumSize: Size.zero,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                              )
+                          ),
+                          clipBehavior: Clip.none,
+                          child: Icon(
+                              Icons.add,
+                              color: darkMode
+                                  ? Colors.white
+                                  : HookHookColors.gray
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -143,7 +168,7 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
 
                 ///BUTTON CREATION
                 Visibility(
-                    visible: step > 5 ? true : false,
+                    visible: action.validate() && reactions.every((element) => element.validate()),
                     child: Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Center(
