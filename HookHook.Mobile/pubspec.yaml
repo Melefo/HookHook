@@ -50,6 +50,7 @@ dependencies:
   flutter_twitch_auth: ^0.0.1
   jwt_decode: ^0.3.1
   flutter_spinbox: ^0.8.0
+  validators: ^3.0.0
 
 flutter_icons:
   android: true

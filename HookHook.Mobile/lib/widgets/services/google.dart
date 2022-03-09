@@ -144,7 +144,7 @@ class _GoogleDialog extends AdaptiveState<GoogleDialog> {
                     ),
                 )
             ),
-            Padding(
+            /*Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: 50,
                   vertical: 8
@@ -184,7 +184,7 @@ class _GoogleDialog extends AdaptiveState<GoogleDialog> {
                       )
                   )
               ),
-            )
+            )*/
           ]
       );
 }

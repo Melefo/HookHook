@@ -5,6 +5,47 @@ import 'package:jwt_decode/jwt_decode.dart';
 
 import '../main.dart';
 
+class RegisterError {
+  Errors? errors;
+
+  RegisterError({this.errors});
+
+  RegisterError.fromJson(Map<String, dynamic> json) {
+    errors =
+    json['errors'] != null ? Errors.fromJson(json['errors']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (errors != null) {
+      data['errors'] = errors!.toJson();
+    }
+    return data;
+  }
+}
+
+class Errors {
+  String? email;
+  String? password;
+  String? username;
+
+  Errors({this.email, this.password, this.username});
+
+  Errors.fromJson(Map<String, dynamic> json) {
+    email = json['email'];
+    password = json['password'];
+    username = json['username'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['email'] = email;
+    data['password'] = password;
+    data['username'] = username;
+    return data;
+  }
+}
+
 class _Login
 {
   final Map<String, dynamic> _data;
@@ -31,19 +72,19 @@ class SignIn {
     return _token;
   }
 
-  static String loginUrl = baseUrl + "login";
-  static String spotifyUrl = baseUrl + "oauth/spotify";
-  static String googleUrl = baseUrl + "oauth/google";
-  static String githubUrl = baseUrl + "oauth/github";
-  static String discordUrl = baseUrl + "oauth/discord";
-  static String twitchUrl = baseUrl + "oauth/twitch";
-  static String twitterUrl = baseUrl + "oauth/twitter";
-  static String verifyUrl = baseUrl + "verify/";
-  static String confirmUrl = baseUrl + "confirm";
-  static String registerUrl = baseUrl + "register";
-  static String authorizeUrl = baseUrl + "authorize/";
-  static String forgotUrl = baseUrl + "forgot/";
-  static String baseUrl = Backend.apiEndpoint + "signin/";
+  static String get loginUrl => baseUrl + "login";
+  static String get spotifyUrl => baseUrl + "oauth/spotify";
+  static String get googleUrl => baseUrl + "oauth/google";
+  static String get githubUrl => baseUrl + "oauth/github";
+  static String get discordUrl => baseUrl + "oauth/discord";
+  static String get twitchUrl => baseUrl + "oauth/twitch";
+  static String get twitterUrl => baseUrl + "oauth/twitter";
+  static String get verifyUrl => baseUrl + "verify/";
+  static String get confirmUrl => baseUrl + "confirm";
+  static String get registerUrl => baseUrl + "register";
+  static String get authorizeUrl => baseUrl + "authorize/";
+  static String get forgotUrl => baseUrl + "forgot/";
+  static String get baseUrl => Backend.apiEndpoint + "signin/";
 
   Future<void> forgotPassword(String username) async =>
       await http.put(Uri.parse(forgotUrl + username)).timeout(const Duration(
@@ -84,6 +125,9 @@ class SignIn {
       await HookHook.storage.write(
           key: Backend.instanceKey, value: Backend.apiEndpoint
       );
+    }
+    else {
+      throw http.ClientException("Invalid password");
     }
   }
 
@@ -126,9 +170,9 @@ class SignIn {
     }
   }
 
-  Future<void> register(String firstName, String lastName, String email,
+  Future<Errors?> register(String firstName, String lastName, String email,
       String username, String password) async {
-    await http.post(Uri.parse(registerUrl),
+    final res = await http.post(Uri.parse(registerUrl),
         headers: <String, String>{
           'Content-Type': 'application/json'
         },
@@ -142,6 +186,10 @@ class SignIn {
     ).timeout(const Duration(
         seconds: 3
     ));
+    if (res.statusCode == 400) {
+      return RegisterError.fromJson(jsonDecode(res.body)).errors;
+    }
+    return null;
   }
 
   Future<void> discord(String code, String verifier) async {
