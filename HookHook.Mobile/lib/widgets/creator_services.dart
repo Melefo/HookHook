@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hookhook/models/action_parameters.dart';
 import 'package:hookhook/models/service_info_model.dart';
 import 'package:hookhook/widgets/services_icon.dart';
 import 'package:hookhook/wrapper/backend.dart';
@@ -7,9 +8,10 @@ import '../adaptive_state.dart';
 import 'package:hookhook/wrapper/about.dart' as about;
 
 class CreatorServices extends StatefulWidget {
-  const CreatorServices({Key? key, required this.services, required this.onUpdate}) : super(key: key);
+  const CreatorServices({Key? key, required this.services, required this.action, required this.onUpdate}) : super(key: key);
 
   final List<about.Service> services;
+  final ActionParameters action;
   final Function(List<Account>, List<ServicesInfoModel>, String) onUpdate;
 
   @override
@@ -17,14 +19,10 @@ class CreatorServices extends StatefulWidget {
 }
 
 class _CreatorServices extends AdaptiveState<CreatorServices> {
-  String ?dd_value;
-  List<Account> ?acc;
-  List<ServicesInfoModel> ?serv;
-
   @override
   Widget build(BuildContext context) =>
       DropdownButton(
-          value: dd_value,
+          value: widget.action.choice.service,
           hint: const Text("Choose your Service"),
           items: <DropdownMenuItem>[
             for (about.Service element in widget.services) DropdownMenuItem(
@@ -38,16 +36,18 @@ class _CreatorServices extends AdaptiveState<CreatorServices> {
             )
           ],
           onChanged: (dynamic value) async {
-            dd_value = value!.toString();
-            final accounts = await Backend().service.getAccounts(dd_value!);
-            final actions = await Backend().area.getServices();
             setState(() {
-              if (value != null) {
-                acc = accounts;
-                serv = actions;
-                widget.onUpdate(acc!, serv!, dd_value!);
-              }
+              widget.action.choice.service = value!;
             });
+            if (value != null) {
+              final accounts = await Backend().service.getAccounts(value!);
+              final actions = await Backend().area.getServices();
+              setState(() {
+                  widget.action.accounts = accounts;
+                  widget.action.events = actions;
+                  widget.onUpdate(accounts, actions, value!);
+              });
+            }
           },
         );
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hookhook/models/action_parameters.dart';
 import 'package:hookhook/wrapper/backend.dart';
 import 'package:hookhook/wrapper/service.dart';
 import '../adaptive_state.dart';
 
 class CreatorUsers extends StatefulWidget {
-  const CreatorUsers({Key? key, required this.acc, required this.onUpdate}) : super(key: key);
+  const CreatorUsers({Key? key, required this.action, required this.onUpdate}) : super(key: key);
 
-  final List<Account> acc;
+  final ActionParameters action;
   final Function(String userId) onUpdate;
 
   @override
@@ -14,24 +15,23 @@ class CreatorUsers extends StatefulWidget {
 }
 
 class _CreatorUsers extends AdaptiveState<CreatorUsers> {
-  String ?dd_value;
 
   @override
   Widget build(BuildContext context) =>
       DropdownButton(
-        value: dd_value,
+        value: widget.action.choice.userId,
         hint: const Text("Choose your Account"),
         items: <DropdownMenuItem>[
-          for (Account element in widget.acc) DropdownMenuItem(
+          for (Account element in widget.action.accounts!) DropdownMenuItem(
             value: element.userId,
             child: Text(element.username),
           )
         ],
         onChanged: (dynamic value) async {
-          dd_value = value!.toString();
           setState(() {
+            widget.action.choice.userId = value!;
             if (value != null) {
-              widget.onUpdate(dd_value!);
+              widget.onUpdate(value!);
             }
           });
         },
