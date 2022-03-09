@@ -129,13 +129,18 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                             ),
                           ],
                         ),
-                        for (var reaction in reactions)
+                        for (int i = 0; i < reactions.length; i++)
                           Creator(
                               areaType: AreaType.reaction,
                               services: services,
-                              action: reaction,
+                              action: reactions[i],
                               onUpdate: () {
-                              }
+                              },
+                              onDelete: i == 0 ? null : () {
+                                setState(() {
+                                  reactions.remove(reactions[i]);
+                                });
+                              },
                           ),
                         TextButton(
                           onPressed: () {

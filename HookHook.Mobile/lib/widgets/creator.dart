@@ -1,22 +1,25 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:hookhook/models/action_parameters.dart';
 import 'package:hookhook/models/service_info_model.dart';
 import 'package:hookhook/wrapper/about.dart' as about;
 
 import '../adaptive_state.dart';
+import '../hookhook_colors.dart';
 import 'creator_args.dart';
 import 'creator_events.dart';
 import 'creator_services.dart';
 import 'creator_users.dart';
 
 class Creator extends StatefulWidget {
-  const Creator({Key? key, required this.areaType, required this.services, required this.action, required this.onUpdate}) : super(key: key);
+  const Creator({Key? key, required this.areaType, required this.services, required this.action, required this.onUpdate, this.onDelete}) : super(key: key);
 
   final ActionParameters action;
   final AreaType areaType;
   final List<about.Service> services;
 
   final Function onUpdate;
+  final Function? onDelete;
 
   @override
   _Creator createState() => _Creator();
@@ -68,6 +71,27 @@ class _Creator extends AdaptiveState<Creator> {
                 onUpdate: (String text) {
                   widget.onUpdate();
                 },
+            ),
+          if (widget.onDelete != null)
+            TextButton(
+              onPressed: () => widget.onDelete!(),
+              style: TextButton.styleFrom(
+                  backgroundColor: darkMode
+                      ? HookHookColors.gray
+                      : Colors.white,
+                  padding: const EdgeInsets.all(12),
+                  minimumSize: Size.zero,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)
+                  )
+              ),
+              clipBehavior: Clip.none,
+              child: Icon(
+                  Icons.delete,
+                  color: darkMode
+                      ? Colors.white
+                      : HookHookColors.gray
+              ),
             )
         ],
       );
