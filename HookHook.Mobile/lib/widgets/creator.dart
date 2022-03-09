@@ -72,6 +72,13 @@ class _Creator extends AdaptiveState<Creator> {
                   widget.onUpdate();
                 },
             ),
+          if (widget.action.events != null && widget.action.choice.action != null && widget.action.events!.singleWhere((element) => element.areaType == widget.areaType && element.className == widget.action.choice.action).formatters != null)
+            Text(
+                "You may use the following formatters to get data from your WHEN in your DO: ${widget.action.events!.singleWhere((element) => element.areaType == widget.areaType && element.className == widget.action.choice.action).formatters!.map((e) => '{$e}').join(', ')}",
+              style: const TextStyle(
+                color: Colors.grey
+              ),
+            ),
           if (widget.onDelete != null)
             TextButton(
               onPressed: () => widget.onDelete!(),
