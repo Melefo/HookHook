@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:hookhook/main.dart';
@@ -67,7 +68,9 @@ class AreaClient {
       Uri.parse(Backend.apiEndpoint + url),
       headers: {
         HttpHeaders.authorizationHeader: "Bearer " + (await HookHook.backend.signIn.token)!,
+        'Content-Type': 'application/json',
       },
+      body: jsonEncode(newArea.toJson())
     );
     if (res.statusCode != 200) {} else {
       if (kDebugMode) {

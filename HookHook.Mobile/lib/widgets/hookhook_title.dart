@@ -142,7 +142,7 @@ class _HookHookTitle extends AdaptiveState<HookHookTitle> {
                                         .black,
                                   )
                               ),
-                              if (token != null)
+                              if (token != null && Jwt.parseJwt(token!)["given_name"] != null)
                                 TextSpan(
                                     text: " ${Jwt.parseJwt(
                                         token!)["given_name"]}",

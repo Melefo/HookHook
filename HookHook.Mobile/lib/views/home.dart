@@ -35,11 +35,17 @@ class _Home extends AdaptiveState<HomeView> {
                 padding: EdgeInsets.only(top: 70),
                 child: HookHookTitle(welcome: true),
               ),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(25, 10, 0, 10),
-                  child: Text('Services', style: TextStyle(fontSize: 15)),
+                  padding: const EdgeInsets.fromLTRB(25, 10, 0, 10),
+                  child: Text(
+                      'Services',
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: darkMode ? Colors.white : Colors.black
+                      )
+                  ),
                 ),
               ),
               HList(height: 0.07.sh, widget: ServicesList(itemWidth: 0.12.sw)),
@@ -59,16 +65,23 @@ class _Home extends AdaptiveState<HomeView> {
                       style: TextStyle(
                           fontSize: 20,
                           color: darkMode ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.w500),
+                          fontWeight: FontWeight.w500
+                      ),
                     ),
                   ),
                 ),
               ),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(25, 20, 0, 20),
-                  child: Text('Your AREAs', style: TextStyle(fontSize: 15)),
+                  padding: const EdgeInsets.fromLTRB(25, 20, 0, 20),
+                  child: Text(
+                      'Your AREAs',
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: darkMode ? Colors.white : Colors.black
+                      )
+                  ),
                 ),
               ),
               const AreaList()

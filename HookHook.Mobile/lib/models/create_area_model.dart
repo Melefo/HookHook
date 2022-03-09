@@ -2,7 +2,6 @@
 //
 //     final createAreaModel = createAreaModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 CreateAreaModel createAreaModelFromJson(String str) => CreateAreaModel.fromJson(json.decode(str));

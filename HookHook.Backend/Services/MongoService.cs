@@ -106,7 +106,7 @@ namespace HookHook.Backend.Services
         /// <param name="identifier">User username or email</param>
         /// <returns>User account</returns>
         public User? GetUserByIdentifier(string identifier) =>
-            _usersCollection.Find(x => x.Username == identifier || x.Email == identifier).SingleOrDefault();
+            _usersCollection.Find(x => x.Username == identifier || x.Email == identifier.ToLowerInvariant()).SingleOrDefault();
 
         public User? GetUserByRandomId(string identifier) =>
             _usersCollection.Find(x => x.RandomId == identifier).SingleOrDefault();
