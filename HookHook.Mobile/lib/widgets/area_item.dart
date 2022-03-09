@@ -8,6 +8,7 @@ import 'package:hookhook/widgets/services/google.dart';
 import 'package:hookhook/widgets/services/spotify.dart';
 import 'package:hookhook/widgets/services/twitch.dart';
 import 'package:hookhook/widgets/services/twitter.dart';
+import 'package:hookhook/widgets/services_icon.dart';
 import 'package:mvc_application/controller.dart';
 import 'package:mvc_application/view.dart';
 
@@ -30,36 +31,6 @@ class AreaItem extends StatefulWidget {
 }
 
 class _AreaItem extends AdaptiveState<AreaItem> {
-  Widget serviceIcon(String provider) {
-    switch (provider.toLowerCase()) {
-      case "discord":
-        {
-          return const Discord(width: 50, padding: 1);
-        }
-      case "github":
-        {
-          return const Github(width: 50, padding: 1);
-        }
-      case "youtube":
-      case "google":
-        {
-          return const Google(width: 50, padding: 1);
-        }
-      case "spotify":
-        {
-          return const Spotify(width: 50, padding: 1);
-        }
-      case "twitch":
-        {
-          return const Twitch(width: 50, padding: 1);
-        }
-      case "twitter":
-        {
-          return const Twitter(width: 50, padding: 1);
-        }
-    }
-    return const Icon(Icons.category, size: 20);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +58,12 @@ class _AreaItem extends AdaptiveState<AreaItem> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  serviceIcon(widget.from),
+                  ServiceIcon.serviceIcon(widget.from),
                   Icon(
                       Icons.arrow_right_alt_rounded,
                       color: darkMode ? Colors.white : Colors.black
                   ),
-                  for (String elem in widget.to) serviceIcon(elem),
+                  for (String elem in widget.to) ServiceIcon.serviceIcon(elem),
                 ],
               ),
             ),
@@ -126,7 +97,10 @@ class _AreaItem extends AdaptiveState<AreaItem> {
                           .light,
                     ),
                     child: IconButton(
-                      onPressed: () => widget.trigger(),
+                      onPressed: () {
+                        widget.trigger();
+                        setState(() {});
+                      },
                       icon: Icon(
                           Icons.refresh,
                           color: darkMode ? Colors.white : HookHookColors.gray
@@ -163,6 +137,7 @@ class _AreaItem extends AdaptiveState<AreaItem> {
                                       TextButton(
                                         onPressed: () {
                                           widget.delete();
+                                          setState(() {});
                                           Navigator.pop(context, 'OK');
                                         },
                                         child: const Text
