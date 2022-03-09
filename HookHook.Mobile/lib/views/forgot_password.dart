@@ -17,8 +17,21 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPassword extends AdaptiveState<ForgotPassword> {
   TextEditingController username = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _visible = false;
+
+  Future<void> validateAndSave() async {
+    final FormState form = _formKey.currentState!;
+    if (!form.validate()) {
+      return;
+    }
+    await HookHook.backend.signIn.forgotPassword(username.value.text);
+    username.clear();
+    setState(() {
+      _visible = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) =>
@@ -70,33 +83,35 @@ class _ForgotPassword extends AdaptiveState<ForgotPassword> {
                   horizontal: 0.15.sw,
                   vertical: 16
               ),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(
-                          color: darkMode ? Colors.white : Colors.black
-                      )
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: darkMode ? Colors.white : Colors.black
+                        )
+                    ),
+                    labelText: "Username/Email",
+                    labelStyle: TextStyle(
+                        color: darkMode ? Colors.white : Colors.black
+                    ),
                   ),
-                  labelText: "Username/Email",
-                  labelStyle: TextStyle(
+                  controller: username,
+                  style: TextStyle(
                       color: darkMode ? Colors.white : Colors.black
                   ),
-                ),
-                controller: username,
-                style: TextStyle(
-                    color: darkMode ? Colors.white : Colors.black
+                  validator: (text) {
+                    if (text == null || text.length < 2) {
+                      return "Username must be at least 2 characters";
+                    }
+                    return null;
+                  },
                 ),
               ),
             ),
-
             TextButton(
-                onPressed: () async {
-                  await HookHook.backend.signIn.forgotPassword(
-                      username.value.text);
-                  setState(() {
-                    _visible = true;
-                  });
-                },
+                onPressed: () async => await validateAndSave(),
                 child: Text(
                   "Send",
                   style: TextStyle(

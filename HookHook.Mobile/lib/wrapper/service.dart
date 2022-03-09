@@ -28,13 +28,13 @@ class Account {
 }
 
 class Service {
-  static String baseUrl = Backend.apiEndpoint + "service/";
-  static String twitterUrl = baseUrl + "twitter";
-  static String twitchUrl = baseUrl + "twitch";
-  static String spotifyUrl = baseUrl + "spotify";
-  static String googleUrl = baseUrl + "google";
-  static String gitHubUrl = baseUrl + "github";
-  static String discordUrl = baseUrl + "discord";
+  static String get baseUrl => Backend.apiEndpoint + "service/";
+  static String get twitterUrl => baseUrl + "twitter";
+  static String get twitchUrl => baseUrl + "twitch";
+  static String get spotifyUrl => baseUrl + "spotify";
+  static String get googleUrl => baseUrl + "google";
+  static String get gitHubUrl => baseUrl + "github";
+  static String get discordUrl => baseUrl + "discord";
 
   Future<List<Account>> getAccounts(String provider) async {
     final res = await http.get(Uri.parse("$baseUrl$provider"),

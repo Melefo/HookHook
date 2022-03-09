@@ -30,6 +30,8 @@ class _ConfirmPassword extends AdaptiveState<ConfirmPassword> {
     }
     await HookHook.backend.signIn.confirmPassword(
         widget.id, password.value.text);
+    password.clear();
+    confirm.clear();
     await SystemNavigator.pop(animated: true);
   }
 
@@ -73,22 +75,32 @@ class _ConfirmPassword extends AdaptiveState<ConfirmPassword> {
                   child: Column(
                     children: [
                       TextFormField(
-                        decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: darkMode ? Colors.white : Colors.black
-                              )
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: darkMode ? Colors.white : Colors
+                                        .black
+                                )
+                            ),
+                            labelText: "Password",
+                            labelStyle: TextStyle(
+                                color: darkMode ? Colors.white : Colors.black
+                            ),
                           ),
-                          labelText: "Password",
-                          labelStyle: TextStyle(
+                          controller: password,
+                          obscureText: true,
+                          style: TextStyle(
                               color: darkMode ? Colors.white : Colors.black
                           ),
-                        ),
-                        controller: password,
-                        obscureText: true,
-                        style: TextStyle(
-                            color: darkMode ? Colors.white : Colors.black
-                        ),
+                          validator: (text) {
+                            if (text == null || text.length < 4) {
+                              return "Password must be at least 4 characters";
+                            }
+                            if (text.length > 256) {
+                              return "Password cannot exceed 256 characters";
+                            }
+                            return null;
+                          }
                       ),
                       TextFormField(
                           decoration: InputDecoration(

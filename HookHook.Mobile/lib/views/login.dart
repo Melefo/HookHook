@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_twitch_auth/flutter_twitch_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart';
 import 'package:pkce/pkce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +18,7 @@ import 'package:hookhook/wrapper/backend.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
+import 'package:validators/validators.dart' as validators;
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -34,6 +36,39 @@ class _LoginView extends AdaptiveState<LoginView> {
   late StreamSubscription spotifyListener;
   late StreamSubscription githubListener;
   late StreamSubscription twitterListener;
+
+  String? error;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> validateAndSave() async {
+    final FormState form = _formKey.currentState!;
+    if (!form.validate()) {
+      return;
+    }
+    try {
+      await HookHook.backend.signIn.login(
+          username.value.text, password.value.text);
+    }
+    on TimeoutException {
+      setState(() {
+        error = "Failed to call HookHook instance";
+        password.clear();
+      });
+    }
+    on ClientException catch (e) {
+      setState(() {
+        error = e.message;
+        password.clear();
+      });
+    }
+    setState(() {
+      error = null;
+    });
+    if (await HookHook.backend.signIn.token != null) {
+      await Navigator.pushReplacementNamed(
+          context, HomeView.routeName);
+    }
+  }
 
   @override
   void initState() {
@@ -309,37 +344,31 @@ class _LoginView extends AdaptiveState<LoginView> {
                       color: darkMode ? Colors.white : Colors.black
                   )
               ),
+              if (error != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text(
+                      error!,
+                  style: const TextStyle(
+                    color: Colors.redAccent
+                  )),
+                ),
               Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: 0.15.sw
                 ),
-                child: Column(
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: darkMode ? Colors.white : Colors.black
-                            )
-                        ),
-                        labelText: "Username/Email",
-                        labelStyle: TextStyle(
-                            color: darkMode ? Colors.white : Colors.black
-                        ),
-                      ),
-                      style: TextStyle(
-                          color: darkMode ? Colors.white : Colors.black
-                      ),
-                      controller: username,
-                    ),
-                    TextFormField(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
                         decoration: InputDecoration(
                           enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
                                   color: darkMode ? Colors.white : Colors.black
                               )
                           ),
-                          labelText: "Password",
+                          labelText: "Username/Email",
                           labelStyle: TextStyle(
                               color: darkMode ? Colors.white : Colors.black
                           ),
@@ -347,110 +376,146 @@ class _LoginView extends AdaptiveState<LoginView> {
                         style: TextStyle(
                             color: darkMode ? Colors.white : Colors.black
                         ),
-                        controller: password,
-                        obscureText: true
-                    ),
-                    TextButton(
-                      onPressed: () async =>
-                      await Navigator.pushNamed(
-                          context, ForgotPassword.routeName),
-                      child: Text(
-                        "Forgot password?",
-                        style: TextStyle(
-                            color: darkMode ? Colors.white : Colors.black,
-                            decoration: TextDecoration.underline
-                        ),
-                      ),
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: darkMode ? Colors.white : Colors.black
-                            )
-                        ),
-                        labelText: "HookHook Instance",
-                        labelStyle: TextStyle(
-                            color: darkMode ? Colors.white : Colors.black
-                        ),
-                      ),
-                      style: TextStyle(
-                          color: darkMode ? Colors.white : Colors.black
-                      ),
-                      initialValue: Backend.apiEndpoint,
-                      onChanged: (text) async {
-                        if (text[text.length - 1] != '/') {
-                          text += '/';
-                        }
-                        String? token = await HookHook.storage.read(
-                            key: Backend.tokenKey);
-                        String? username = await HookHook.storage.read(
-                            key: Backend.usernameKey);
-                        String? password = await HookHook.storage.read(
-                            key: Backend.passwordKey);
-                        await Backend.init(text, token, username, password);
-                        await HookHook.storage.write(
-                            key: Backend.instanceKey, value: Backend.apiEndpoint
-                        );
-                        setState(() {
-
-                        });
-                      },
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(8),
-                    ),
-                    TextButton(
-                        onPressed: () async {
-                          await HookHook.backend.signIn.login(
-                              username.value.text, password.value.text);
-                          if (await HookHook.backend.signIn.token != null) {
-                            await Navigator.pushReplacementNamed(
-                                context, HomeView.routeName);
+                        controller: username,
+                        validator: (text) {
+                          if (text == null || text.length < 2) {
+                            return "Username must be at least 2 characters";
                           }
+                          if (text.length > 256) {
+                            return "Username cannot exceed 256 characters";
+                          }
+                          return null;
                         },
-                        child: Text(
-                          "Login",
+                      ),
+                      TextFormField(
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: darkMode ? Colors.white : Colors.black
+                                )
+                            ),
+                            labelText: "Password",
+                            labelStyle: TextStyle(
+                                color: darkMode ? Colors.white : Colors.black
+                            ),
+                          ),
                           style: TextStyle(
                               color: darkMode ? Colors.white : Colors.black
                           ),
-                        ),
-                        style: TextButton.styleFrom(
-                            backgroundColor: darkMode
-                                ? HookHookColors.gray
-                                : Colors.white,
-                            padding: const EdgeInsets.all(15),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            minimumSize: const Size(150, 0)
-                        )
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.all(4),
-                    ),
-                    TextButton(
+                          controller: password,
+                          obscureText: true,
+                        validator: (text) {
+                          if (text == null || text.length < 4) {
+                            return "Password must be at least 4 characters";
+                          }
+                          if (text.length > 256) {
+                            return "Password cannot exceed 256 characters";
+                          }
+                          return null;
+                        },
+                      ),
+                      TextButton(
                         onPressed: () async =>
                         await Navigator.pushNamed(
-                            context, RegisterView.routeName),
+                            context, ForgotPassword.routeName),
                         child: Text(
-                          "Register",
+                          "Forgot password?",
                           style: TextStyle(
+                              color: darkMode ? Colors.white : Colors.black,
+                              decoration: TextDecoration.underline
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: darkMode ? Colors.white : Colors.black
+                              )
+                          ),
+                          labelText: "HookHook Instance",
+                          labelStyle: TextStyle(
                               color: darkMode ? Colors.white : Colors.black
                           ),
                         ),
-                        style: TextButton.styleFrom(
-                            backgroundColor: darkMode
-                                ? HookHookColors.gray
-                                : Colors.white,
-                            padding: const EdgeInsets.all(15),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
+                        style: TextStyle(
+                            color: darkMode ? Colors.white : Colors.black
+                        ),
+                        initialValue: Backend.apiEndpoint,
+                        validator: (text) {
+                          if (!validators.isURL(text, requireProtocol: true)) {
+                            return "A valid URL must be entered";
+                          }
+                          return null;
+                        },
+                        onChanged: (text) async {
+                          if (text[text.length - 1] != '/') {
+                            text += '/';
+                          }
+                          String? token = await HookHook.storage.read(
+                              key: Backend.tokenKey);
+                          String? username = await HookHook.storage.read(
+                              key: Backend.usernameKey);
+                          String? password = await HookHook.storage.read(
+                              key: Backend.passwordKey);
+                          await Backend.init(text, token, username, password);
+                          await HookHook.storage.write(
+                              key: Backend.instanceKey,
+                              value: Backend.apiEndpoint
+                          );
+                          setState(() {
+
+                          });
+                        },
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8),
+                      ),
+                      TextButton(
+                          onPressed: () async => await validateAndSave(),
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                                color: darkMode ? Colors.white : Colors.black
                             ),
-                            minimumSize: const Size(150, 0)
-                        )
-                    ),
-                  ],
+                          ),
+                          style: TextButton.styleFrom(
+                              backgroundColor: darkMode
+                                  ? HookHookColors.gray
+                                  : Colors.white,
+                              padding: const EdgeInsets.all(15),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              minimumSize: const Size(150, 0)
+                          )
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(4),
+                      ),
+                      TextButton(
+                          onPressed: () async =>
+                          await Navigator.pushNamed(
+                              context, RegisterView.routeName),
+                          child: Text(
+                            "Register",
+                            style: TextStyle(
+                                color: darkMode ? Colors.white : Colors.black
+                            ),
+                          ),
+                          style: TextButton.styleFrom(
+                              backgroundColor: darkMode
+                                  ? HookHookColors.gray
+                                  : Colors.white,
+                              padding: const EdgeInsets.all(15),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              minimumSize: const Size(150, 0)
+                          )
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const Padding(

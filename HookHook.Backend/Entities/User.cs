@@ -82,7 +82,7 @@ namespace HookHook.Backend.Entities
         /// </summary>
         /// <param name="email">Email</param>
         public User(string email) => 
-            Email = email;
+            Email = email.ToLowerInvariant();
 
         /// <summary>
         /// User constructor from Controller form
