@@ -18,8 +18,7 @@ class ActionParameters {
   List<String>? user;
   Choices choice = Choices();
 
-  bool validate() =>
-      choice.service != null && choice.userId != null &&
-          choice.action != null && choice.args != null &&
-          choice.args!.every((element) => element.isNotEmpty);
+  bool validate() => choice.service != null && choice.userId != null &&
+          choice.action != null && (choice.args == null ||
+          choice.args!.every((element) => element.isNotEmpty));
 }

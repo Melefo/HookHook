@@ -107,6 +107,9 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                           services: services,
                           action: action,
                           onUpdate: () {
+                            setState(() {
+
+                            });
                           },
                         ),
 
@@ -135,6 +138,9 @@ class _NewAreaView extends AdaptiveState<NewAreaView> {
                               services: services,
                               action: reactions[i],
                               onUpdate: () {
+                                setState(() {
+
+                                });
                               },
                               onDelete: i == 0 ? null : () {
                                 setState(() {

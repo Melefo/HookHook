@@ -10,19 +10,12 @@ class CreatorArgs extends StatefulWidget {
   element.className == action.choice.action &&
       element.areaType == areaType)
       .parameterNames,
-        controllers = action.events!
-            .singleWhere((element) =>
-        element.className == action.choice.action &&
-            element.areaType == areaType)
-            .parameterNames.map((e) => TextEditingController()).toList(),
         super(key: key);
 
   final ActionParameters action;
   final AreaType areaType;
 
   final List<String> parameters;
-  final List<TextEditingController> controllers;
-
   final Function(String) onUpdate;
 
   @override
@@ -30,6 +23,14 @@ class CreatorArgs extends StatefulWidget {
 }
 
 class _CreatorArgs extends AdaptiveState<CreatorArgs> {
+
+  List<TextEditingController> controllers = [];
+
+  @override
+  void initState() {
+    controllers = widget.parameters.map((e) => TextEditingController()).toList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class _CreatorArgs extends AdaptiveState<CreatorArgs> {
             .entries
             .map((e) =>
             TextFormField(
-              controller: widget.controllers[e.key],
+              controller: controllers[e.key],
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
@@ -58,7 +59,7 @@ class _CreatorArgs extends AdaptiveState<CreatorArgs> {
               onChanged: (text) {
                 if (widget.action.choice.args == null) {
                   widget.action.choice.args = [];
-                  for (var _ in widget.controllers) {
+                  for (var _ in controllers) {
                     widget.action.choice.args!.add("");
                   }
                 }
