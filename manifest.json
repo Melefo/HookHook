@@ -1,0 +1,1076 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/a/B-YEP-500-NAN-5-1-yearendproject-victor.trencic/B-YEP-500-NAN-5-1-yearendproject-victor.trencic/docs",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.DiscordPinned.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.DiscordPinned.html",
+          "hash": "koXto6G33c0g+s/pO1Fe5SjrPf4F0UC6LpZWWy09Egw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.GitHubIssueCreated.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.GitHubIssueCreated.html",
+          "hash": "Kz4Jvmy/ZMePZxwNkEG8A/O5RrHwLMz9Z1t/ANn18hw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.GitHubNewCommit.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.GitHubNewCommit.html",
+          "hash": "WoVuvIyiMdz1Zms9yo8ZN011UageX2zgW06yXsNNAJA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.GitHubNewRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.GitHubNewRepository.html",
+          "hash": "bongKJTo6WwtUmM1rV9qn25JptS06fhyyGVvjMBCilU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.SpotifyLikedAlbum.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.SpotifyLikedAlbum.html",
+          "hash": "LemT3xmXTTNyPtccNFS/sJZVNaaIAEvlZeM6vNqj0r4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.SpotifyLikedMusic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.SpotifyLikedMusic.html",
+          "hash": "Rvz17ukKoJNdbsdt2d8vfX3VYB8aL7fvmPS2DTlecIA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.TwitchFollowChannel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.TwitchFollowChannel.html",
+          "hash": "0xzHUOoC+nSCURP5Ios0VLdhJWTNF/hiMFB35TIyxpo="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.TwitchLiveStarted.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.TwitchLiveStarted.html",
+          "hash": "3+YJReVJ/7vcN4SYYp9KHRhc8ZwrWpq48rG1Quxj8Og="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.TwitterTweetHashtag.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.TwitterTweetHashtag.html",
+          "hash": "XsUOhuf3tzYDSOw3Yuv1cuaZyneyBorUF9PSk/noTMM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.YoutubeVideoPublished.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.YoutubeVideoPublished.html",
+          "hash": "RgNSWZcexWR7vt4PJMCEE4/Gu4Z1A47mjm1ot24Fql4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Actions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Actions.html",
+          "hash": "HwHoPWUMicN3yzYMzpXnxwtJpikokuMDhr0LSp21sHc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Reactions.DiscordWebhook.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Reactions.DiscordWebhook.html",
+          "hash": "MXzvlUmDnYv0/pYv8MFBbYq+Gw2RLmcLnVJYedeXq7E="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Reactions.GithubCreateIssue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Reactions.GithubCreateIssue.html",
+          "hash": "8XZiIf6MfQkdNYsheIC8jNGcRpgIb8RGYqLDLxFIA5w="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Reactions.GithubCreateRepository.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Reactions.GithubCreateRepository.html",
+          "hash": "N8oAswuQj0Z+GR0mS+kbMnx9RlKzSPGBIn06U73XGsE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Reactions.TwitterTweet.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Reactions.TwitterTweet.html",
+          "hash": "Z9QIQsLLNe4ZLS8uR/l9phlb+R/rvdBp3MBU8Ngos5U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Reactions.YoutubePostComment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Reactions.YoutubePostComment.html",
+          "hash": "yNfjxFpSsBMUAiv2YawoBsupEuLMyUY+VKHbilVc5Wc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.Reactions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.Reactions.html",
+          "hash": "juftOA3yNV0qEsUbYqu1NigQ1/kFhd2zk15wWovywd0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.SpotifyLikeAlbum.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.SpotifyLikeAlbum.html",
+          "hash": "58hASSE/LVo5usIyyIzIRUqZg+v/Uwsga9aW+JNQww8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.SpotifyLikeMusic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.SpotifyLikeMusic.html",
+          "hash": "5y9yYMkGomXb7Gq75RIGfXnDK8WcIV2seo07U0R5uT0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.TwitterFollowUser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.TwitterFollowUser.html",
+          "hash": "gBLYPQezLWtiFNsbTa8TbjQhmfAvdYsKKU9nFqhg5hw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Area.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Area.html",
+          "hash": "dDpwg/zh4X0sc7TdfNBBXqvtI8EDJ4RIvtygWaFrqdk="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Attributes.ParameterNameAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Attributes.ParameterNameAttribute.html",
+          "hash": "ZyaQaRDnAEjsRgkvC61xiE/4M5j1mUJxlrb3cV7Dis0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Attributes.ServiceAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Attributes.ServiceAttribute.html",
+          "hash": "9XI8//IBXCtYsrRZZ1THe+HsPDITIUI5AqUjmWYuwug="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Attributes.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Attributes.html",
+          "hash": "9hYKrr7LUsLmakm9Eg4Hl/BR4LLWv+m9FD6ruzWmKWg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.AboutController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.AboutController.html",
+          "hash": "/K9kaT85x/UuB+jBWNsbkmY1RLSSb/XUxpDOjR6D9lw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.AreaController.UserArea.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.AreaController.UserArea.html",
+          "hash": "XAK8pXolnQiXhBzL4Zw5nZzDHsQnCX6zF3B4IrxT3ok="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.AreaController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.AreaController.html",
+          "hash": "2znu7VUWkThOcoIrUC9aHxAWMPaNhCfRMFwkwm+Glt8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.AreaHub.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.AreaHub.html",
+          "hash": "iCAt9GNjYxA5T6pSOMzVr/fruKKGEzlCALg8GFSke0U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.ServiceController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.ServiceController.html",
+          "hash": "tuEOM1zVsXbymEGMCt5o+4HB+foaXMyYrMYgcBbs2v8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.SignInController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.SignInController.html",
+          "hash": "G1Lk4rSkUTbZGGWLN0Ci4CPlWqxgZAssY3tybfEH0FU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.UserController.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.UserController.html",
+          "hash": "F4M3RcWs2p6XvD/R9SY/2ToNwClh/kCyc2Dv9bvjqYE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Controllers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Controllers.html",
+          "hash": "1T8YG75MI+JRS0D9qkWIkLTGE4q1kR+q7F1gpeFHqZY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Entities.Area.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Entities.Area.html",
+          "hash": "BLw/Gxv5agaV+qiF+Q7cmfnh7KSkX3zKEcwLl8CEpbM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Entities.IAction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Entities.IAction.html",
+          "hash": "CmIjKoAnN+FnP45EbNPMcw928z1GeZGuc1/GPhNZ9Ik="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Entities.IReaction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Entities.IReaction.html",
+          "hash": "k55lGn0Sp6mmhxUrAxOyTVwO8tbnAow9A0U5eYPHlHI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Entities.OAuthAccount.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Entities.OAuthAccount.html",
+          "hash": "8BwEjGR6f7qiufRYXc+OEc6XPclzUgz7HcVfdgnZT/U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Entities.User.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Entities.User.html",
+          "hash": "SnNxFNHEThnqGVnt8HJ+TnwtrcbOlI+6q4nXxNKezAw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Entities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Entities.html",
+          "hash": "bzccRbs0ZPM1Kt2EdgebfrhWi9/mqVe0IATX7fXA5U0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Exceptions.ApiException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Exceptions.ApiException.html",
+          "hash": "FEK7kWBiOmoiqUUx7r5OEkeXfgcGNJS6mT3duAbF62g="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Exceptions.MongoException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Exceptions.MongoException.html",
+          "hash": "AzeFeSYUs4dc6QhpinLzgTbq1EncPTfzITUcK8q0fb8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Exceptions.TypeUserException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Exceptions.TypeUserException.html",
+          "hash": "ocvCgjLYMHKxlmVRh0k1QmJ6V5x7fFmVui32lXb1W0A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Exceptions.UserException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Exceptions.UserException.html",
+          "hash": "tAbnk1UjpP+ANzDirqrd+nUrvPXb5RuyGbdJIM2iSVU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Exceptions.html",
+          "hash": "+memZfyhXNFhYkyh6thYeizekMl9orqe/EDNHFrByFE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.About.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.About.html",
+          "hash": "aF1ywQvLwMM7LscIIgsbmMzrUg6edBqf6SMngfLxvE4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.Action.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.Action.html",
+          "hash": "t7DYwlVCpj06+1ujBo2Vnz+UuIBiTFXpz9GLLKC/fX0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.AreaComponent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.AreaComponent.html",
+          "hash": "VvhS6R6vt46CrX3YyCeqL31LLx52vkctqgbeGRy2rdU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.AreaModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.AreaModel.html",
+          "hash": "O6yxeYIXAd46NMyzScS2cPuelEtL25IIu3U8ydQhz/A="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.Client.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.Client.html",
+          "hash": "GS0ppAqUiXrYwutQgCLD7HvQoiA33BLuwCtVG1uOrlY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.LoginForm.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.LoginForm.html",
+          "hash": "gJze+OxuLcj8LnVZ/IFjsutyO8H1bjJ9xFu86k1k8dE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.PasswordModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.PasswordModel.html",
+          "hash": "q8XBfnPHPo0D6lnEzgV7GZ5sBb7o+KWe6P8oLpr7wx0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.Reaction.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.Reaction.html",
+          "hash": "v+OC2yeXV1tVK/Iv0RbCL1lF9ZY+6aUj0N3Wj3nk/fE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.RegisterForm.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.RegisterForm.html",
+          "hash": "zNYMMtJE5+NwnH/buOoILptVzYEXj30pFn52B091z2Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.Server.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.Server.html",
+          "hash": "pDRLYfUCN81bdilCdCb/q4bXwafsKaVbjN4kAYhJ1kc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.Service.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.Service.html",
+          "hash": "uPiV957VnANTARUlrNfF9dl1t85QQt6R9sDJZFJfBgU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.ServiceAccount.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.ServiceAccount.html",
+          "hash": "t6Obzkw+qBfPlKj/4MMlhU+04vIz82AG+y1XCZZEVko="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Models.html",
+          "hash": "iLNZ/vvbSAGOcNnSGv1g+MhU3PYssVCOqz4Qysme9GA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Program.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Program.html",
+          "hash": "+d0ZUjnnrJcYtsTljcdOHwpaytwe20RqLZm9whqWtbg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.AreaService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.AreaService.html",
+          "hash": "VS3UlpU4eb7SJL4SkSIiuCWAGoCkedCQdUY0jkpTlfI="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.DiscordService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.DiscordService.html",
+          "hash": "1HqOaL0isFql8J4NxqdiMMOghSDeVmHEbRb+/bIF7WU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.DiscordToken.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.DiscordToken.html",
+          "hash": "w+5jk1ZHnL/M3ZxTKgGR2dthZ7MV+En6ZYhRjrDn+3U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.GitHubService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.GitHubService.html",
+          "hash": "zTOV0aMDNFhu6TUWom5lq+H4N7/K2LKsfChxU02LUmg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.GoogleAuth.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.GoogleAuth.html",
+          "hash": "0Ru2l2RHgoQ0sBD4eLrjeiUgjjWxeVGYNly6hg46EWQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.GoogleProfile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.GoogleProfile.html",
+          "hash": "6k7aEpON/kcLk+RL29TRmqrvBe9+BscSWDUMx95h6Bs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.GoogleService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.GoogleService.html",
+          "hash": "Cgjcjjdju0FQviGZv2AbO/+ua4yN3fW+L3AHs589X7U="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.MongoService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.MongoService.html",
+          "hash": "r2G4Kx7AUNwNGaHq7pA4wp5e2b2vPfQEGh5Oy0vq5NQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.SpotifyService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.SpotifyService.html",
+          "hash": "qClFn+iui2qJWIxVTYCpdRIdwLCB2iq7L5iapByr4BE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.TwitchService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.TwitchService.html",
+          "hash": "QV19SgVSPkBZe+7Xx/InAIiqjjojWgNu8cg4Pn1kSgY="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.TwitchToken.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.TwitchToken.html",
+          "hash": "1QAvksMccMwPUHza50yYfA7TMvFgy4oXXWfIrV7eB20="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.TwitterService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.TwitterService.html",
+          "hash": "1HNdVm4ymLXoXYbISiTbnelMh/Z7omVOsR1FDBEMbPQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.UserService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.UserService.html",
+          "hash": "1z3qCpkvGrf997M3EsexHgpvYOaWfM1ZxYkcCpRzlaM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Services.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Services.html",
+          "hash": "JzaCn7YOshrTpYkQQ+dTyikcOPOEBHI6qFn6BkP78Cc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Startup.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Startup.html",
+          "hash": "XzMhX/hfcLTgh4UBkZOcaXijHZTsL1PHuKNPjdzhkm4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Utilities.ClientAPI.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Utilities.ClientAPI.html",
+          "hash": "GiGOpGDx57oOBtFZq4DrsSbsR2JSguecrmKDl5hLf64="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Utilities.InterfaceExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Utilities.InterfaceExtensions.html",
+          "hash": "6xmf0Y4RfzD0pA1mgUi313NK5u+dyMpl9fccr8ZnqQ4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Utilities.PasswordHash.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Utilities.PasswordHash.html",
+          "hash": "d6uQrHw4heHueA1eo4aPp1L+YPpVEGTdU/5gtCcqSSs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Utilities.Providers.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Utilities.Providers.html",
+          "hash": "76GPsobEBxku6PiJC0Q5eXwDAmFGjFG7qF6jmPmF4uU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Utilities.StringExtensions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Utilities.StringExtensions.html",
+          "hash": "G11pHdd9OEUcZ9n+5dDxT50JI+3SjYYOa6jKA3/BwGE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.Utilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.Utilities.html",
+          "hash": "alC5BhXy9MakeTfw1XbRM0iAGgKL7R5503AgvZseCsQ="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/HookHook.Backend.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/HookHook.Backend.html",
+          "hash": "EHuNoDadU92Hr0mKCwTCIJNT9cB0+tEeMw1JYggpiJ8="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "FcbM54CKi5yQIE3eTnZFh9q9uffA4LgRqZNHNOgnO84="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "zPs3qjsrOvk8v4rBsy9BovES7cUr/W2gCCZY7zkomx0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "3WCRDIbPrnxi52Rjlr+ahsu3HN4X7dT7amgRQH7RIdw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "BlPxk5mtl2kgfcZUgkEguqiSAR/EUyUTT4EdebwkQvs="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "YmHw0PRm1I1U+sa6Dpnj2BNgqmu51jsn0K9S+cUgJ18="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "WSuRrYiGwKKMbtdG9z8W9fXmLoCyTnGg9AxbPKLXm2Y="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 3,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 79,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
